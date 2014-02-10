@@ -23,6 +23,7 @@ class Question(models.Model):
     solution = models.TextField(blank=True)
     level = models.IntegerField(choices=level_choices)
     modified = models.DateTimeField(auto_now=True)
+    tags = []
 
 class Tag(models.Model):
     tag = models.CharField
