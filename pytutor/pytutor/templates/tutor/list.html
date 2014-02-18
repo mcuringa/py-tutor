@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}PyTutor Hmoe{% endblock %}
+
+{% block body %}
+
+<section id="home">
+    <h1>The Question List</h1>
+    <ul>
+    {% for question in questions %}
+        <li>{{question.id}} {{question.prompt}} <a href="/tutor/{{question.id}}/edit/" title="edit this question">[edit]</a></li>
+    {% endfor %}
+    </ul>
+</section>
+
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}PyTutor::Question Editor{% endblock %}
+
+{% block body %}
+
+<section id="question-form">
+    <form action="/tutor/save" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="pk" value="{{pk}}">
+        {{ question.as_p }}
+        <input type="submit" value="Submit" />
+    </form>
+</section>
+
+{% endblock %}

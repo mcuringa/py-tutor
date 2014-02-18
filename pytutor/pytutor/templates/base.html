@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{% block title %}PyTutor{% endblock %}</title>
+    <meta charset="utf-8" />
+    <link href="/static/css/main.css" type="text/css" rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <h1><a href="/" title="see the list of apps">PyTutor</a></h1>
+        <nav id="main-nav">        
+            <a href="/tutor">study</a> |
+            <a href="/tutor/new">new question</a> |
+        </nav>
+    </header>
+
+    {% block body %}Every child template should put something here...{% endblock %}
+
+    <footer>
+        PyTutor is a python computer programming tutorial program written in Python using the Django Framework.<br>
+        Copyright Hannah Groves, Matt Curinga 2014.<br>
+        Created for the <a href="http://education.adelphi.edu">Graduate Program in Educational Technology</a>
+        at Adelphi University.
+    </footer>
+</body>
+
+</html>

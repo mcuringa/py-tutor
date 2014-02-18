@@ -1,0 +1,60 @@
+
+body 
+{ 
+    font-family: Futura, "Ubuntu", "Gill Sans", "Century Gothic", "Trebuchet MS", sans-serif;   
+    background-color: white;
+    margin: 0;
+    padding: 0;
+    color: black;
+}
+
+a
+{
+    text-decoration: none;
+}
+
+section
+{
+    clear: both;
+}
+
+.center
+{
+    width: 680px;
+    margin: 0 auto;
+    text-align: center;
+}
+.clear
+{
+    clear: both;
+}
+
+
+
+/* HEADER */
+header
+{
+    border-bottom: thin solid black;
+}
+
+
+/* FOOTER */
+footer
+{
+    /* official adelphi "brown" */
+    background-color: #441700; 
+    padding: 2em;
+    text-align: center;
+    color: white;
+    margin-top: 1em;
+}
+footer a
+{
+    color: white;
+    text-decoration: underline;
+}
+footer img
+{
+    display: block;
+    margin: 0 auto;
+}

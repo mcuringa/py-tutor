@@ -11,13 +11,12 @@ from django import forms
 from django.forms import ModelForm
 
 
-
 class Question(models.Model):
 
     level_choices = [(i,i) for i in range(1,11)]
 
-    prompt = models.TextField
-    function_name = models.CharField
+    prompt = models.TextField()
+    function_name = models.CharField(max_length=300)
     hint = models.TextField(blank=True)
     test = models.TextField(blank=True)
     solution = models.TextField(blank=True)
@@ -25,25 +24,24 @@ class Question(models.Model):
     modified = models.DateTimeField(auto_now=True)
     tags = []
 
-class Tag(models.Model):
-    tag = models.CharField
-
-class TestData(models.Model):
-    params = models.CharField
-    result = models.CharField()
-    error = models.CharField(blank=True)
-    fail_msg = models.TextField(blank=True)
-    success_msg = models.TextField(blank=True)
-
-
-
-
 class QuestionForm(ModelForm):
     class Meta:
         model = Question
     exclude = ["modified"]
 
 
+
+
+
+class Tag(models.Model):
+    tag = models.CharField(max_length=300)
+
+class TestData(models.Model):
+    params = models.CharField(max_length=500)
+    result = models.TextField()
+    error = models.CharField(max_length=500, blank=True)
+    fail_msg = models.TextField(blank=True)
+    success_msg = models.TextField(blank=True)
 
 class Response():
 

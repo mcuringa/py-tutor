@@ -1,16 +1,20 @@
 from django.conf.urls import patterns, include, url
 
-from django.contrib import admin
-admin.autodiscover()
-
-import tutor
+# from tutor import urls as tutor_urls
 
 
 urlpatterns = patterns('',
-    # Examples:
-    # url(r'^$', 'pytutor.views.home', name='home'),
-    # url(r'^blog/', include('blog.urls')),
+    #BASE URL MAPPINGS
+    url(r'^$', 'pytutor.views.home'),
 
-    url(r'^admin/', include(admin.site.urls)),
-    url('^tutor/', include(tutor.urls)),
+    # TUTOR URL MAPPINGS
+    # --------------------------------- STUDYING
+    url(r'^tutor$', 'tutor.views.study'),
+
+    # --------------------------------- EDITING
+    url(r'^tutor/list', 'tutor.views.list'),
+    url(r'^tutor/new', 'tutor.views.new_question'),
+    url(r'^tutor/(?P<pk>[0-9]?)/edit[/]$', 'tutor.views.new_question'),
+    url(r'^tutor/save', 'tutor.views.save_question'),
+
 )
