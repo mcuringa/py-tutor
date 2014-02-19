@@ -29,9 +29,19 @@ class QuestionForm(ModelForm):
         model = Question
     exclude = ["modified"]
 
+class Response(models.Model):
 
-
-
+    program = models.TextField(blank=True)
+    question = models.ForeignKey(Question)
+    modified = models.DateTimeField(auto_now=True)
+    
+    
+    def check(self, response):
+        f = eval(response)
+        result = f(self.params)
+        if result == self.result:
+            return (True, Question.success)
+        return (False, Question.fail)
 
 class Tag(models.Model):
     tag = models.CharField(max_length=300)
@@ -42,15 +52,6 @@ class TestData(models.Model):
     error = models.CharField(max_length=500, blank=True)
     fail_msg = models.TextField(blank=True)
     success_msg = models.TextField(blank=True)
-
-class Response():
-
-    def check(self, response):
-        f = eval(response)
-        result = f(self.params)
-        if result == self.result:
-            return (True, Question.success)
-        return (False, Question.fail)
 
 
 
