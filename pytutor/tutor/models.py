@@ -35,7 +35,7 @@ class Response(models.Model):
     question = models.ForeignKey(Question)
     modified = models.DateTimeField(auto_now=True)
     
-    
+    #check needs editing
     def check(self, response):
         f = eval(response)
         result = f(self.params)
