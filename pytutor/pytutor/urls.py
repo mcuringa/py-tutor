@@ -17,4 +17,10 @@ urlpatterns = patterns('',
     url(r'^tutor/(?P<pk>[0-9]?)/edit[/]$', 'tutor.views.new_question'),
     url(r'^tutor/save', 'tutor.views.save_question'),
 
+    # --------------------------------- USERS
+    url(r'^login$', 'tutor.user_views.user_login'),
+    url(r'^logout$', 'tutor.user_views.user_logout'),
+    url(r'^login-sorry$', 'tutor.user_views.login_error'),
+    url(r'^register$', 'tutor.user_views.register'),
+
 )

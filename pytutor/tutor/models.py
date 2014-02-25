@@ -34,8 +34,8 @@ class Question(models.Model):
     comment = models.CharField(max_length=500)
     modified = models.DateTimeField(auto_now=True)
     created = models.DateTimeField()
-    creator = models.ForeignKey(User)
-    modifier = models.ForeignKey(User)
+    creator = models.ForeignKey(User, related_name="creator")
+    modifier = models.ForeignKey(User, related_name="modifer")
     
 
 class QuestionForm(ModelForm):

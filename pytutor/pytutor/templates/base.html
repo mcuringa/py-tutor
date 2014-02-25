@@ -9,6 +9,14 @@
 <body>
     <header>
         <h1><a href="/" title="see the list of apps">PyTutor</a></h1>
+        <nav id="user-nav">
+        {% if user.is_authenticated %}
+            {{ user.username }} (<a href="/logout" title="click to logout">logout</a>)
+        {% else %}
+            <a href="/login">login</a> |
+            <a href="/register">sign up</a>
+        {% endif %}
+        </nav>
         <nav id="main-nav">        
             <a href="/tutor">study</a> |
             <a href="/tutor/new">new question</a> |

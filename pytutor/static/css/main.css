@@ -6,6 +6,9 @@ body
     margin: 0;
     padding: 0;
     color: black;
+    background: white;
+    padding-top: 2em;
+
 }
 
 a
@@ -13,28 +16,108 @@ a
     text-decoration: none;
 }
 
+/****************************************** HEADER STUFF */
+
+header
+{
+    border-bottom: thin solid black;
+    position: fixed;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    padding-left: 2em;
+    top: 0;
+    height: 2em;
+    background-color: rgba(255,255,255,.9);
+}
+
+header h1
+{
+    float: left;
+    font-size: 140%;
+    line-height: 1.15em;
+    margin: 0;
+    padding: 0 1em 0.25em 0;
+}
+#user-nav
+{
+    position: absolute;
+    right: 2em;
+    top: .5em;
+
+}
+
+
+
+
 section
 {
     clear: both;
+    max-width: 990px;
+    padding-left: 2em;
+
 }
 
 .center
 {
-    width: 680px;
     margin: 0 auto;
     text-align: center;
 }
+
 .clear
 {
     clear: both;
 }
 
 
-
-/* HEADER */
-header
+h1 a
 {
-    border-bottom: thin solid black;
+    color: black;
+    text-decoration: none;
+}
+
+/* add some styles to our form */
+label
+{
+    display: block;
+    text-align: right;
+    float:left;
+    width: 130px;
+    padding-right: .5em;
+}
+
+table
+{
+  border-collapse:collapse;
+  min-width: 800px;
+  line-height: 1.5em;
+  margin-top: 1em;
+}
+
+th
+{
+  background: black;
+  color: white;
+  font-weight: bold;
+}
+
+dt
+{
+    float:left;
+    display: inline;
+    font-weight: bold;
+    margin-right: .5em;
+}
+
+#messages
+{
+    margin: 1em 2em;
+    font-size: 90%;
+    background-color: lightyellow;
+    border: thin solid black;
+    text-align: left;
+    padding-top: 1em;
+    padding-bottom: 1em;
 }
 
 
@@ -47,6 +130,12 @@ footer
     text-align: center;
     color: white;
     margin-top: 1em;
+    /*position: absolute;*/
+    bottom: 0;
+    right: 0;
+    left: 0;
+    height: 4em;
+    margin-top: 4em;
 }
 footer a
 {
@@ -58,3 +147,14 @@ footer img
     display: block;
     margin: 0 auto;
 }
+
+
+
+
+
+
+
+
+
+
+
