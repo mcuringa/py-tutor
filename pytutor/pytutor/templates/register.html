@@ -3,6 +3,7 @@
 {% block body %}
 <section id="register">
     <form action="/register" method="post">
+        {% csrf_token %}
         {{ form.as_p }}
         <input type="submit" name="join" value="join" />
     </form>

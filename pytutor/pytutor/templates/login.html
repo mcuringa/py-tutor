@@ -4,6 +4,7 @@
 <section id="login-form">
 
 <form action="/login" method="post">
+{% csrf_token %}
 <p>
     <label>username</label>
     <input type="text" name="username" />
