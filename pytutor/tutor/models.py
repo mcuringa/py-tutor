@@ -26,10 +26,8 @@ class Question(models.Model):
 
     prompt = models.TextField()
     function_name = models.CharField(max_length=300)
-    hint = models.TextField(blank=True)
-    solution = models.TextField(blank=True)
     level = models.IntegerField(choices=level_choices)
-    tags = []
+    tags = models.CharField(max_length=500)
     version = models.IntegerField()
     comment = models.CharField(max_length=500)
     modified = models.DateTimeField(auto_now=True)
@@ -41,7 +39,7 @@ class Question(models.Model):
 class QuestionForm(ModelForm):
     class Meta:
         model = Question
-    exclude = ["modified", "created", "creator", "modifier", "version"]
+        fields = ["prompt", "function_name", "level", "tags", "comment"]
 
 
 class ArchiveQuestion(Question):
@@ -99,7 +97,7 @@ class Response(models.Model):
 class ResponseForm(ModelForm):
     class Meta:
         model = Response
-    exclude = ["submitted", "user", "is_correct", "attempt"]
+        fields = ["code"]
 
 
 class QuestionFlag(models.Model):
