@@ -19,7 +19,7 @@ def list(request):
     return render(request, 'tutor/list.html', context)
 
 @login_required
-def new_question(request, pk=0):
+def question_form(request, pk=0):
     
     if pk == 0:
         form = QuestionForm()
@@ -38,8 +38,15 @@ def save_question(request):
     if pk > 0:
         q = Question.objects.get(pk=pk)
         form = QuestionForm(request.POST, instance=q)
+        archive = ArchiveQuestionForm(request.POST, instance=q)
+        archive.save()
+        form.instance.version += 1
     else:
         form = QuestionForm(request.POST)
+        form.instance.version = len(ArchiveQuestion.objects.all()) + 1
+        form.instance.creator = request.user
+
+    form.instance.modifier = request.user
 
     question = form.save()
     return HttpResponseRedirect("/tutor/list")
