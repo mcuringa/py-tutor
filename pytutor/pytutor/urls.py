@@ -13,8 +13,8 @@ urlpatterns = patterns('',
 
     # --------------------------------- EDITING
     url(r'^tutor/list', 'tutor.views.list'),
-    url(r'^tutor/new', 'tutor.views.new_question'),
-    url(r'^tutor/(?P<pk>[0-9]?)/edit[/]$', 'tutor.views.new_question'),
+    url(r'^tutor/new', 'tutor.views.question_form'),
+    url(r'^tutor/(?P<pk>[0-9]?)/edit[/]$', 'tutor.views.question_form'),
     url(r'^tutor/save', 'tutor.views.save_question'),
 
     # --------------------------------- USERS
