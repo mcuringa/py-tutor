@@ -24,14 +24,15 @@ class Question(models.Model):
 
     level_choices = [(i,i) for i in range(1,11)]
 
-    prompt = models.TextField()
     function_name = models.CharField(max_length=300)
+    prompt = models.TextField()
+    solution = models.TextField()
     level = models.IntegerField(choices=level_choices)
     tags = models.CharField(max_length=500)
-    version = models.IntegerField()
+    version = models.IntegerField(default=1)
     comment = models.CharField(max_length=500)
     modified = models.DateTimeField(auto_now=True)
-    created = models.DateTimeField()
+    created = models.DateTimeField(auto_now_add=True)
     creator = models.ForeignKey(User, related_name="creator")
     modifier = models.ForeignKey(User, related_name="modifer")
     
@@ -39,7 +40,7 @@ class Question(models.Model):
 class QuestionForm(ModelForm):
     class Meta:
         model = Question
-        fields = ["prompt", "function_name", "level", "tags", "comment"]
+        fields = ["prompt", "solution", "function_name", "level", "tags", "comment"]
 
 
 class ArchiveQuestion(Question):
@@ -52,7 +53,12 @@ class ArchiveQuestion(Question):
     Question, because, generally, comments will endure
     across vesions of a Question."""
 
-    archived = models.DateTimeField(auto_now=True)
+    archived = models.DateTimeField(auto_now_add=True)
+
+class ArchiveQuestionForm(ModelForm):
+    class Meta:
+        model = ArchiveQuestion
+        fields = []
     
 
 
@@ -89,7 +95,7 @@ class Response(models.Model):
     code = models.TextField(blank=True)
     is_correct = models.BooleanField(default=False)
     attempt = models.IntegerField()
-    submitted = models.DateTimeField(auto_now=True)
+    submitted = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User)
     question = models.ForeignKey(ArchiveQuestion)
 
@@ -103,14 +109,14 @@ class ResponseForm(ModelForm):
 class QuestionFlag(models.Model):
     """    """
     flags = [ (1, "Unclear"),
-          (2, "Too Hard"),
-          (3, "Too Easy"),
+          (2, "Too Hard for Level"),
+          (3, "Too Easy for Level"),
           (4, "Innapropriate")]
 
     flag = models.IntegerField(choices=flags)
     question = models.ForeignKey(ArchiveQuestion)
     creator = models.ForeignKey(User)
-    created = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
 
 
 
