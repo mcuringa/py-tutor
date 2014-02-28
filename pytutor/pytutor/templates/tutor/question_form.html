@@ -6,6 +6,15 @@
 
 <section id="question-form">
     <h1>Question Editor</h1>
+    <dl id="question-info">
+        <dt>Created by:</dt>
+          <dd>{{question.instance.creator}} on {{question.instance.created}}</dd>
+        <dt>Last modified by:</dt>
+          <dd>{{question.instance.modifier}} on {{question.instance.modified}}</dd>
+        <dt>Version:</dt>
+          <dd>{{question.instance.version}}</dd>
+    </dl>
+    <h3>
     <form action="/tutor/save" method="post">
         {% csrf_token %}
         <input type="hidden" name="pk" value="{{pk}}">
