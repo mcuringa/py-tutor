@@ -12,7 +12,7 @@ from django.forms import ModelForm
 from django.contrib.auth.models import User
 
 
-class Question(models.Model):
+class AbstractQuestion(models.Model):
     """A Question is a coding challenge for the studier.
     It provides them with a prompt and the name of the
     function they must write to solve the problem. Questions
@@ -29,13 +29,21 @@ class Question(models.Model):
     solution = models.TextField()
     level = models.IntegerField(choices=level_choices)
     tags = models.CharField(max_length=500)
-    version = models.IntegerField(default=1)
+    version = models.IntegerField(default=0)
     comment = models.CharField(max_length=500)
     modified = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
     creator = models.ForeignKey(User, related_name="creator")
     modifier = models.ForeignKey(User, related_name="modifer")
-    
+
+    class Meta:
+        abstract = True
+
+
+
+class Question(AbstractQuestion):
+
+    pass
 
 class QuestionForm(ModelForm):
     class Meta:
@@ -43,7 +51,7 @@ class QuestionForm(ModelForm):
         fields = ["prompt", "solution", "function_name", "level", "tags", "comment"]
 
 
-class ArchiveQuestion(Question):
+class ArchiveQuestion(AbstractQuestion):
     """An ArchiveQuestion is created everytime a
     Question is updated. ArchiveQuestions can
     be reviewed and reverted to. For every Question
@@ -54,13 +62,6 @@ class ArchiveQuestion(Question):
     across vesions of a Question."""
 
     archived = models.DateTimeField(auto_now_add=True)
-
-class ArchiveQuestionForm(ModelForm):
-    class Meta:
-        model = ArchiveQuestion
-        fields = []
-    
-
 
 class Tag(models.Model):
     """Tags are the set of case-insensitive tags
