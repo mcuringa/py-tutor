@@ -23,4 +23,16 @@
     </form>
 </section>
 
+<aside id="question-history">
+    <h2>Revision History</h2>
+    <table>
+        <tr><th>version</th><th>date modified</th><th>modified by</th></tr>
+        {% for aq in history %}
+            <tr class="{% cycle 'odd' 'even'%}"><td>{{aq.version}}</td><td>{{aq.modified}}</td><td>{{aq.modifier}}</td></tr>
+        {% endfor %}
+    </table>
+
+
+</aside>
+
 {% endblock %}
