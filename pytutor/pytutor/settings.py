@@ -95,4 +95,10 @@ TEMPLATE_DIRS = (
 
 )
 
+# FIXTURE DIRS
+FIXTURE_DIRS = (
+    os.path.join(os.path.dirname(__file__), "fixtures"),
+)
+
+
 LOGIN_URL="/login"
