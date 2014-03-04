@@ -95,10 +95,15 @@ class Test(models.Model):
         function and the expected result. If all
         Question tests pass, the Response is considered correct.
     """
-    args = models.CharField(max_length=500)
-    result = models.TextField()
-    fail_msg = models.TextField(blank=True)
-    success_msg = models.TextField(blank=True)
+    args = models.CharField(max_length=500,  help_text="The arguments to pass to the function.")
+    result = models.TextField(help_text="Python code that will evaluate to the expected result of this unit test.")
+    fail_msg = models.TextField(blank=True,  help_text="A message for the user if their function fails this test.")
+    question = models.ForeignKey(Question)
+
+class TestForm(ModelForm):
+    class Meta:
+        model = Test
+        fields = ["args", "result", "fail_msg"]
 
 
 class Response(models.Model):
