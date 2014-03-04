@@ -33,8 +33,8 @@ class AbstractQuestion(models.Model):
     comment = models.CharField(max_length=500)
     modified = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
-    creator = models.ForeignKey(User, related_name="creator")
-    modifier = models.ForeignKey(User, related_name="modifer")
+    creator = models.ForeignKey(User, related_name="%(app_label)s_%(class)s_creator")
+    modifier = models.ForeignKey(User, related_name="%(app_label)s_%(class)s_modifer")
 
     class Meta:
         abstract = True
@@ -62,6 +62,21 @@ class ArchiveQuestion(AbstractQuestion):
     across vesions of a Question."""
 
     archived = models.DateTimeField(auto_now_add=True)
+    parent = models.ForeignKey(Question)
+
+    def archive(self, q):
+
+        self.function_name = q.function_name
+        self.prompt = q.prompt
+        self.solution = q.solution
+        self.level = q.level
+        self.tags = q.tags
+        self.version = q.version
+        self.comment = q.comment
+        self.created = q.created
+        self.creator = q.creator
+        self.parent = q
+
 
 class Tag(models.Model):
     """Tags are the set of case-insensitive tags
