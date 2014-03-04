@@ -4,7 +4,7 @@
 
 {% block body %}
 
-<section id="question-form">
+<section id="home">
     <form action="/tutor/save" method="post">
         {% csrf_token %}
         <input type="hidden" name="pk" value="{{pk}}">
