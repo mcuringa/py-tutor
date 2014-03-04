@@ -23,11 +23,13 @@ def question_form(request, pk=0):
     
     if pk == 0:
         form = QuestionForm()
+        history = []
     else:
         question = Question.objects.get(pk=pk)
         form = QuestionForm(instance=question)
+        history = ArchiveQuestion.objects.all().filter(parent_id=pk)
 
-    context = { "question": form, "pk": pk }
+    context = { "question": form, "pk": pk, "history": history }
 
     return render(request, 'tutor/question_form.html', context)
 
@@ -38,8 +40,10 @@ def save_question(request):
     if pk > 0:
         q = Question.objects.get(pk=pk)
         form = QuestionForm(request.POST, instance=q)
-        archive = ArchiveQuestionForm(request.POST, instance=q)
-        archive.save()
+        aq = ArchiveQuestion()
+        aq.archive(form.instance)
+        aq.modifier = request.user
+        aq.save()
         form.instance.version += 1
     else:
         form = QuestionForm(request.POST)
