@@ -99,7 +99,9 @@ th
   background: black;
   color: white;
   font-weight: bold;
+  text-align: left;
 }
+tr.odd { background-color: #efefef; }
 
 dt
 {
