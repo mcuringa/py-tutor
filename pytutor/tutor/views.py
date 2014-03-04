@@ -28,8 +28,14 @@ def question_form(request, pk=0):
         question = Question.objects.get(pk=pk)
         form = QuestionForm(instance=question)
         history = ArchiveQuestion.objects.all().filter(parent_id=pk)
+        tests = Test.objects.all().filter(question=question)
+        test_form = TestForm()
 
-    context = { "question": form, "pk": pk, "history": history }
+    context = { "question": form,
+                "pk": pk,
+                "history": history,
+                "test_form": test_form
+              }
 
     return render(request, 'tutor/question_form.html', context)
 
