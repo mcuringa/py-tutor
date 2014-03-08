@@ -50,19 +50,21 @@ def save_question(request):
     if pk > 0:
         q = Question.objects.get(pk=pk)
         form = QuestionForm(request.POST, instance=q)
-        aq = ArchiveQuestion()
-        aq.archive(form.instance)
-        aq.modifier = request.user
-        aq.save()
         form.instance.version += 1
     else:
         form = QuestionForm(request.POST)
-        form.instance.version = len(ArchiveQuestion.objects.all()) + 1
+        form.instance.version = 1
         form.instance.creator = request.user
 
     form.instance.modifier = request.user
-
     question = form.save()
+    archive(question)
+    
     return HttpResponseRedirect("/tutor/list")
 
 
+def archive(question):
+    aq = ArchiveQuestion()
+    aq.archive(question)
+    aq.modifier = question.modifier
+    aq.save()
