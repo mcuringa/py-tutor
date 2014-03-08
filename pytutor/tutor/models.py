@@ -48,7 +48,7 @@ class Question(AbstractQuestion):
 class QuestionForm(ModelForm):
     class Meta:
         model = Question
-        fields = ["prompt", "solution", "function_name", "level", "tags", "comment"]
+        fields = ["function_name", "prompt", "solution", "level", "tags", "comment"]
 
 
 class ArchiveQuestion(AbstractQuestion):
