@@ -12,8 +12,7 @@ def study(request):
 
     try:
     	question = random.choice(Question.objects.all())
-    	context = {"question": question}
-    	return render(request, 'tutor/study.html', context)
+    	return respond(request, question.pk)
     except: 
         return HttpResponseRedirect("/tutor/no_questions")
 
