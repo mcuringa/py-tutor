@@ -159,4 +159,32 @@ footer img
     margin: 0 auto;
 }
 
+/*----------------------- question form */
+
+#question-form
+{
+    float: left;
+    width: 600px;
+    border-right: thin solid black;
+
+}
+
+#unit-tests
+{
+    width: 300px;
+    float: left;
+    clear: none;
+}
+#unit-tests textarea
+{
+    height: 1.5em;
+}
+#unit-tests label
+{
+    display: block;
+    text-align: left;
+    float: none;
+}
+
+
 
