@@ -27,6 +27,8 @@ __pycache__*
 *.log
 *.sql
 *.sqlite
+*.sqlite3
+pytutor/db.sqlite3
 
 # OS generated files #
 ######################

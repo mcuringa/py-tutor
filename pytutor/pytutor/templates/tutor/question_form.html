@@ -4,13 +4,46 @@
 
 {% block body %}
 
-<section id="home">
+<section id="question-form">
+    <h1>Question Editor</h1>
+    <dl id="question-info">
+        <dt>Created by:</dt>
+          <dd>{{question.instance.creator}} on {{question.instance.created}}</dd>
+        <dt>Last modified by:</dt>
+          <dd>{{question.instance.modifier}} on {{question.instance.modified}}</dd>
+        <dt>Version:</dt>
+          <dd>{{question.instance.version}}</dd>
+    </dl>
+    <h3>
     <form action="/tutor/save" method="post">
         {% csrf_token %}
         <input type="hidden" name="pk" value="{{pk}}">
         {{ question.as_p }}
         <input type="submit" value="Submit">
     </form>
+
+    <aside id="unit-tests">
+        <h2>Unit Tests</h2>
+        <form action="/tutor/save" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="question_id" value="{{pk}}">
+            {{ test_form.as_p }}
+            <input type="button" value="add test">
+        </form>
+    </aside>
+
+</section>
+
+<section id="question-history">
+    <h2>Revision History</h2>
+    <table>
+        <tr><th>version</th><th>date modified</th><th>modified by</th></tr>
+        {% for aq in history %}
+            <tr class="{% cycle 'odd' 'even'%}"><td>{{aq.version}}</td><td>{{aq.modified}}</td><td>{{aq.modifier}}</td></tr>
+        {% endfor %}
+    </table>
+
+
 </section>
 
 {% endblock %}

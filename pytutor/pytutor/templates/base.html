@@ -4,17 +4,35 @@
     <title>{% block title %}PyTutor{% endblock %}</title>
     <meta charset="utf-8" />
     <link href="/static/css/main.css" type="text/css" rel="stylesheet">
+    <script src="/static/js/jquery.js"></script>
 </head>
 
 <body>
     <header>
         <h1><a href="/" title="see the list of apps">PyTutor</a></h1>
+        <nav id="user-nav">
+        {% if user.is_authenticated %}
+            {{ user.username }} (<a href="/logout" title="click to logout">logout</a>)
+        {% else %}
+            <a href="/login">login</a> |
+            <a href="/register">sign up</a>
+        {% endif %}
+        </nav>
         <nav id="main-nav">        
             <a href="/tutor">study</a> |
             <a href="/tutor/new">new question</a> |
             <a href="/tutor/list">list questions</a> |
         </nav>
     </header>
+{% if messages %}
+    <aside id="messages">
+        <ul>
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    </aside>
+ {% endif %}
 
     {% block body %}Every child template should put something here...{% endblock %}
 

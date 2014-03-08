@@ -14,8 +14,16 @@ urlpatterns = patterns('',
 
     # --------------------------------- EDITING
     url(r'^tutor/list', 'tutor.views.list'),
-    url(r'^tutor/new', 'tutor.views.new_question'),
-    url(r'^tutor/(?P<pk>[0-9]?)/edit[/]$', 'tutor.views.new_question'),
+    url(r'^tutor/new', 'tutor.views.question_form'),
+    url(r'^tutor/(?P<pk>[0-9]?)/edit[/]$', 'tutor.views.question_form'),
     url(r'^tutor/save', 'tutor.views.save_question'),
+    url(r'^tutor/test/save', 'tutor.views.add_test'),
+    url(r'^tutor/test/(?P<pk>[0-9]?)/del', 'tutor.views.del_test'),
+
+    # --------------------------------- USERS
+    url(r'^login$', 'tutor.user_views.user_login'),
+    url(r'^logout$', 'tutor.user_views.user_logout'),
+    url(r'^login-sorry$', 'tutor.user_views.login_error'),
+    url(r'^register$', 'tutor.user_views.register'),
 
 )
