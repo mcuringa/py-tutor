@@ -5,30 +5,49 @@ from django.http import HttpResponse, HttpResponseRedirect
 
 from tutor.models import *
 
-
+@login_required
 def study(request):
-    """Choose the next question for the user to study."""
-    
-    question = random.choice(Question.objects.all())
-    context = {"question": question}
-    return render(request, 'tutor/study.html', context)
+    """Randomly choose the next question for the user to study.
+       If no questions exist, prompt the user to create one."""
 
+    try:
+    	question = random.choice(Question.objects.all())
+    	context = {"question": question}
+    	return render(request, 'tutor/study.html', context)
+    except: 
+        return HttpResponseRedirect("/tutor/no_questions")
+
+@login_required
+def no_questions(request):
+	return render(request, 'tutor/no_questions.html')
+
+@login_required
 def respond(request, pk):
     """Allow user to write a response to a question."""
     
-    pk = int(request.GET["pk"])
-    question = Question.objects.get(pk=pk)
-    context = {"question": question}
+    #responses are linked to ArchiveQuestions, but we're given a Question key
+    question = most_recent_version(Question.objects.get(pk=pk))
+    
+    #if the user has already attempted the question, use existing response object
+    try:
+    	response = Response.objects.get(user=request.user, question=question)
+    #if not, create one
+    except: 
+    	response = Response(attempt=1, user=request.user, question=question)
+    	response.save() #is this necessary here?
+    response_form = ResponseForm()
+    context = {"question": question, "response" : response, "response_form" : response_form}
     
     return render(request, 'tutor/respond.html', context)
 
+@login_required
 def submit_response(request, qpk, rpk):
 	"""Submit user's response for evaluation."""
 	
 	question = Question.objects.get(pk=qpk)
 	response = Response.objects.get(pk=rpk)
 	context = {"question" : question, "response" : response}
-	#needs form stuff too
+	#needs form stuff too?
 	return render(request, 'tutor/feedback.html', context)
 
 def list(request):
@@ -89,3 +108,12 @@ def archive(question):
     aq.archive(question)
     aq.modifier = question.modifier
     aq.save()
+    
+def most_recent_version(question):
+	all = ArchiveQuestion.objects.all().filter(parent_id=question.pk)
+	most_recent = all[0]
+	for q in all:
+		if most_recent.modified < q.modified:
+			most_recent = q
+	return most_recent
+	

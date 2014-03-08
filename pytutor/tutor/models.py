@@ -99,6 +99,13 @@ class Test(models.Model):
     result = models.TextField(help_text="Python code that will evaluate to the expected result of this unit test.")
     fail_msg = models.TextField(blank=True,  help_text="A message for the user if their function fails this test.")
     question = models.ForeignKey(Question)
+    
+    #Evaluation function-- self.args probably needs to be deconstructed?
+    def evaluate(user_function):
+    	if (user_function(self.args) == self.result):
+    		return True
+    	else:
+    		return False
 
 class TestForm(ModelForm):
     class Meta:
@@ -113,7 +120,7 @@ class Response(models.Model):
     If all tests are correctly passed, the Response
     is marked correct"""
 
-    code = models.TextField(blank=True)
+    code = models.TextField(blank=True, help_text="Your solution to this question.")
     is_correct = models.BooleanField(default=False)
     attempt = models.IntegerField()
     submitted = models.DateTimeField(auto_now_add=True)

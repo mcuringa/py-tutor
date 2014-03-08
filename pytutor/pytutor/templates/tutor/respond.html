@@ -5,10 +5,14 @@
 {% block body %}
 
 <section id="respond">
-	<h1>Question {{question.id}}</h1>
+	<h1>Question {{question.parent.id}}</h1>
 	<p>{{question.prompt}}</p>
-    <form action="tutor/submit_response" method="post">
-        <!-- response -->
+	<p>Attempt #{{response.attempt}}</p>
+    <form action="/tutor/submit_response" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="qpk" value="{{pk}}">
+        <input type="hidden" name="rpk" value="{{response.pk}}">
+        {{ response_form.as_p }}
         <input type="submit" value="Submit">
     </form>
 </section>
