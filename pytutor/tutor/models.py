@@ -43,7 +43,8 @@ class AbstractQuestion(models.Model):
 
 class Question(AbstractQuestion):
 
-    pass
+    class Meta:
+        unique_together = (('id', 'version'),)
 
 class QuestionForm(ModelForm):
     class Meta:
@@ -95,10 +96,14 @@ class Test(models.Model):
         function and the expected result. If all
         Question tests pass, the Response is considered correct.
     """
-    args = models.CharField(max_length=500,  help_text="The arguments to pass to the function.")
+    args = models.CharField(max_length=500, help_text="The arguments to pass to the function.")
     result = models.TextField(help_text="Python code that will evaluate to the expected result of this unit test.")
-    fail_msg = models.TextField(blank=True,  help_text="A message for the user if their function fails this test.")
+    fail_msg = models.TextField(blank=True, help_text="A message for the user if their function fails this test.")
     question = models.ForeignKey(Question)
+
+    def to_code(self):
+        str = "assert {}({}) == {}".format(self.question.function_name, self.args, self.result)
+        return str
 
 class TestForm(ModelForm):
     class Meta:
