@@ -1,0 +1,11 @@
+Working models: Question, ArchiveQuestion
+Using built-in user model (no need to add)
+Need to work on Response, Test model
+@login_required -> require a login for this function
+
+QUESTIONS---
+>>In ArchiveQuestion-- 		if user's response is tested by the Test class, where each question can have multiple tests
+>>							that (theoretically) all have different correct solutions, do we need the solution field in 
+>>							the ArchiveQuestion class?
+>>In views--				when updating attempt or creating a new response if none exists, is the response.save() 
+>>							method needed? Same goes for updating the response in submit_response..

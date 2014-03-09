@@ -26,6 +26,7 @@
 <section id="unit-tests">
     <h2>Unit Tests</h2>
     <form id="test-form" action="/tutor/test/save" method="post">
+
         {% csrf_token %}
         <input type="hidden" name="question_id" value="{{pk}}">
         {{ test_form.as_p }}

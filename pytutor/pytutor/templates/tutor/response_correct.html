@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}PyTutor Home{% endblock %}
+
+{% block body %}
+
+<section id="respond">
+	<h1>Question {{question.parent.id}}</h1>
+	<p>{{question.prompt}}</p>
+	<!--<p>Attempt #{{previous_attempt}}</p> Can't get this to properly display somehow-->
+    <p>{{user.username}} submitted:</p>
+    <p>{{response.code}}</p>
+    <p>Your submission was correct!</p>
+</section>
+
+{% endblock %}

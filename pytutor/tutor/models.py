@@ -100,6 +100,23 @@ class Test(models.Model):
     result = models.TextField(help_text="Python code that will evaluate to the expected result of this unit test.")
     fail_msg = models.TextField(blank=True, help_text="A message for the user if their function fails this test.")
     question = models.ForeignKey(Question)
+    
+    #Evaluation function
+    #Note that this wont work, since right now the user's 'functions' are still just strings...
+    def evaluate(self, user_function):
+    	"""
+    	arguments = []
+    	for word in self.args:
+    		arguments.extend(word)
+    	if (user_function(*arguments) == self.result):
+    		return True
+    	else:
+    		return False"""
+    	#for now, this will just compare the string the user entered to whatever the question author entered as their solution
+    	if user_function == self.question.solution:
+    		return True
+    	else:
+    		return False
 
     def to_code(self):
         str = "assert {}({}) == {}".format(self.question.function_name, self.args, self.result)
@@ -118,7 +135,7 @@ class Response(models.Model):
     If all tests are correctly passed, the Response
     is marked correct"""
 
-    code = models.TextField(blank=True)
+    code = models.TextField(blank=True, help_text="Your solution to this question.")
     is_correct = models.BooleanField(default=False)
     attempt = models.IntegerField()
     submitted = models.DateTimeField(auto_now_add=True)

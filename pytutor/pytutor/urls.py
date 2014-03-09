@@ -10,6 +10,9 @@ urlpatterns = patterns('',
     # TUTOR URL MAPPINGS
     # --------------------------------- STUDYING
     url(r'^tutor$', 'tutor.views.study'),
+    url(r'^tutor/no_questions$', 'tutor.views.no_questions'),
+    url(r'^tutor/(?P<pk>[0-9]?)/respond[/]$', 'tutor.views.respond'),
+    url(r'^tutor/response/submit', 'tutor.views.submit_response'),
 
     # --------------------------------- EDITING
     url(r'^tutor/list', 'tutor.views.list'),
