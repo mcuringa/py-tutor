@@ -25,12 +25,17 @@
 
 <section id="unit-tests">
     <h2>Unit Tests</h2>
-    <form action="/tutor/save_test" method="post">
+    <form id="test-form" action="/tutor/test/save" method="post">
         {% csrf_token %}
         <input type="hidden" name="question_id" value="{{pk}}">
         {{ test_form.as_p }}
         <input type="submit" value="add test">
     </form>
+    <ul>
+    {% for test in tests %}
+        <li>{{test.to_code}}</li>
+    {% endfor %}
+    </ul>
 </section>
 
 <section id="question-history">
