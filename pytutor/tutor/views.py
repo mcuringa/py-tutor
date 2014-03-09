@@ -1,6 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
+from django.core import serializers
+
 
 from tutor.models import *
 
@@ -62,9 +64,24 @@ def save_question(request):
     
     return HttpResponseRedirect("/tutor/list")
 
-
 def archive(question):
     aq = ArchiveQuestion()
     aq.archive(question)
     aq.modifier = question.modifier
     aq.save()
+
+@login_required
+def add_test(request):
+    questionId = int(request.POST["question_id"])
+    q = Question.objects.get(pk=questionId)
+    form = TestForm(request.POST)
+    form.instance.question = q
+    test = form.save()
+    # json = serializers.serialize("json", [test])
+    # # return a sustring because djano only works with
+    # # iterables, but we just want a single json object
+    # data = json[1:-1]
+
+    return HttpResponse(test.to_code(), mimetype='text/plain')
+
+
