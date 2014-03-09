@@ -40,14 +40,25 @@ def respond(request, pk):
     return render(request, 'tutor/respond.html', context)
 
 @login_required
-def submit_response(request, qpk, rpk):
+def submit_response(request):
 	"""Submit user's response for evaluation."""
+	qpk = int(request.POST["qpk"])
+	rpk = int(request.POST["rpk"])
+	question = Question.objects.get(pk=qpk);
+	response = Response.objects.get(pk=rpk);
 	
-	question = Question.objects.get(pk=qpk)
-	response = Response.objects.get(pk=rpk)
-	context = {"question" : question, "response" : response}
-	#needs form stuff too?
-	return render(request, 'tutor/feedback.html', context)
+	response.attempt += 1
+	user_code = request.POST["code"]
+	response.code = user_code
+	response.save() #again, is this necessary?
+	a = response.attempt - 1
+	context = {"question" : question, "response" : response, "previous_attempt" : a}
+    #evaluate user's code
+	for test in Test.objects.all().filter(question=qpk):
+		if test.evaluate(user_code) != True:
+			return render(request, 'tutor/response_incorrect.html', context)
+	#so if there are no tests, the response defaults to being marked correct.
+	return render(request, 'tutor/response_correct.html', context)
 
 def list(request):
     """List the questions in the database"""
@@ -101,6 +112,13 @@ def save_question(request):
     
     return HttpResponseRedirect("/tutor/list")
 
+@login_required
+def add_test(request):
+	"""Save a test to the database."""
+	test = Test(args=request.POST["args"], result=request.POST["result"], fail_msg=request.POST["fail_msg"], question=Question.objects.get(pk=int(request.POST["question_id"])))
+	test.save()
+	
+	return HttpResponseRedirect("/tutor/list")
 
 def archive(question):
     aq = ArchiveQuestion()

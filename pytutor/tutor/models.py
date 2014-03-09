@@ -100,9 +100,19 @@ class Test(models.Model):
     fail_msg = models.TextField(blank=True,  help_text="A message for the user if their function fails this test.")
     question = models.ForeignKey(Question)
     
-    #Evaluation function-- self.args probably needs to be deconstructed?
-    def evaluate(user_function):
-    	if (user_function(self.args) == self.result):
+    #Evaluation function
+    #Note that this wont work, since right now the user's 'functions' are still just strings...
+    def evaluate(self, user_function):
+    	"""
+    	arguments = []
+    	for word in self.args:
+    		arguments.extend(word)
+    	if (user_function(*arguments) == self.result):
+    		return True
+    	else:
+    		return False"""
+    	#for now, this will just compare the string the user entered to whatever the question author entered as their solution
+    	if user_function == self.question.solution:
     		return True
     	else:
     		return False
