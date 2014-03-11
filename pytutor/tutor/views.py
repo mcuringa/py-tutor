@@ -13,14 +13,14 @@ def study(request):
        If no questions exist, prompt the user to create one."""
 
     try:
-    	question = random.choice(Question.objects.all())
-    	return respond(request, question.pk)
+        question = random.choice(Question.objects.all())
+        return respond(request, question.pk)
     except: 
         return HttpResponseRedirect("/tutor/no_questions")
 
 @login_required
 def no_questions(request):
-	return render(request, 'tutor/no_questions.html')
+    return render(request, 'tutor/no_questions.html')
 
 @login_required
 def respond(request, pk):
@@ -31,11 +31,11 @@ def respond(request, pk):
     
     #if the user has already attempted the question, use existing response object
     try:
-    	response = Response.objects.get(user=request.user, question=question)
+        response = Response.objects.get(user=request.user, question=question)
     #if not, create one
     except: 
-    	response = Response(attempt=1, user=request.user, question=question)
-    	response.save() #is this necessary here?
+        response = Response(attempt=1, user=request.user, question=question)
+        response.save() #is this necessary here?
     response_form = ResponseForm()
     context = {"question": question, "response" : response, "response_form" : response_form}
     
@@ -43,24 +43,24 @@ def respond(request, pk):
 
 @login_required
 def submit_response(request):
-	"""Submit user's response for evaluation."""
-	qpk = int(request.POST["qpk"])
-	rpk = int(request.POST["rpk"])
-	question = Question.objects.get(pk=qpk);
-	response = Response.objects.get(pk=rpk);
-	
-	response.attempt += 1
-	user_code = request.POST["code"]
-	response.code = user_code
-	response.save() #again, is this necessary?
-	a = response.attempt - 1
-	context = {"question" : question, "response" : response, "previous_attempt" : a}
+    """Submit user's response for evaluation."""
+    qpk = int(request.POST["qpk"])
+    rpk = int(request.POST["rpk"])
+    question = Question.objects.get(pk=qpk);
+    response = Response.objects.get(pk=rpk);
+    
+    response.attempt += 1
+    user_code = request.POST["code"]
+    response.code = user_code
+    response.save() #again, is this necessary?
+    a = response.attempt - 1
+    context = {"question" : question, "response" : response, "previous_attempt" : a}
     #evaluate user's code
-	for test in Test.objects.all().filter(question=qpk):
-		if test.evaluate(user_code) != True:
-			return render(request, 'tutor/response_incorrect.html', context)
-	#so if there are no tests, the response defaults to being marked correct.
-	return render(request, 'tutor/response_correct.html', context)
+    for test in Test.objects.all().filter(question=qpk):
+        if test.evaluate(user_code) != True:
+            return render(request, 'tutor/response_incorrect.html', context)
+    #so if there are no tests, the response defaults to being marked correct.
+    return render(request, 'tutor/response_correct.html', context)
 
 def list(request):
     """List the questions in the database"""
@@ -136,9 +136,9 @@ def add_test(request):
     return HttpResponse(test.to_code(), mimetype='text/plain')
 
 def most_recent_version(question):
-	all = ArchiveQuestion.objects.all().filter(parent_id=question.pk)
-	most_recent = all[0]
-	for q in all:
-		if most_recent.modified < q.modified:
-			most_recent = q
-	return most_recent
+    all = ArchiveQuestion.objects.all().filter(parent_id=question.pk)
+    most_recent = all[0]
+    for q in all:
+        if most_recent.modified < q.modified:
+            most_recent = q
+    return most_recent

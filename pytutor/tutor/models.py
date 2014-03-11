@@ -104,22 +104,22 @@ class Test(models.Model):
     #Evaluation function
     #Note that this wont work, since right now the user's 'functions' are still just strings...
     def evaluate(self, user_function):
-    	"""
-    	arguments = []
-    	for word in self.args:
-    		arguments.extend(word)
-    	if (user_function(*arguments) == self.result):
-    		return True
-    	else:
-    		return False"""
-    	#for now, this will just compare the string the user entered to whatever the question author entered as their solution
-    	if user_function == self.question.solution:
-    		return True
-    	else:
-    		return False
+        """
+        arguments = []
+        for word in self.args:
+            arguments.extend(word)
+        if (user_function(*arguments) == self.result):
+            return True
+        else:
+            return False"""
+        #for now, this will just compare the string the user entered to whatever the question author entered as their solution
+        if user_function == self.question.solution:
+            return True
+        else:
+            return False
 
     def to_code(self):
-        str = "assert {}({}) == {}".format(self.question.function_name, self.args, self.result)
+        str = "assert {}({}) == {}, {}".format(self.question.function_name, self.args, self.result, self.fail_msg)
         return str
 
 class TestForm(ModelForm):
