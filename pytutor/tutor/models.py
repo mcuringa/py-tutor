@@ -78,7 +78,6 @@ class ArchiveQuestion(AbstractQuestion):
         self.creator = q.creator
         self.parent = q
 
-
 class Tag(models.Model):
     """Tags are the set of case-insensitive tags
     that are applied to Questions in the tutoring
