@@ -2,11 +2,8 @@
 
 $( document ).ready(function() {
     
-    console.log($( "#test-form" ));
-    
     $( "#test-form" ).submit(function( event ) 
     {
-        console.log('submitting unit test');
 
         // Stop form from submitting normally
         event.preventDefault();
