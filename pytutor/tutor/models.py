@@ -112,10 +112,15 @@ class Test(models.Model):
         else:
             return False"""
         #for now, this will just compare the string the user entered to whatever the question author entered as their solution
-        if user_function == self.question.solution:
-            return True
-        else:
-            return False
+        # convert args to python
+        
+        function_name = self.question.function_name
+        function = compile(user_function, "<string>", "exec")
+        context = {function_name: function }
+        exec(self.to_code(), context)
+		
+        
+        
 
     def to_code(self):
         str = "assert {}({}) == {}, {}".format(self.question.function_name, self.args, self.result, self.fail_msg)
