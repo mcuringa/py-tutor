@@ -128,6 +128,9 @@ def add_test(request):
     form = TestForm(request.POST)
     form.instance.question = q
     test = form.save()
+    user_function = test.question.solution
+    print(user_function)
+    test.evaluate(user_function)
     # json = serializers.serialize("json", [test])
     # # return a sustring because djano only works with
     # # iterables, but we just want a single json object
