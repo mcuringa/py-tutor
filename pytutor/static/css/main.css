@@ -1,13 +1,14 @@
 
 body 
 { 
-    font-family: Futura, "Ubuntu", "Gill Sans", "Century Gothic", "Trebuchet MS", sans-serif;   
+    font-family: Ubuntu, Futura, "Gill Sans", "Century Gothic", "Trebuchet MS", sans-serif;   
     background-color: white;
     margin: 0;
     padding: 0;
     color: black;
     background: white;
     padding-top: 2em;
+    font-size: 14px;
 
 }
 
@@ -86,6 +87,14 @@ label
     padding-right: .5em;
 }
 
+span.helptext
+{
+    display: block;
+    font-size: 90%;
+    color: gray;
+    padding-left: 2em;
+}
+
 table
 {
   border-collapse:collapse;
@@ -99,7 +108,9 @@ th
   background: black;
   color: white;
   font-weight: bold;
+  text-align: left;
 }
+tr.odd { background-color: #efefef; }
 
 dt
 {
@@ -148,13 +159,32 @@ footer img
     margin: 0 auto;
 }
 
+/*----------------------- question form */
 
+#question-form
+{
+    float: left;
+    width: 600px;
+    border-right: thin solid black;
 
+}
 
-
-
-
-
+#unit-tests
+{
+    width: 300px;
+    float: left;
+    clear: none;
+}
+#unit-tests textarea
+{
+    height: 1.5em;
+}
+#unit-tests label
+{
+    display: block;
+    text-align: left;
+    float: none;
+}
 
 
 

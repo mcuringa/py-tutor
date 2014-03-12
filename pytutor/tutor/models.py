@@ -12,7 +12,7 @@ from django.forms import ModelForm
 from django.contrib.auth.models import User
 
 
-class Question(models.Model):
+class AbstractQuestion(models.Model):
     """A Question is a coding challenge for the studier.
     It provides them with a prompt and the name of the
     function they must write to solve the problem. Questions
@@ -24,27 +24,35 @@ class Question(models.Model):
 
     level_choices = [(i,i) for i in range(1,11)]
 
-    prompt = models.TextField()
     function_name = models.CharField(max_length=300)
-    hint = models.TextField(blank=True)
-    solution = models.TextField(blank=True)
+    prompt = models.TextField()
+    solution = models.TextField()
     level = models.IntegerField(choices=level_choices)
-    tags = []
-    version = models.IntegerField()
+    tags = models.CharField(max_length=500)
+    version = models.IntegerField(default=0)
     comment = models.CharField(max_length=500)
     modified = models.DateTimeField(auto_now=True)
-    created = models.DateTimeField()
-    creator = models.ForeignKey(User, related_name="creator")
-    modifier = models.ForeignKey(User, related_name="modifer")
-    
+    created = models.DateTimeField(auto_now_add=True)
+    creator = models.ForeignKey(User, related_name="%(app_label)s_%(class)s_creator")
+    modifier = models.ForeignKey(User, related_name="%(app_label)s_%(class)s_modifer")
+
+    class Meta:
+        abstract = True
+
+
+
+class Question(AbstractQuestion):
+
+    class Meta:
+        unique_together = (('id', 'version'),)
 
 class QuestionForm(ModelForm):
     class Meta:
         model = Question
-    exclude = ["modified", "created", "creator", "modifier", "version"]
+        fields = ["function_name", "prompt", "solution", "level", "tags", "comment"]
 
 
-class ArchiveQuestion(Question):
+class ArchiveQuestion(AbstractQuestion):
     """An ArchiveQuestion is created everytime a
     Question is updated. ArchiveQuestions can
     be reviewed and reverted to. For every Question
@@ -54,9 +62,21 @@ class ArchiveQuestion(Question):
     Question, because, generally, comments will endure
     across vesions of a Question."""
 
-    archived = models.DateTimeField(auto_now=True)
-    
+    archived = models.DateTimeField(auto_now_add=True)
+    parent = models.ForeignKey(Question)
 
+    def archive(self, q):
+
+        self.function_name = q.function_name
+        self.prompt = q.prompt
+        self.solution = q.solution
+        self.level = q.level
+        self.tags = q.tags
+        self.version = q.version
+        self.comment = q.comment
+        self.created = q.created
+        self.creator = q.creator
+        self.parent = q
 
 class Tag(models.Model):
     """Tags are the set of case-insensitive tags
@@ -75,10 +95,41 @@ class Test(models.Model):
         function and the expected result. If all
         Question tests pass, the Response is considered correct.
     """
-    args = models.CharField(max_length=500)
-    result = models.TextField()
-    fail_msg = models.TextField(blank=True)
-    success_msg = models.TextField(blank=True)
+    args = models.CharField(max_length=500, help_text="The arguments to pass to the function.")
+    result = models.TextField(help_text="Python code that will evaluate to the expected result of this unit test.")
+    fail_msg = models.TextField(blank=True, help_text="A message for the user if their function fails this test.")
+    question = models.ForeignKey(Question)
+    
+    #Evaluation function
+    #Note that this wont work, since right now the user's 'functions' are still just strings...
+    def evaluate(self, user_function):
+        """
+        arguments = []
+        for word in self.args:
+            arguments.extend(word)
+        if (user_function(*arguments) == self.result):
+            return True
+        else:
+            return False"""
+        #for now, this will just compare the string the user entered to whatever the question author entered as their solution
+        # convert args to python
+        
+        function_name = self.question.function_name
+        function = compile(user_function, "<string>", "exec")
+        context = {function_name: function }
+        exec(self.to_code(), context)
+		
+        
+        
+
+    def to_code(self):
+        str = "assert {}({}) == {}, {}".format(self.question.function_name, self.args, self.result, self.fail_msg)
+        return str
+
+class TestForm(ModelForm):
+    class Meta:
+        model = Test
+        fields = ["args", "result", "fail_msg"]
 
 
 class Response(models.Model):
@@ -88,10 +139,10 @@ class Response(models.Model):
     If all tests are correctly passed, the Response
     is marked correct"""
 
-    code = models.TextField(blank=True)
+    code = models.TextField(blank=True, help_text="Your solution to this question.")
     is_correct = models.BooleanField(default=False)
     attempt = models.IntegerField()
-    submitted = models.DateTimeField(auto_now=True)
+    submitted = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User)
     question = models.ForeignKey(ArchiveQuestion)
 
@@ -99,20 +150,20 @@ class Response(models.Model):
 class ResponseForm(ModelForm):
     class Meta:
         model = Response
-    exclude = ["submitted", "user", "is_correct", "attempt"]
+        fields = ["code"]
 
 
 class QuestionFlag(models.Model):
     """    """
     flags = [ (1, "Unclear"),
-          (2, "Too Hard"),
-          (3, "Too Easy"),
+          (2, "Too Hard for Level"),
+          (3, "Too Easy for Level"),
           (4, "Innapropriate")]
 
     flag = models.IntegerField(choices=flags)
     question = models.ForeignKey(ArchiveQuestion)
     creator = models.ForeignKey(User)
-    created = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
 
 
 
