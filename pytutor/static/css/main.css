@@ -187,4 +187,5 @@ footer img
 }
 
 
-
+.failed { color: red; }
+.passed { color: green;}
