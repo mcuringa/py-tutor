@@ -56,9 +56,22 @@ def submit_response(request):
     a = response.attempt - 1
     context = {"question" : question, "response" : response, "previous_attempt" : a}
     #evaluate user's code
+    testResults = []
+    passAll = True
     for test in Test.objects.all().filter(question=qpk):
-        if test.evaluate(user_code) != True:
-            return render(request, 'tutor/response_incorrect.html', context)
+        try:
+            test.evaluate(user_code)
+            testResults.append( (test, None) )
+        except AssertionError as ae:
+            testResults.append( (test, ae) )
+            passAll = False
+        except Exception as ex:
+            testResults.append( (test, ex) )
+            passAll = False
+
+    context["testResults"] = testResults
+    if not passAll:
+        return render(request, 'tutor/response_incorrect.html', context)
     #so if there are no tests, the response defaults to being marked correct.
     return render(request, 'tutor/response_correct.html', context)
 
