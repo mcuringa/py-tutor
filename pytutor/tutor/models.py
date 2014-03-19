@@ -100,9 +100,9 @@ class Test(models.Model):
     fail_msg = models.TextField(blank=True, help_text="A message for the user if their function fails this test.")
     question = models.ForeignKey(Question)
     
-    #Evaluation function
-    #Note that this wont work, since right now the user's 'functions' are still just strings...
     def evaluate(self, user_function):
+        """Evaluate the user_function against this test's assertion. 
+        Quietly return, or throw an Exception."""
 
         # compile the user's function
         fun = compile(user_function, '<string>', 'exec')
