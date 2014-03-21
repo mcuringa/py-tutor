@@ -104,14 +104,21 @@ class Test(models.Model):
         """Evaluate the user_function against this test's assertion. 
         Quietly return, or throw an Exception."""
 
-        # compile the user's function
-        fun = compile(user_function, '<string>', 'exec')
-        # create empty context to exec the code
-        ns = {}
-        # compile the funciton into our context
-        exec(fun, ns)
-        # run the assertion for this test
-        exec(self.to_code(), ns)
+        try:
+            # compile the user's function
+            fun = compile(user_function, '<string>', 'exec')
+            # create empty context to exec the code
+            ns = {}
+            # compile the funciton into our context
+            exec(fun, ns)
+            # run the assertion for this test
+            exec(self.to_code(), ns)
+            #testResults.append( (test, None) )
+            return (None, True)
+        except AssertionError as ae:
+            return (ae, False)
+        except Exception as ex:
+            return (ex, False)
         
 
     def to_code(self):

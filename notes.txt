@@ -10,6 +10,10 @@ QUESTIONS---
 >>In views--				when updating attempt or creating a new response if none exists, is the response.save() 
 >>							method needed? Same goes for updating the response in submit_response..
 
+!!!!!!!!!!!!
+Functions that don't take in any parameters (eg, a Hello World! function) cannot have tests, since adding tests requires that you enter arguments.
+!!!!!!!!!!!!
+
 user history -- figure out archiving, including tests with archives
 first integrate unit tests with questions-- must validate unit tests with questions when question submitted
 message to add unit tests if none there
