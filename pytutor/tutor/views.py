@@ -57,17 +57,11 @@ def submit_response(request):
     context = {"question" : question, "response" : response, "previous_attempt" : a}
     #evaluate user's code
     testResults = []
-    passAll = True
+    passAll = False
     for test in Test.objects.all().filter(question=qpk):
-        try:
-            test.evaluate(user_code)
-            testResults.append( (test, None) )
-        except AssertionError as ae:
-            testResults.append( (test, ae) )
-            passAll = False
-        except Exception as ex:
-            testResults.append( (test, ex) )
-            passAll = False
+        result = test.evaluate(user_code)
+        testResults.append( (test, result[0]) )
+        passAll = result[1] and True
 
     context["testResults"] = testResults
     if not passAll:
