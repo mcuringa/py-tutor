@@ -9,3 +9,23 @@ QUESTIONS---
 >>							the ArchiveQuestion class?
 >>In views--				when updating attempt or creating a new response if none exists, is the response.save() 
 >>							method needed? Same goes for updating the response in submit_response..
+
+user history -- figure out archiving, including tests with archives
+first integrate unit tests with questions-- must validate unit tests with questions when question submitted
+message to add unit tests if none there
+form validations
+deleting things (questions, test)
+user submitted response, & question submission-- say which tests it failed
+then user history
+algorithm for question tracks:
+mostly get questions @ current level
+maybe give a few more difficult to see how it is
+if they get a question right, maybe never see again, but see something similar
+if they get it wrong, give again at some point
+study mode which is tag based eventually too
+
+text editor-- mdn orion
+
+question submission: takes back to question edit page, w/message on top-- look @ message framework
+
+catch AssertionError and give feedback message

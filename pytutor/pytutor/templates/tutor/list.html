@@ -8,7 +8,7 @@
     <h1>The Question List</h1>
     <ul>
     {% for question in questions %}
-        <li>{{question.id}} {{question.function_name}} <a href="/tutor/{{question.id}}/edit/" title="edit this question">[edit]</a></li>
+        <li>{{question.id}} {{question.function_name}} <a href="/tutor/{{question.id}}/edit/" title="edit this question">[edit]</a> <a href="/tutor/{{question.id}}/respond/" title="respond to this question">[respond]</a></li>
     {% endfor %}
     </ul>
 </section>
