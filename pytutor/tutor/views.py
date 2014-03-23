@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core import serializers
-
+from django.contrib import messages
 
 from tutor.models import *
 
@@ -89,6 +89,8 @@ def question_form(request, pk=0):
         form = QuestionForm(instance=question)
         history = ArchiveQuestion.objects.all().filter(parent_id=pk)
         tests = Test.objects.all().filter(question=question)
+        if Test.objects.all().filter(question=question).count() == 0:
+            messages.add_message(request, messages.INFO, 'This question has no unit tests. Without unit tests, a response to this question won\'t be properly evaluated. Create a unit test below!')
 
 
     test_form = TestForm()
