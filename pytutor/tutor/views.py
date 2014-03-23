@@ -83,12 +83,19 @@ def question_form(request, pk=0):
     if pk == 0:
         form = QuestionForm()
         history = []
-        tests = []
+        test_results = []
     else:
         question = Question.objects.get(pk=pk)
         form = QuestionForm(instance=question)
         history = ArchiveQuestion.objects.all().filter(parent_id=pk)
         tests = Test.objects.all().filter(question=question)
+        test_results = {}
+        for test in tests:
+            if test.evaluate()[1] == False:
+                result = "Test failed on 'Solution' code."
+            else:
+                result = "Test passed on 'Solution' code!"
+            test_results[test.pk] = (test.to_code(), result)
         if Test.objects.all().filter(question=question).count() == 0:
             messages.add_message(request, messages.INFO, 'This question has no unit tests. Without unit tests, a response to this question won\'t be properly evaluated. Create a unit test below!')
 
@@ -99,7 +106,7 @@ def question_form(request, pk=0):
                 "pk": pk,
                 "history": history,
                 "test_form": test_form,
-                "tests": tests
+                "tests": test_results
               }
 
     return render(request, 'tutor/question_form.html', context)
