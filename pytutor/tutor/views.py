@@ -92,6 +92,7 @@ def question_form(request, pk=0):
         test_results = {}
         for test in tests:
             if test.evaluate()[1] == False:
+                messages.add_message(request, messages.INFO, 'Test ' + str(test.to_code()) + ' failed on Solution code. Check this test case and your solution code to fix the issue.')
                 result = "Test failed on 'Solution' code."
             else:
                 result = "Test passed on 'Solution' code!"
