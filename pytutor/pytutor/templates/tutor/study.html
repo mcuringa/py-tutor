@@ -2,6 +2,16 @@
 
 {% block title %}PyTutor Home{% endblock %}
 
+{% block head %} 
+<link rel="stylesheet" type="text/css" href="http://eclipse.org/orion/editor/releases/5.0/built-editor.css"/>
+<script src="http://eclipse.org/orion/editor/releases/5.0/built-editor.min.js"></script>
+<script>
+    require(["orion/editor/edit"], function(edit) {
+        edit({className: "editor"});
+    });
+</script>
+{% endblock %}
+
 {% block body %}
 
 <section id="response-form">
@@ -16,5 +26,6 @@
         <input type="submit" value="Submit">
     </form>
 </section>
+
 
 {% endblock %}
