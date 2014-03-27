@@ -7,7 +7,9 @@
     <link href="/static/css/main.css" type="text/css" rel="stylesheet">
     <script src="/static/js/jquery.js"></script>
     <script src="/static/js/tutor.js"></script>
-    {% block head %}{% endblock %}
+    <link rel="stylesheet" type="text/css" href="http://eclipse.org/orion/editor/releases/5.0/built-editor.css"/>
+<script src="http://eclipse.org/orion/editor/releases/5.0/built-editor.min.js"></script>
+
 </head>
 
 <body>
@@ -46,6 +48,12 @@
         Created for the <a href="http://education.adelphi.edu">Graduate Program in Educational Technology</a>
         at Adelphi University.
     </footer>
+
+<script>
+    require(["orion/editor/edit"], function(edit) {
+        edit({className: "editor"});
+    });
+</script>
 </body>
 
 </html>
