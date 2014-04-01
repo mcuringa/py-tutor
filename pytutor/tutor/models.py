@@ -152,6 +152,9 @@ class ResponseForm(ModelForm):
     class Meta:
         model = Response
         fields = ["code"]
+        widgets = {
+            'code' : forms.Textarea,
+        }
 
 
 class QuestionFlag(models.Model):
