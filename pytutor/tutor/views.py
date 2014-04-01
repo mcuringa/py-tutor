@@ -11,23 +11,27 @@ from tutor.models import *
 def study(request):
     """Randomly choose the next question for the user to study.
        If no questions exist, prompt the user to create one."""
-
-    try:
-        question = random.choice(Question.objects.all())
-        return respond(request, question.pk)
-    except: 
-        return HttpResponseRedirect("/tutor/no_questions")
+    if request.method == "POST":
+        respond(request)
+    question = random.choice(Question.objects.all())
+    response_form = ResponseForm()
+    context = {"question": question, "response_form" : response_form}
+    
+    return render(request, 'tutor/respond.html', context)
+    #except: 
+    #    return HttpResponseRedirect("/tutor/no_questions")
 
 @login_required
 def no_questions(request):
     return render(request, 'tutor/no_questions.html')
 
 @login_required
-def respond(request, pk):
+def respond(request):
     """Allow user to write a response to a question."""
     
     #responses are linked to ArchiveQuestions, but we're given a Question key
-    question = most_recent_version(Question.objects.get(pk=pk))
+    pk = int(request.POST["qpk"])
+    question = Question.objects.get(pk=pk)
     
     #if the user has already attempted the question, use existing response object
     try:
@@ -35,21 +39,9 @@ def respond(request, pk):
     #if not, create one
     except: 
         response = Response(attempt=1, user=request.user, question=question)
-        response.save() #is this necessary here?
-    response_form = ResponseForm()
-    context = {"question": question, "response" : response, "response_form" : response_form}
-    
-    return render(request, 'tutor/respond.html', context)
 
-@login_required
-def submit_response(request):
     """Submit user's response for evaluation."""
-    qpk = int(request.POST["qpk"])
-    rpk = int(request.POST["rpk"])
-    question = Question.objects.get(pk=qpk);
-    response = Response.objects.get(pk=rpk);
-    
-    response.attempt += 1
+    #response.attempt += 1
     user_code = request.POST["code"]
     response.code = user_code
     response.save() #again, is this necessary?
@@ -58,7 +50,7 @@ def submit_response(request):
     #evaluate user's code
     testResults = []
     passAll = False
-    for test in Test.objects.all().filter(question=qpk):
+    for test in Test.objects.all().filter(question=pk):
         result = test.evaluate(user_code)
         testResults.append( (test, result[0]) )
         passAll = result[1] and True
