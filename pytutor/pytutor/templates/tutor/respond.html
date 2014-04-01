@@ -5,16 +5,28 @@
 {% block body %}
 
 <section id="respond">
-	<h1>Question {{question.parent.id}}</h1>
+	<h1>Question {{question.id}}</h1>
 	<p>{{question.prompt}}</p>
 	<p>Attempt #{{response.attempt}}</p>
     <form action="/tutor/response/submit" method="post">
         {% csrf_token %}
-        <input type="hidden" name="qpk" value="{{question.parent.pk}}">
-        <input type="hidden" name="rpk" value="{{response.pk}}">
+        <input type="hidden" name="qpk" value="{{question.id}}">
         {{ response_form.as_p }}
         <input type="submit" value="Submit">
     </form>
+</section>
+
+
+<section id="orion">
+<pre class="editor" data-editor-lang="js">
+/*
+ * This is an Orion editor sample.
+ */
+function() {
+    var a = 'hi there!';
+    window.console.log(a);
+}
+</pre>
 </section>
 
 {% endblock %}
