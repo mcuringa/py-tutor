@@ -42,7 +42,7 @@ def respond(request):
 
     """Submit user's response for evaluation."""
     #response.attempt += 1
-    user_code = request.POST["code"]
+    user_code = request.POST.get('code', False);
     response.code = user_code
     response.save() #again, is this necessary?
     a = response.attempt - 1
