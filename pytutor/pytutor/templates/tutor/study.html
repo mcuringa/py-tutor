@@ -12,10 +12,12 @@
         {% csrf_token %}
         <input type="hidden" name="qpk" value="{{pk}}">
         <input type="hidden" name="rpk" value="{{response.pk}}">
-        {{ response.as_p }}
+        <input type="hidden" name="response">
+        <div id="responseEditor">
+        </div>
+        
         <input type="submit" value="Submit">
     </form>
 </section>
-
 
 {% endblock %}

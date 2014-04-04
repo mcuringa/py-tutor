@@ -160,6 +160,15 @@ footer img
 }
 
 /*----------------------- question form */
+#response-editor
+{
+    font-size: 130%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 400px;
+}
 
 #question-form
 {

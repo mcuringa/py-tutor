@@ -8,24 +8,26 @@
 	<h1>Question {{question.id}}</h1>
 	<p>{{question.prompt}}</p>
 	<p>Attempt #{{response.attempt}}</p>
+    
     <form action="/tutor/response/submit" method="post" id="response-form">
         {% csrf_token %}
         <input type="hidden" name="qpk" value="{{question.id}}">
+        <input type="hidden" id="user_code" name="code">
+       
         <div class="fieldWrapper">
             {{ response_form.code.errors }}
             {{ response_form.code.label_tag }} 
-            <pre class="editor" id="id_code" name="code" data-editor-lang="js">
-/*
- * This is an Orion editor sample.
- */
-function() {
-    var a = 'hi there!';
-    window.console.log(a);
-}
-</pre>
+            <div id="response-editor">
+# write a function called {{question.function_name}}
+
+
+</div>
         </div>
         <input type="submit" value="Submit">
     </form>
 </section>
 
 {% endblock %}
+
+
+
