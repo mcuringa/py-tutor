@@ -120,13 +120,14 @@ def save_question(request):
     form.instance.modifier = request.user
     question = form.save()
     archive(question)
-    
-    return HttpResponseRedirect("/tutor/list")
+    url = "/tutor/" + str(question.id) + "/edit"
+
+    return HttpResponseRedirect(url)
 
 @login_required
 def delete_question(request, pk):
     """Deletes the selected question and all related ArchiveQuestions."""
-    
+
     question = Question.objects.get(pk=pk)
     archives = ArchiveQuestion.objects.all().filter(parent_id=pk)
     for q in archives:
