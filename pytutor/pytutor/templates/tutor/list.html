@@ -6,9 +6,9 @@
 
 <section id="home">
     <h1>The Question List</h1>
-    <ul>
+    <ol>
     {% for question in questions %}
-        <li>{{question.id}} {{question.function_name}} <a href="/tutor/{{question.id}}/edit/" title="edit this question">[edit]</a> <a href="/tutor/{{question.id}}/respond/" title="respond to this question">[respond]</a></li>
+        <li>{{question.function_name}} <a href="/tutor/{{question.id}}/edit/" title="edit this question">[edit]</a> <a href="/tutor/{{question.id}}/delete/" title="delete to this question">[delete]</a></li>
     {% endfor %}
     </ul>
 </section>

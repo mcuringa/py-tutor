@@ -31,7 +31,7 @@ def respond(request):
     
     pk = int(request.POST["qpk"])
     #responses are linked to ArchiveQuestions, but we're given a Question key
-    question = ArchiveQuestion.objects.all().filter(parent=pk).latest("created")
+    question = ArchiveQuestion.objects.all().filter(parent_id=pk).latest("created")
 
     #if the user has already attempted the question, use existing response object
     try:
@@ -123,6 +123,16 @@ def save_question(request):
     
     return HttpResponseRedirect("/tutor/list")
 
+@login_required
+def delete_question(request, pk):
+    """Deletes the selected question and all related ArchiveQuestions."""
+    
+    question = Question.objects.get(pk=pk)
+    archives = ArchiveQuestion.objects.all().filter(parent_id=pk)
+    for q in archives:
+        q.delete()
+    question.delete()
+    return HttpResponseRedirect("/tutor/list")
 
 def archive(question):
     aq = ArchiveQuestion()
@@ -146,11 +156,3 @@ def add_test(request):
     # data = json[1:-1]
 
     return HttpResponse(test.to_code(), mimetype='text/plain')
-
-def most_recent_version(question):
-    all = ArchiveQuestion.objects.all().filter(parent_id=question.pk)
-    most_recent = all[0]
-    for q in all:
-        if most_recent.modified < q.modified:
-            most_recent = q
-    return most_recent
