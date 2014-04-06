@@ -29,22 +29,22 @@ def no_questions(request):
 def respond(request):
     """Allow user to write a response to a question."""
     
-    #responses are linked to ArchiveQuestions, but we're given a Question key
     pk = int(request.POST["qpk"])
-    question = Question.objects.get(pk=pk)
-    
+    #responses are linked to ArchiveQuestions, but we're given a Question key
+    question = ArchiveQuestion.objects.all().filter(parent=pk).latest("created")
+
     #if the user has already attempted the question, use existing response object
     try:
         response = Response.objects.get(user=request.user, question=question)
+        response.attempt += 1
     #if not, create one
     except: 
         response = Response(attempt=1, user=request.user, question=question)
 
     """Submit user's response for evaluation."""
-    #response.attempt += 1
     user_code = request.POST.get('code', False);
     response.code = user_code
-    response.save() #again, is this necessary?
+    response.save()
     a = response.attempt - 1
     context = {"question" : question, "response" : response, "previous_attempt" : a}
     #evaluate user's code
