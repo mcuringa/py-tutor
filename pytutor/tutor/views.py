@@ -151,12 +151,13 @@ def add_test(request):
     user_function = test.question.solution
     print(user_function)
     test.evaluate(user_function)
+    url = "/tutor/" + str(q.id) + "/edit"
     # json = serializers.serialize("json", [test])
     # # return a sustring because djano only works with
     # # iterables, but we just want a single json object
     # data = json[1:-1]
 
-    return HttpResponse(test.to_code(), mimetype='text/plain')
+    return HttpResponseRedirect(url)
 
 @login_required
 def del_test(request, pk):
