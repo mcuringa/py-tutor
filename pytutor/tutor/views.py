@@ -82,16 +82,16 @@ def question_form(request, pk=0):
         history = ArchiveQuestion.objects.all().filter(parent_id=pk)
         tests = Test.objects.all().filter(question=question)
         test_results = {}
-        for test in tests:
-            if test.evaluate()[1] == False:
-                messages.add_message(request, messages.INFO, 'Test ' + str(test.to_code()) + ' failed on Solution code. Check this test case and your solution code to fix the issue.')
-                result = "Test failed on 'Solution' code."
-            else:
-                result = "Test passed on 'Solution' code!"
-            test_results[test.pk] = (test.to_code(), result)
-        if Test.objects.all().filter(question=question).count() == 0:
+        if tests.count() == 0:
             messages.add_message(request, messages.INFO, 'This question has no unit tests. Without unit tests, a response to this question won\'t be properly evaluated. Create a unit test below!')
-
+        else:
+            for test in tests:
+                if test.evaluate()[1] == False:
+                    messages.add_message(request, messages.INFO, 'Test ' + str(test.to_code()) + ' failed on Solution code. Check this test case and your solution code to fix the issue.')
+                    result = "Test failed on 'Solution' code."
+                else:
+                    result = "Test passed on 'Solution' code!"
+                test_results[test.pk] = (test.to_code(), result)
 
     test_form = TestForm()
 
@@ -157,3 +157,14 @@ def add_test(request):
     # data = json[1:-1]
 
     return HttpResponse(test.to_code(), mimetype='text/plain')
+
+@login_required
+def del_test(request, pk):
+    test = Test.objects.get(pk=pk)
+    question = test.question
+    test.delete()
+    messages.add_message(request, messages.INFO, "Test successfully deleted.")
+    url = "/tutor/" + str(question.id) + "/edit"
+    return HttpResponseRedirect(url)
+
+

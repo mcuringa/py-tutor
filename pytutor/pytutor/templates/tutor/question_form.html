@@ -34,8 +34,8 @@
         <input type="submit" value="add test">
     </form>
     <ul>
-    {% for test, result in tests.values %}
-        <li>Test: {{test}}<br>Result: {{result}}</li>
+    {% for id, test in tests.items %}
+        <li>Test: {{test.0}}<br>Result: {{test.1}}<br><a href="/tutor/test/{{id}}/del" alt="Delete this test">x</a></li>
     {% endfor %}
     </ul>
 </section>
