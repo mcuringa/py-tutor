@@ -11,16 +11,17 @@ urlpatterns = patterns('',
     # --------------------------------- STUDYING
     url(r'^tutor$', 'tutor.views.study'),
     url(r'^tutor/no_questions$', 'tutor.views.no_questions'),
-    url(r'^tutor/(?P<pk>[0-9]?)/respond[/]$', 'tutor.views.study'),
+    url(r'^tutor/(?P<pk>[0-9]+?)/respond[/]$', 'tutor.views.study'),
     url(r'^tutor/response/submit', 'tutor.views.respond'),
 
     # --------------------------------- EDITING
     url(r'^tutor/list', 'tutor.views.list'),
     url(r'^tutor/new', 'tutor.views.question_form'),
-    url(r'^tutor/(?P<pk>[0-9]?)/edit[/]$', 'tutor.views.question_form'),
+    url(r'^tutor/(?P<pk>[0-9]+?)/edit[/]$', 'tutor.views.question_form'),
+    url(r'^tutor/(?P<pk>[0-9]+?)/delete[/]$', 'tutor.views.delete_question'),
     url(r'^tutor/save', 'tutor.views.save_question'),
     url(r'^tutor/test/save', 'tutor.views.add_test'),
-    # url(r'^tutor/test/(?P<pk>[0-9]?)/del', 'tutor.views.del_test'),
+    url(r'^tutor/test/(?P<pk>[0-9]+?)/del', 'tutor.views.del_test'),
 
     # --------------------------------- USERS
     url(r'^login$', 'tutor.user_views.user_login'),

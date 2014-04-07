@@ -29,22 +29,22 @@ def no_questions(request):
 def respond(request):
     """Allow user to write a response to a question."""
     
-    #responses are linked to ArchiveQuestions, but we're given a Question key
     pk = int(request.POST["qpk"])
-    question = Question.objects.get(pk=pk)
-    
+    #responses are linked to ArchiveQuestions, but we're given a Question key
+    question = ArchiveQuestion.objects.all().filter(parent_id=pk).latest("created")
+
     #if the user has already attempted the question, use existing response object
     try:
         response = Response.objects.get(user=request.user, question=question)
+        response.attempt += 1
     #if not, create one
     except: 
         response = Response(attempt=1, user=request.user, question=question)
 
     """Submit user's response for evaluation."""
-    #response.attempt += 1
     user_code = request.POST.get('code', False);
     response.code = user_code
-    response.save() #again, is this necessary?
+    response.save()
     a = response.attempt - 1
     context = {"question" : question, "response" : response, "previous_attempt" : a}
     #evaluate user's code
@@ -82,16 +82,16 @@ def question_form(request, pk=0):
         history = ArchiveQuestion.objects.all().filter(parent_id=pk)
         tests = Test.objects.all().filter(question=question)
         test_results = {}
-        for test in tests:
-            if test.evaluate()[1] == False:
-                messages.add_message(request, messages.INFO, 'Test ' + str(test.to_code()) + ' failed on Solution code. Check this test case and your solution code to fix the issue.')
-                result = "Test failed on 'Solution' code."
-            else:
-                result = "Test passed on 'Solution' code!"
-            test_results[test.pk] = (test.to_code(), result)
-        if Test.objects.all().filter(question=question).count() == 0:
+        if tests.count() == 0:
             messages.add_message(request, messages.INFO, 'This question has no unit tests. Without unit tests, a response to this question won\'t be properly evaluated. Create a unit test below!')
-
+        else:
+            for test in tests:
+                if test.evaluate()[1] == False:
+                    messages.add_message(request, messages.INFO, 'Test ' + str(test.to_code()) + ' failed on Solution code. Check this test case and your solution code to fix the issue.')
+                    result = "Test failed on 'Solution' code."
+                else:
+                    result = "Test passed on 'Solution' code!"
+                test_results[test.pk] = (test.to_code(), result)
 
     test_form = TestForm()
 
@@ -120,9 +120,20 @@ def save_question(request):
     form.instance.modifier = request.user
     question = form.save()
     archive(question)
-    
-    return HttpResponseRedirect("/tutor/list")
+    url = "/tutor/" + str(question.id) + "/edit"
 
+    return HttpResponseRedirect(url)
+
+@login_required
+def delete_question(request, pk):
+    """Deletes the selected question and all related ArchiveQuestions."""
+
+    question = Question.objects.get(pk=pk)
+    archives = ArchiveQuestion.objects.all().filter(parent_id=pk)
+    for q in archives:
+        q.delete()
+    question.delete()
+    return HttpResponseRedirect("/tutor/list")
 
 def archive(question):
     aq = ArchiveQuestion()
@@ -140,17 +151,21 @@ def add_test(request):
     user_function = test.question.solution
     print(user_function)
     test.evaluate(user_function)
+    url = "/tutor/" + str(q.id) + "/edit"
     # json = serializers.serialize("json", [test])
     # # return a sustring because djano only works with
     # # iterables, but we just want a single json object
     # data = json[1:-1]
 
-    return HttpResponse(test.to_code(), mimetype='text/plain')
+    return HttpResponseRedirect(url)
 
-def most_recent_version(question):
-    all = ArchiveQuestion.objects.all().filter(parent_id=question.pk)
-    most_recent = all[0]
-    for q in all:
-        if most_recent.modified < q.modified:
-            most_recent = q
-    return most_recent
+@login_required
+def del_test(request, pk):
+    test = Test.objects.get(pk=pk)
+    question = test.question
+    test.delete()
+    messages.add_message(request, messages.INFO, "Test successfully deleted.")
+    url = "/tutor/" + str(question.id) + "/edit"
+    return HttpResponseRedirect(url)
+
+
