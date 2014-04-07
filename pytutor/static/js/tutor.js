@@ -43,8 +43,6 @@ $( document ).ready(function() {
         $("#user_code").val(code);
         var data = $form.serialize();
         var url = $form.attr( "action" );
-
-        $.post( url, data );
-    });
+        $('form').unbind().submit();     });
 });
 
