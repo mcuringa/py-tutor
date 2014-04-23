@@ -53,6 +53,10 @@ section
 
 }
 
+.navbar-right-btn {
+    margin: 8px;
+}
+
 .center
 {
     margin: 0 auto;
