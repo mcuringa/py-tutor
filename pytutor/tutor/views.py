@@ -13,9 +13,14 @@ def study(request):
        If no questions exist, prompt the user to create one."""
     if request.method == "POST":
         respond(request)
-    question = random.choice(Question.objects.all())
-    response_form = ResponseForm()
-    context = {"question": question, "response_form" : response_form}
+    questions = Question.objects.all()
+    if not questions:
+        context = {"questions" : False}
+    else:
+        question = random.choice()
+        response_form = ResponseForm()
+        context = {"question": question, "response_form" : response_form, "questions" : True}
+        
     
     return render(request, 'tutor/respond.html', context)
     #except: 

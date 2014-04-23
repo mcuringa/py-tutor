@@ -4,6 +4,14 @@
 
 {% block body %}
 
+{% if not questions %}
+
+<section>
+    <h1>No questions to study.</h1>
+</section>
+
+{% else %}
+
 <section id="respond">
 	<h1>Question {{question.id}}</h1>
 	<p>{{question.prompt}}</p>
@@ -25,6 +33,8 @@
         <input type="submit" value="Submit">
     </form>
 </section>
+
+{% endif %}
 
 {% endblock %}
 
