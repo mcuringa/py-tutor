@@ -17,7 +17,7 @@ def study(request):
     if not questions:
         context = {"questions" : False}
     else:
-        question = random.choice()
+        question = random.choice(questions)
         response_form = ResponseForm()
         context = {"question": question, "response_form" : response_form, "questions" : True}
         
