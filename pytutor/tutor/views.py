@@ -122,9 +122,13 @@ def save_question(request):
         form.instance.creator = request.user
 
     form.instance.modifier = request.user
-    question = form.save()
-    archive(question)
-    url = "/tutor/" + str(question.id) + "/edit"
+    try:
+      question = form.save()
+      archive(question)
+      url = "/tutor/" + str(question.id) + "/edit"
+    except:
+        messages.add_message(request, messages.INFO, 'Please fill out all required fields.')
+        url = "/tutor/new"
 
     return HttpResponseRedirect(url)
 
