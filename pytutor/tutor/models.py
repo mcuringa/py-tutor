@@ -26,7 +26,7 @@ class AbstractQuestion(models.Model):
 
     function_name = models.CharField(max_length=300)
     prompt = models.TextField()
-    solution = models.TextField()
+    solution = models.TextField(blank=True, null=True)
     level = models.IntegerField(choices=level_choices)
     tags = models.CharField(max_length=500, blank=True, null=True)
     version = models.IntegerField(default=0)
@@ -152,9 +152,6 @@ class ResponseForm(ModelForm):
     class Meta:
         model = Response
         fields = ["code"]
-        widgets = {
-            'code' : forms.Textarea,
-        }
 
 
 class QuestionFlag(models.Model):
