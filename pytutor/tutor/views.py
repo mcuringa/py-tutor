@@ -152,11 +152,6 @@ def archive(question):
 @login_required
 def add_test(request):
     questionId = int(request.POST["question_id"])
-    try:
-        q = Question.objects.get(pk=questionId)
-    except:
-        messages.add_message(request, messages.INFO, 'You must define a function name and prompt first.')
-        return HttpResponseRedirect("/tutor/new")
     form = TestForm(request.POST)
     form.instance.question = q
     test = form.save()

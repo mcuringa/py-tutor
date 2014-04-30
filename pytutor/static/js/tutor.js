@@ -14,31 +14,35 @@ function configureEditor(editorId)
 $( document ).ready(function() {
     
     //Get all response editor divs and ace-ify them
-    var count = 1;
     var responseEditor;
 
     $( ".aceify" ).each( function(i, obj) {
-        str = "aceify" + count;
-        $(this).attr("id", str);
-        responseEditor = configureEditor(str);
-        count++;
+        responseEditor = configureEditor($(this).attr('id'));
     });
     
     
     $( "#test-form" ).submit(function( event ) 
     {
+        //
+        if ($( '#version' ).html() == '0') {
+            event.preventDefault();
+            $( '#message_list' ).append( "<li>You must create a function name and prompt before adding unit tests.</li>" );
+        } else if ($( '#id_args' ).val() == '' || $( '#id_result' ).val() == '') {
+            event.preventDefault();
+            $( '#message_list' ).append( "<li>Unit tests require arguments and a result.</li>" );
+        } else {
+            // Stop form from submitting normally
+            event.preventDefault();
+            var $form = $( this );
+            var data = $form.serialize();   
+            var url = $form.attr( "action" );
 
-        // Stop form from submitting normally
-        event.preventDefault();
-        var $form = $( this );
-        var data = $form.serialize();   
-        var url = $form.attr( "action" );
-
-        var posting = $.post( url, data );
-        
-        posting.done(function( data ) {
-            $( "#unit-tests ul" ).append( "<li>" + data + "</li>" );
-        });
+            var posting = $.post( url, data );
+            
+            posting.done(function( data ) {
+                $( "#unit-tests ul" ).append( "<li>" + data + "</li>" );
+            });
+        }
     });
 
     $("#response-form").submit(function ( event) 
