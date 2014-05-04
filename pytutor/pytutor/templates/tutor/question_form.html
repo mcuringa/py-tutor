@@ -14,11 +14,48 @@
         <dt>Version:</dt>
           <dd id="version">{{question.instance.version}}</dd>
     </dl>
-    <h3>
-    <form action="/tutor/save" method="post">
+    <form action="/tutor/save" method="post" id="question-form" role="form">
         {% csrf_token %}
         <input type="hidden" name="pk" value="{{pk}}">
-        {{ question.as_p }}
+
+        <!--input type="hidden" id="id_prompt" name="prompt">
+        <input type="hidden" id="id_solution" name="solution"-->
+       
+        <div class="fieldWrapper">
+            {{ question.function_name.errors }}
+            {{ question.function_name.label_tag }} 
+            {{ question.function_name }} 
+        </div>
+        <div class="fieldWrapper">
+            {{ question.prompt.errors }}
+            {{ question.prompt.label_tag }}
+            {{ question.prompt }} 
+            <!--div id="prompt-editor">text
+
+            </div-->
+        </div>
+        <div class="fieldWrapper">
+            {{ question.solution.errors }}
+            {{ question.solution.label_tag }}
+            {{ question.solution }} 
+            <!--div id="solution-editor">text
+            </div-->
+        </div>
+        <div class="fieldWrapper">
+            {{ question.level.errors }}
+            {{ question.level.label_tag }} 
+            {{ question.level }} 
+        </div>
+        <div class="fieldWrapper">
+            {{ question.tags.errors }}
+            {{ question.tags.label_tag }} 
+            {{ question.tags }} 
+        </div>
+        <div class="fieldWrapper">
+            {{ question.comment.errors }}
+            {{ question.comment.label_tag }} 
+            {{ question.comment }} 
+        </div>
         <input type="submit" value="Submit">
     </form>
     <a href="/tutor/{{question.instance.id}}/delete">Delete this question</a>

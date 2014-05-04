@@ -9,9 +9,7 @@ function configureEditor(editorId)
     return editor
 }
 
-
 $( document ).ready(function() {
-
     
     //question form stuff
     $( "#test-form" ).submit(function( event ) 
@@ -39,6 +37,24 @@ $( document ).ready(function() {
     });
 
     $( "#id_comment").val("");
+    //Trying to add either of these doesn't work. :(
+    //var promptEditor = configureEditor("prompt-editor");
+    //var solutionEditor = ace.edit("solution-editor");
+
+    /*$("#question-form").submit(function ( event) 
+    {
+        // Stop form from submitting normally
+        event.preventDefault();
+        var $form = $( this );
+        
+        //var promptCode = promptEditor.getValue();
+        var solutionCode = solutionEditor.getValue();
+        //$("#id_prompt").val(promptCode);
+        $("#id_solution").val(solutionCode);
+        var data = $form.serialize();
+        var url = $form.attr( "action" );
+        $('form').unbind().submit();     
+    });*/
 
 
     //response form stuff
@@ -46,16 +62,15 @@ $( document ).ready(function() {
 
     $("#response-form").submit(function ( event) 
     {
-        console.log("response form submitted");
         // Stop form from submitting normally
         event.preventDefault();
         var $form = $( this );
         
         var code = responseEditor.getValue();
-        console.log(code);
         $("#user_code").val(code);
         var data = $form.serialize();
         var url = $form.attr( "action" );
-        $('form').unbind().submit();     });
+        $('form').unbind().submit();     
+    });
 });
 

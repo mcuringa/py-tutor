@@ -117,7 +117,7 @@ dt
     font-weight: bold;
     margin-right: .5em;
 }
-
+/*
 #messages
 {
     margin: 1em 2em;
@@ -128,7 +128,7 @@ dt
     padding-top: 1em;
     padding-bottom: 1em;
 }
-
+*/
 
 /* FOOTER */
 footer
@@ -162,7 +162,6 @@ footer img
 {
     float: left;
     width: 600px;
-    border-right: thin solid black;
 
 }
 
