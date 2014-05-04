@@ -18,7 +18,7 @@ def study(request):
     if not questions:
         context = {"questions" : False}
     else:
-        question = random.choice(questions)
+        question = serve_question(request.user)
         response_form = ResponseForm()
         try:
             response = Response.objects.get(user=request.user, question=question)
@@ -34,8 +34,6 @@ def study(request):
         }
     
     return render(request, 'tutor/respond.html', context)
-    #except: 
-    #    return HttpResponseRedirect("/tutor/no_questions")
 
 @login_required
 def no_questions(request):
@@ -75,6 +73,8 @@ def respond(request):
     if not passAll:
         return render(request, 'tutor/response_incorrect.html', context)
     #so if there are no tests, the response defaults to being marked correct.
+    response.is_correct = True
+    response.save()
     return render(request, 'tutor/response_correct.html', context)
 
 def list(request):
@@ -213,4 +213,70 @@ def del_test(request, pk):
     url = "/tutor/" + str(question.id) + "/edit"
     return HttpResponseRedirect(url)
 
+def serve_question(user):
+    """Serves a user the next applicable question."""
+    #get history of user's correct and incorrect responses
+    correct_responses = Response.objects.all().filter(user=user, is_correct=True)
+    incorrect_responses = Response.objects.all().filter(user=user, is_correct=False)
 
+    if not correct_responses:
+        #no questions correctly answered, choose one from level 1
+        print("no correct answers")
+        possible_questions = Question.objects.all().filter(level=1)
+        best_question = random.choice(possible_questions)
+        return best_question
+
+    #get the questions associated with those responses
+    # correct_questions = []
+    # for response in correct_responses:
+    #     correct_questions.extend(Question.objects.all().filter(id=response.question.parent_id).latest("created"))
+    # incorrect_questions = []
+    # for response in incorrect_responses:
+    #     incorrect_questions.extend(Question.objects.all().filter(id=response.question.parent_id).latest("created"))
+    
+    #now find:
+    #highest level at which user has correctly answered a question
+    #highest level at which user has incorrectly answered a question
+    #lowest level at which user has incorrectly answered a question
+    # highest_correct_level = 1
+    # for question in correct_questions.values:
+    #     if question.level > highest_correct_level:
+    #         highest_correct_level = question.level
+
+    # highest_incorrect_level = 1
+    # lowest_incorrect_level = 10
+    # for question in incorrect_questions.values:
+    #     if question.level > highest_incorrect_level:
+    #         highest_incorrect_level = question.level
+    #     if question.level < lowest_incorrect_level:
+    #         lowest_incorrect_level = question.level
+
+    #now calculate based on these numbers
+    #main focus is current level (highest_correct_level.
+    #count questions at highest current level
+    #if count > 5 and level = 10, give the user a random question from level 5 - 10.
+    #if count > 5 and level < 10, move the user to the next level
+
+    #otherwise, pick a random floating point number from 0 to 1.
+    #if highest and lowest incorrect levels are the same:
+    #   if that number is not the current level:
+    #       if num <= 0.6, give user a random unanswered or incorrect question from this level
+    #       if 0.6 < num <= 0.9, give user a random unanswered or incorrect question from this level
+    #       if 0.9 < num <= 1.0, give user a random unanswered or incorrect question w/level between current and the high/low level
+    #   if that number is the current level
+    #       if num <= 0.8, give user a random unanswered or incorrect question from this level
+    #       if 0.8 < num <=  1.0, give user a random unanswered or incorrect question from
+    #                            a level 1 or 2 less than the current one.
+
+    #if highest and lowest incorrect levels are different:
+    #   if num <= 0.6, give user a random unanswered or incorrect question from this level
+    #   if 0.6 < num <= 0.8, give user a random unanswered or incorrect question from this level
+    #   if 0.8 < num <= 1.0, give user a random unanswered or incorrect question from
+    #                        a level less than this one, but not below the lowest incorrect level.
+
+
+    #dummy for debugging
+    questions = Question.objects.all()
+    best_question = random.choice(questions)
+
+    return best_question

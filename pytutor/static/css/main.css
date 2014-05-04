@@ -1,4 +1,6 @@
-
+html {
+    height: 100%;
+}
 body 
 { 
     font-family: Ubuntu, Futura, "Gill Sans", "Century Gothic", "Trebuchet MS", sans-serif;   
@@ -10,6 +12,7 @@ body
     padding-top: 2em;
     font-size: 14px;
     padding-top: 50px;
+    height: 100%;
 }
 
 a
@@ -127,27 +130,16 @@ dt
 footer
 {
     /* official adelphi "brown" */
-    background-color: #441700; 
     padding: 2em;
     text-align: center;
-    color: white;
-    margin-top: 1em;
-    /*position: absolute;*/
     bottom: 0;
     right: 0;
     left: 0;
-    height: 4em;
-    margin-top: 4em;
 }
 footer a
 {
-    color: white;
+    color: black;
     text-decoration: underline;
-}
-footer img
-{
-    display: block;
-    margin: 0 auto;
 }
 
 /*----------------------- question form */
