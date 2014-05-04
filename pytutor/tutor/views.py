@@ -166,6 +166,7 @@ def add_test(request):
     except:
         message = "Tests require arguments, expected results, and a fail message."
         success = False
+        passed = False
         list_append = ""
 
     if success:
@@ -174,14 +175,17 @@ def add_test(request):
         result = test.evaluate(user_function)
         if result[1]:
             #this test passed
-            list_append = "<li class=\"bg-success\">" + test.to_code() + "<br>Result: Test passed on 'Solution' code!" + "<a href=\"/tutor/test/" + str(test.id) + "/del\" alt=\"Delete this test\">x</li>"
+            passed = True
+            list_append = "<li class=\"bg-success\">" + test.to_code() + "<br>Result: Test passed on 'Solution' code!<br>" + "<a href=\"/tutor/test/" + str(test.id) + "/del\" alt=\"Delete this test\">x</li>"
         else:
             #this test didn't
-            list_append = "<li class=\"bg-danger\">" + test.to_code() + "<br>Result: Test failed on 'Solution' code." + "<a href=\"/tutor/test/" + str(test.id) + "/del\" alt=\"Delete this test\">x</li>"
+            passed = False
+            list_append = "<li class=\"bg-danger\">" + test.to_code() + "<br>Result: Test failed on 'Solution' code.<br>" + "<a href=\"/tutor/test/" + str(test.id) + "/del\" alt=\"Delete this test\">x</li>"
     data = {
         "success": success,
         "message": message,
-        "list_append": list_append
+        "list_append": list_append,
+        "passed": passed
     }
     # json = serializers.serialize("json", [test])
     # # return a sustring because djano only works with

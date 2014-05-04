@@ -30,6 +30,15 @@ $( document ).ready(function() {
             $.post( url, data ).success(function( response ) {
                 if ( response.success ){
                     $( "#unit-tests ul" ).append( response.list_append );
+                    $( '#messages' ).css('visibility','visible');
+                    $( '#messages' ).css('height','auto');
+                    if ( response.passed ){
+                        $( '#message_list' ).append( "<li>Test successfully added and passed.</li>" );
+                    } else {
+                        $( '#message_list' ).append( "<li>Test successfully added.</li>" );
+                        $( '#message_list' ).append( "<li>New test failed on Solution code. "
+                            + "Check this test case and your solution code to fix the issue.</li>" );
+                    }
                 } else {
                     //data not valid
                     $( '#messages' ).css('visibility','visible');
