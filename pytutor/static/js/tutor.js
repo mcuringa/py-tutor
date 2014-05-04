@@ -1,5 +1,4 @@
 
-
 function configureEditor(editorId)
 {
     // configure ace editor
@@ -12,13 +11,8 @@ function configureEditor(editorId)
 
 
 $( document ).ready(function() {
-    
-    //Get all response editor divs and ace-ify them
-    var responseEditor;
 
-    $( ".aceify" ).each( function(i, obj) {
-        responseEditor = configureEditor($(this).attr('id'));
-    });
+    var responseEditor = configureEditor("response-editor");
     
     
     $( "#test-form" ).submit(function( event ) 

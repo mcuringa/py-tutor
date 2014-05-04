@@ -152,6 +152,7 @@ def archive(question):
 @login_required
 def add_test(request):
     questionId = int(request.POST["question_id"])
+    q = Question.objects.get(pk=questionId)
     form = TestForm(request.POST)
     form.instance.question = q
     test = form.save()
