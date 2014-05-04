@@ -84,6 +84,7 @@ def question_form(request, pk=0):
     else:
         question = Question.objects.get(pk=pk)
         form = QuestionForm(instance=question)
+        #form.id_comment = "" #this doesn't actually clear the field
         history = ArchiveQuestion.objects.all().filter(parent_id=pk)
         tests = Test.objects.all().filter(question=question)
         test_results = {}

@@ -12,9 +12,8 @@ function configureEditor(editorId)
 
 $( document ).ready(function() {
 
-    var responseEditor = configureEditor("response-editor");
     
-    
+    //question form stuff
     $( "#test-form" ).submit(function( event ) 
     {
         //
@@ -38,6 +37,12 @@ $( document ).ready(function() {
             });
         }
     });
+
+    $( "#id_comment").val("");
+
+
+    //response form stuff
+    var responseEditor = configureEditor("response-editor");
 
     $("#response-form").submit(function ( event) 
     {
