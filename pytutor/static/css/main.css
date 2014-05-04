@@ -75,16 +75,6 @@ h1 a
     text-decoration: none;
 }
 
-/* add some styles to our form */
-label
-{
-    display: block;
-    text-align: right;
-    float:left;
-    width: 130px;
-    padding-right: .5em;
-}
-
 span.helptext
 {
     display: block;
@@ -93,22 +83,7 @@ span.helptext
     padding-left: 2em;
 }
 
-table
-{
-  border-collapse:collapse;
-  min-width: 800px;
-  line-height: 1.5em;
-  margin-top: 1em;
-}
 
-th
-{
-  background: black;
-  color: white;
-  font-weight: bold;
-  text-align: left;
-}
-tr.odd { background-color: #efefef; }
 
 dt
 {
@@ -117,18 +92,36 @@ dt
     font-weight: bold;
     margin-right: .5em;
 }
-/*
+
 #messages
 {
-    margin: 1em 2em;
-    font-size: 90%;
-    background-color: lightyellow;
-    border: thin solid black;
-    text-align: left;
-    padding-top: 1em;
-    padding-bottom: 1em;
+    visibility: hidden;
+    margin-top: 10px;
+    height: 0px;
 }
-*/
+
+.messages_present {
+    visibility: visible !important;
+    height: auto !important;
+}
+
+
+#test-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+#test-list li {
+    margin: 2px 0px;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.btn-danger a, .btn-danger a:link {
+    color: #FFF;
+    text-decoration: none;
+}
 
 /* FOOTER */
 footer
@@ -158,30 +151,6 @@ footer img
 }
 
 /*----------------------- question form */
-#question-form
-{
-    float: left;
-    width: 600px;
-
-}
-
-#unit-tests
-{
-    width: 300px;
-    float: left;
-    clear: none;
-}
-#unit-tests textarea
-{
-    height: 1.5em;
-}
-#unit-tests label
-{
-    display: block;
-    text-align: left;
-    float: none;
-}
-
 
 .failed { color: red; }
 .passed { color: green;}

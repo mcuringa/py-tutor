@@ -62,15 +62,21 @@
       </div>
     </header>
 <div class="container">
-    <aside id="messages">
+    <div id="messages" class="panel panel-warning 
+      {% if messages %}
+        messages_present
+      {% endif %} ">
+      <div class="panel-heading"><span class="glyphicon glyphicon-exclamation-sign"></span></div>
+      <div class="panel-body">
         <ul id="message_list">
           {% if messages %}
             {% for message in messages %}
-            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            <li>{{ message }}</li>
             {% endfor %}
           {% endif %}
         </ul>
-    </aside>
+      </div>
+    </div>
 
     {% block body %}Every child template should put something here...{% endblock %}
 </div>

@@ -17,10 +17,9 @@ $( document ).ready(function() {
         //
         if ($( '#version' ).html() == '0') {
             event.preventDefault();
+            $( '#messages' ).css('visibility','visible');
+            $( '#messages' ).css('height','auto');
             $( '#message_list' ).append( "<li>You must create a function name and prompt before adding unit tests.</li>" );
-        } else if ($( '#id_args' ).val() == '' || $( '#id_result' ).val() == '') {
-            event.preventDefault();
-            $( '#message_list' ).append( "<li>Unit tests require arguments and a result.</li>" );
         } else {
             // Stop form from submitting normally
             event.preventDefault();
@@ -28,14 +27,30 @@ $( document ).ready(function() {
             var data = $form.serialize();   
             var url = $form.attr( "action" );
 
-            var posting = $.post( url, data );
-            
-            posting.done(function( data ) {
-                $( "#unit-tests ul" ).append( "<li>" + data + "</li>" );
+            $.post( url, data ).success(function( response ) {
+                if ( response.success ){
+                    $( "#unit-tests ul" ).append( response.list_append );
+                } else {
+                    //data not valid
+                    $( '#messages' ).css('visibility','visible');
+                    $( '#messages' ).css('height','auto');
+                    $( '#message_list' ).append( "<li>" + response.message + "</li>" );
+                }
             });
         }
     });
-
+    $("#question-form :text").each(function(){
+        $( this ).addClass("form-control");
+    });
+    $("#question-form select").each(function(){
+        $( this ).addClass("form-control");
+    });
+    $("#question-form textarea ").each(function(){
+        $( this ).addClass("form-control");
+    });
+    $("#test-form :text").each(function(){
+        $( this ).addClass("form-control");
+    });
     $( "#id_comment").val("");
     //Trying to add either of these doesn't work. :(
     //var promptEditor = configureEditor("prompt-editor");

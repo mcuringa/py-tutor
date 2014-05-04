@@ -1,4 +1,5 @@
 import random
+import json
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
@@ -95,9 +96,11 @@ def question_form(request, pk=0):
                 if test.evaluate()[1] == False:
                     messages.add_message(request, messages.INFO, 'Test ' + str(test.to_code()) + ' failed on Solution code. Check this test case and your solution code to fix the issue.')
                     result = "Test failed on 'Solution' code."
+                    passed = False
                 else:
                     result = "Test passed on 'Solution' code!"
-                test_results[test.pk] = (test.to_code(), result)
+                    passed = True
+                test_results[test.pk] = (test.to_code(), result, passed)
 
     test_form = TestForm()
 
@@ -156,17 +159,36 @@ def add_test(request):
     q = Question.objects.get(pk=questionId)
     form = TestForm(request.POST)
     form.instance.question = q
-    test = form.save()
-    user_function = test.question.solution
-    print(user_function)
-    test.evaluate(user_function)
-    url = "/tutor/" + str(q.id) + "/edit"
+    try:
+        test = form.save()
+        success = True
+
+    except:
+        message = "Tests require arguments, expected results, and a fail message."
+        success = False
+        list_append = ""
+
+    if success:
+        message = ""
+        user_function = test.question.solution
+        result = test.evaluate(user_function)
+        if result[1]:
+            #this test passed
+            list_append = "<li class=\"bg-success\">" + test.to_code() + "<br>Result: Test passed on 'Solution' code!" + "<a href=\"/tutor/test/" + str(test.id) + "/del\" alt=\"Delete this test\">x</li>"
+        else:
+            #this test didn't
+            list_append = "<li class=\"bg-danger\">" + test.to_code() + "<br>Result: Test failed on 'Solution' code." + "<a href=\"/tutor/test/" + str(test.id) + "/del\" alt=\"Delete this test\">x</li>"
+    data = {
+        "success": success,
+        "message": message,
+        "list_append": list_append
+    }
     # json = serializers.serialize("json", [test])
     # # return a sustring because djano only works with
     # # iterables, but we just want a single json object
     # data = json[1:-1]
 
-    return HttpResponseRedirect(url)
+    return HttpResponse(json.dumps(data), content_type="application/json")
 
 @login_required
 def del_test(request, pk):

@@ -27,7 +27,7 @@ class AbstractQuestion(models.Model):
     function_name = models.CharField(max_length=300)
     prompt = models.TextField()
     solution = models.TextField(blank=True, null=True)
-    level = models.IntegerField(choices=level_choices)
+    level = models.IntegerField(choices=level_choices, default=1)
     tags = models.CharField(max_length=500, blank=True, null=True)
     version = models.IntegerField(default=0)
     comment = models.CharField(max_length=500, blank=True, null=True)
@@ -97,7 +97,7 @@ class Test(models.Model):
     """
     args = models.CharField(max_length=500, help_text="The arguments to pass to the function.")
     result = models.TextField(help_text="Python code that will evaluate to the expected result of this unit test.")
-    fail_msg = models.TextField(blank=True, help_text="A message for the user if their function fails this test.")
+    fail_msg = models.TextField(blank=True, null=True, help_text="A message for the user if their function fails this test.")
     question = models.ForeignKey(Question)
     
     def evaluate(self, user_function=0):
@@ -128,6 +128,9 @@ class Test(models.Model):
         return str
 
 class TestForm(ModelForm):
+    args = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    result = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    fail_msg = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     class Meta:
         model = Test
         fields = ["args", "result", "fail_msg"]

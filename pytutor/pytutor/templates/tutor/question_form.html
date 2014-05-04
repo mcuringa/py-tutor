@@ -3,7 +3,8 @@
 {% block title %}PyTutor::Question Editor{% endblock %}
 
 {% block body %}
-
+<div class="row">
+<div class="col-xs-12 col-md-6">
 <section id="question-form">
     <h1>Question Editor</h1>
     <dl id="question-info">
@@ -21,12 +22,12 @@
         <!--input type="hidden" id="id_prompt" name="prompt">
         <input type="hidden" id="id_solution" name="solution"-->
        
-        <div class="fieldWrapper">
+        <div class="form-group">
             {{ question.function_name.errors }}
             {{ question.function_name.label_tag }} 
             {{ question.function_name }} 
         </div>
-        <div class="fieldWrapper">
+        <div class="form-group">
             {{ question.prompt.errors }}
             {{ question.prompt.label_tag }}
             {{ question.prompt }} 
@@ -34,59 +35,64 @@
 
             </div-->
         </div>
-        <div class="fieldWrapper">
+        <div class="form-group">
             {{ question.solution.errors }}
             {{ question.solution.label_tag }}
             {{ question.solution }} 
             <!--div id="solution-editor">text
             </div-->
         </div>
-        <div class="fieldWrapper">
+        <div class="form-group">
             {{ question.level.errors }}
             {{ question.level.label_tag }} 
             {{ question.level }} 
         </div>
-        <div class="fieldWrapper">
+        <div class="form-group">
             {{ question.tags.errors }}
             {{ question.tags.label_tag }} 
             {{ question.tags }} 
         </div>
-        <div class="fieldWrapper">
+        <div class="form-group">
             {{ question.comment.errors }}
             {{ question.comment.label_tag }} 
             {{ question.comment }} 
         </div>
-        <input type="submit" value="Submit">
+        <input type="submit" value="Submit" class="btn btn-default btn-success"> 
+    <button class="btn btn-danger"><a href="/tutor/{{question.instance.id}}/delete">Delete Question</a></button>
     </form>
-    <a href="/tutor/{{question.instance.id}}/delete">Delete this question</a>
 </section>
-
+</div>
+<div class="col-xs-12 col-md-6">
 <section id="unit-tests">
     <h2>Unit Tests</h2>
     <form id="test-form" action="/tutor/test/save" method="post">
-
+        <h3>New Test</h3>
         {% csrf_token %}
         <input type="hidden" name="question_id" value="{{pk}}">
         {{ test_form.as_p }}
-        <input type="submit" value="add test">
+        <input type="submit" value="add test" class="btn btn-default btn-success">
     </form>
-    <ul>
+    <h3>Existing Tests</h3>
+    <ul id="test-list">
     {% for id, test in tests.items %}
-        <li>Test: {{test.0}}<br>Result: {{test.1}}<br><a href="/tutor/test/{{id}}/del" alt="Delete this test">x</a></li>
+        <li class="{% if test.2 %}bg-success{% else %}bg-danger{% endif %}">
+            Test: {{test.0}}<br>Result: {{test.1}}<br><a href="/tutor/test/{{id}}/del" alt="Delete this test">x</a>
+        </li>
     {% endfor %}
     </ul>
 </section>
+</div>
 
-<section id="question-history">
-    <h2>Revision History</h2>
-    <table>
+</div> <!--//row -->
+<br><br>
+<div class="panel panel-primary">
+    <div class="panel-heading">Revision History</div>
+    <table class="table table-striped">
         <tr><th>version</th><th>date modified</th><th>modified by</th></tr>
         {% for aq in history %}
-            <tr class="{% cycle 'odd' 'even'%}"><td>{{aq.version}}</td><td>{{aq.modified}}</td><td>{{aq.modifier}}</td></tr>
+            <tr><td>{{aq.version}}</td><td>{{aq.modified}}</td><td>{{aq.modifier}}</td></tr>
         {% endfor %}
     </table>
-
-
-</section>
+</div>
 
 {% endblock %}
