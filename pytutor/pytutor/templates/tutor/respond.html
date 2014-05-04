@@ -13,9 +13,11 @@
 {% else %}
 
 <section id="respond">
-	<h1>Question {{question.id}}</h1>
-	<p>{{question.prompt}}</p>
-	<p>Attempt #{{response.attempt}}</p>
+	<div class="panel panel-success">
+        <div class="panel-heading">Problem Description</div>
+        <div class="panel-body">{{question.prompt}}</div>
+        <div class="panel-footer">Attempt #{{response.attempt}}</div>
+    </div>
     
     <form action="/tutor/response/submit" method="post" id="response-form">
         {% csrf_token %}
@@ -30,7 +32,7 @@
 
 </div>
         </div>
-        <input type="submit" value="Submit">
+        <input type="submit" value="Submit" class="btn btn-primary">
     </form>
 </section>
 
