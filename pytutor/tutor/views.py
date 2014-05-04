@@ -20,8 +20,18 @@ def study(request):
     else:
         question = random.choice(questions)
         response_form = ResponseForm()
-        context = {"question": question, "response_form" : response_form, "questions" : True}
-        
+        try:
+            response = Response.objects.get(user=request.user, question=question)
+            attempt = response.attempt + 1
+            print("try success")
+        except: 
+            attempt = 1
+        context = {
+            "question": question, 
+            "response_form" : response_form, 
+            "questions" : True,
+            "attempt" : attempt
+        }
     
     return render(request, 'tutor/respond.html', context)
     #except: 

@@ -145,7 +145,7 @@ class Response(models.Model):
 
     code = models.TextField(blank=True, help_text="Your solution to this question.")
     is_correct = models.BooleanField(default=False)
-    attempt = models.IntegerField()
+    attempt = models.IntegerField(default=1)
     submitted = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User)
     question = models.ForeignKey(ArchiveQuestion)
