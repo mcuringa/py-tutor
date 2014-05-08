@@ -27,12 +27,12 @@
         <div class="fieldWrapper">
             {{ response_form.code.errors }}
             {{ response_form.code.label_tag }} 
-            <div id="response-editor"># write a function called {{question.function_name}}
+            <div id="response-editor" data-code-field="code"># write a function called {{question.function_name}}
 
 
 </div>
         </div>
-        <input type="submit" value="Submit" class="btn btn-primary">
+        <button id="submit-user-code" class="btn btn-primary">Run tests!</button>
     </form>
 </section>
 

@@ -130,6 +130,8 @@ dt
 footer
 {
     /* official adelphi "brown" */
+/*    position: absolute; */
+    height: 40px;
     padding: 2em;
     text-align: center;
     bottom: 0;
@@ -148,10 +150,13 @@ footer a
 .passed { color: green;}
 
 /*----------------------- response form */
-#response-editor 
+.code-editor, #response-editor 
 { 
     font-size: 130%;
     position: relative;
     height: 300px;
     width: 100%;
+    border: 1px solid #e1e1e8;
+    border-radius: 4px;
 }
+

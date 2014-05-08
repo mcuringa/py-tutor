@@ -1,13 +1,56 @@
 
-function configureEditor(editorId)
+var editors = Array();
+
+function configureEditor(id) 
 {
     // configure ace editor
-    var editor = ace.edit(editorId);
-    editor.setTheme("ace/theme/GitHub");
+    var editor = ace.edit(id);
+    editor.setTheme("ace/theme/monokai");
     editor.getSession().setMode("ace/mode/python");
+    editor.getSession().setUseWrapMode(true);
     editor.getSession().setUseSoftTabs(true);
+    editors[id] = editor;
     return editor
 }
+
+function copyEditorCode(id)
+{
+    var codeField = $("#" + id).data("codeField");
+    var editor = editors[id];
+    var code = editor.getValue();
+    $("input[name=" + codeField + "]").val(code);
+}
+
+function initEditors()
+{
+
+
+    if($("#response-editor").length)
+    {
+        configureEditor("response-editor");
+        $("#submit-user-code").click(function (event) 
+        {
+            copyEditorCode(editors["response-editor"]);
+            $("#response-form").submit();
+        });
+    }
+
+    if($("#prompt-editor").length)
+    {
+        configureEditor("prompt-editor");
+        configureEditor("solution-editor");
+
+        $("#save-question").click(function (event) 
+        {
+            copyEditorCode("prompt-editor");
+            copyEditorCode("solution-editor");
+            $("#question-form").submit();
+        });
+    }
+}
+
+
+
 
 $( document ).ready(function() {
     
@@ -48,6 +91,10 @@ $( document ).ready(function() {
             });
         }
     });
+
+    initEditors();
+
+
     $("#question-form :text").each(function(){
         $( this ).addClass("form-control");
     });
@@ -61,40 +108,9 @@ $( document ).ready(function() {
         $( this ).addClass("form-control");
     });
     $( "#id_comment").val("");
-    //Trying to add either of these doesn't work. :(
-    //var promptEditor = configureEditor("prompt-editor");
-    //var solutionEditor = ace.edit("solution-editor");
-
-    /*$("#question-form").submit(function ( event) 
-    {
-        // Stop form from submitting normally
-        event.preventDefault();
-        var $form = $( this );
-        
-        //var promptCode = promptEditor.getValue();
-        var solutionCode = solutionEditor.getValue();
-        //$("#id_prompt").val(promptCode);
-        $("#id_solution").val(solutionCode);
-        var data = $form.serialize();
-        var url = $form.attr( "action" );
-        $('form').unbind().submit();     
-    });*/
 
 
-    //response form stuff
-    var responseEditor = configureEditor("response-editor");
 
-    $("#response-form").submit(function ( event) 
-    {
-        // Stop form from submitting normally
-        event.preventDefault();
-        var $form = $( this );
-        
-        var code = responseEditor.getValue();
-        $("#user_code").val(code);
-        var data = $form.serialize();
-        var url = $form.attr( "action" );
-        $('form').unbind().submit();     
-    });
+
 });
 

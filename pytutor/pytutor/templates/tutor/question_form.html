@@ -15,12 +15,14 @@
         <dt>Version:</dt>
           <dd id="version">{{question.instance.version}}</dd>
     </dl>
+    
     <form action="/tutor/save" method="post" id="question-form" role="form">
         {% csrf_token %}
         <input type="hidden" name="pk" value="{{pk}}">
 
-        <!--input type="hidden" id="id_prompt" name="prompt">
-        <input type="hidden" id="id_solution" name="solution"-->
+        <input type="hidden" id="id_prompt" name="prompt">
+        <input type="hidden" id="id_solution" name="solution">
+
        
         <div class="form-group">
             {{ question.function_name.errors }}
@@ -30,17 +32,16 @@
         <div class="form-group">
             {{ question.prompt.errors }}
             {{ question.prompt.label_tag }}
-            {{ question.prompt }} 
-            <!--div id="prompt-editor">text
+            <div id="prompt-editor" class="code-editor" data-code-field="prompt">{{question.instance.prompt}}
 
-            </div-->
+</div>
         </div>
         <div class="form-group">
             {{ question.solution.errors }}
             {{ question.solution.label_tag }}
-            {{ question.solution }} 
-            <!--div id="solution-editor">text
-            </div-->
+            <div id="solution-editor" class="code-editor" data-code-field="solution">{{question.instance.solution}}
+
+</div>
         </div>
         <div class="form-group">
             {{ question.level.errors }}
@@ -57,8 +58,8 @@
             {{ question.comment.label_tag }} 
             {{ question.comment }} 
         </div>
-        <input type="submit" value="Submit" class="btn btn-default btn-success"> 
-    <button class="btn btn-danger"><a href="/tutor/{{question.instance.id}}/delete">Delete Question</a></button>
+        <button id="save-question" class="btn btn-default btn-success">Save</button>
+        <button class="btn btn-danger"><a href="/tutor/{{question.instance.id}}/delete">Delete Question</a></button>
     </form>
 </section>
 </div>
