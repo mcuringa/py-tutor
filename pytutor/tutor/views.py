@@ -43,38 +43,44 @@ def no_questions(request):
 def respond(request):
     """Allow user to write a response to a question."""
     
+    print("respond called")
+
     pk = int(request.POST["qpk"])
+    user_code = request.POST.get('code', False);
+    print(user_code)
+
+
     #responses are linked to ArchiveQuestions, but we're given a Question key
     question = ArchiveQuestion.objects.all().filter(parent_id=pk).latest("created")
-
-    #if the user has already attempted the question, use existing response object
+    
     try:
-        response = Response.objects.get(user=request.user, question=question)
-        response.attempt += 1
-    #if not, create one
+        attempts = Response.objects.all().filter(user=request.user, question=question)
     except: 
-        response = Response(attempt=1, user=request.user, question=question)
-
-    """Submit user's response for evaluation."""
-    user_code = request.POST.get('code', False);
+        attempts = []
+    
+    response = Response(attempt=len(attempts) + 1, user=request.user, question=question)
     response.code = user_code
-    response.save()
-    a = response.attempt - 1
-    context = {"question" : question, "response" : response, "previous_attempt" : a}
+
     #evaluate user's code
     testResults = []
-    passAll = False
     for test in Test.objects.all().filter(question=pk):
-        result = test.evaluate(user_code)
-        testResults.append( (test, result[0]) )
-        passAll = result[1] and True
+        try:
+            result = test.evaluate(user_code)
+        except ex:
+            print(ex)
+            testResults.append( (test, ex) )
 
-    context["testResults"] = testResults
-    if not passAll:
-        return render(request, 'tutor/response_incorrect.html', context)
-    #so if there are no tests, the response defaults to being marked correct.
-    response.is_correct = True
+    context = {"question" : question, 
+               "response" : response, 
+               "previous_attempt" : response.attempt - 1,
+               "testResults" : testResults }
+
+    response.is_correct = len(testResults) == 0
     response.save()
+
+    if not response.is_correct:
+        return render(request, 'tutor/response_incorrect.html', context)
+    
     return render(request, 'tutor/response_correct.html', context)
 
 def list(request):

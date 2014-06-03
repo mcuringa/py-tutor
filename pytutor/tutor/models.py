@@ -100,11 +100,11 @@ class Test(models.Model):
     fail_msg = models.TextField(blank=True, null=True, help_text="A message for the user if their function fails this test.")
     question = models.ForeignKey(Question)
     
-    def evaluate(self, user_function=0):
+    def evaluate(self, user_function=""):
         """Evaluate the user_function against this test's assertion. 
         If no user function given, evaluate test on question's given solution.
         Quietly return, or throw an Exception."""
-        if user_function == 0:
+        if user_function == "":
             user_function = Question.objects.get(pk=self.question.pk).solution
         try:
             # compile the user's function
@@ -118,9 +118,9 @@ class Test(models.Model):
             #testResults.append( (test, None) )
             return (None, True)
         except AssertionError as ae:
-            return (ae, False)
+            return ae
         except Exception as ex:
-            return (ex, False)
+            return ex
         
 
     def to_code(self):

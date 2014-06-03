@@ -22,12 +22,12 @@
     <form action="/tutor/response/submit" method="post" id="response-form">
         {% csrf_token %}
         <input type="hidden" name="qpk" value="{{question.id}}">
-        <input type="hidden" id="user_code" name="code">
+        <input type="hidden" id="user_code" name="user_code">
        
         <div class="fieldWrapper">
             {{ response_form.code.errors }}
             {{ response_form.code.label_tag }} 
-            <div id="response-editor" data-code-field="code"># write a function called {{question.function_name}}
+            <div id="response-editor" data-code-field="user_code"># write a function called {{question.function_name}}
 
 
 </div>
