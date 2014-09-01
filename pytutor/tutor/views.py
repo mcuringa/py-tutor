@@ -260,15 +260,15 @@ def serve_question(user):
     #now calculate based on these numbers
     #main focus is current level (highest_correct_level.
     #count questions at highest current level
-    #if count > 5 and level = 10, give the user a random question from level 5 - 10.
     #if count > 5 and level < 10, move the user to the next level
+    #if count > 5 and level = 10, give the user a random question from level 5 - 10.
 
     #otherwise, pick a random floating point number from 0 to 1.
     #if highest and lowest incorrect levels are the same:
     #   if that number is not the current level:
     #       if num <= 0.6, give user a random unanswered or incorrect question from this level
-    #       if 0.6 < num <= 0.9, give user a random unanswered or incorrect question from this level
-    #       if 0.9 < num <= 1.0, give user a random unanswered or incorrect question w/level between current and the high/low level
+    #       if 0.6 < num <= 0.9, give user a random unanswered or incorrect question from highest/lowest incorrect level
+    #       if 0.9 < num <= 1.0, give user a random unanswered question w/level between current and the high/low level
     #   if that number is the current level
     #       if num <= 0.8, give user a random unanswered or incorrect question from this level
     #       if 0.8 < num <=  1.0, give user a random unanswered or incorrect question from
@@ -276,8 +276,7 @@ def serve_question(user):
 
     #if highest and lowest incorrect levels are different:
     #   if num <= 0.6, give user a random unanswered or incorrect question from this level
-    #   if 0.6 < num <= 0.8, give user a random unanswered or incorrect question from this level
-    #   if 0.8 < num <= 1.0, give user a random unanswered or incorrect question from
+    #   if 0.6 < num <= 1.0, give user a random unanswered or incorrect question from
     #                        a level less than this one, but not below the lowest incorrect level.
 
 
