@@ -99,7 +99,8 @@ def question_form(request, pk=0):
         history = []
         test_results = []
     else:
-        question = Question.objects.get(pk=pk)
+
+        question = Question.objects.get(pk=pk)        
         form = QuestionForm(instance=question)
         #form.id_comment = "" #this doesn't actually clear the field
         history = ArchiveQuestion.objects.all().filter(parent_id=pk)
@@ -109,7 +110,10 @@ def question_form(request, pk=0):
             messages.add_message(request, messages.INFO, 'This question has no unit tests. Without unit tests, a response to this question won\'t be properly evaluated. Create a unit test below!')
         else:
             for test in tests:
-                if test.evaluate()[1] == False:
+                print(test.to_code())
+                r = test.evaluate()
+
+                if r[1] == False:
                     messages.add_message(request, messages.INFO, 'Test ' + str(test.to_code()) + ' failed on Solution code. Check this test case and your solution code to fix the issue.')
                     result = "Test failed on 'Solution' code."
                     passed = False
@@ -131,6 +135,8 @@ def question_form(request, pk=0):
 
 @login_required
 def save_question(request):
+
+    print('saving a question...')
     pk = int(request.POST["pk"])
     if pk > 0:
         q = Question.objects.get(pk=pk)

@@ -118,13 +118,16 @@ class Test(models.Model):
             #testResults.append( (test, None) )
             return (None, True)
         except AssertionError as ae:
-            return ae
+            print("test failed...")
+            print(ae)
+            return (ae, False)
         except Exception as ex:
-            return ex
+            print("exception executing code")
+            return (ex, False)
         
 
     def to_code(self):
-        str = "assert {}({}) == {}, '{}'".format(self.question.function_name, self.args, self.result, self.fail_msg)
+        str = 'assert {}({}) == {}, """{}"""'.format(self.question.function_name, self.args, self.result, self.fail_msg)
         return str
 
 class TestForm(ModelForm):
