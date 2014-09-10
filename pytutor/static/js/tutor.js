@@ -1,3 +1,5 @@
+//foo
+
 
 var editors = Array();
 
@@ -15,10 +17,25 @@ function configureEditor(id)
 
 function copyEditorCode(id)
 {
+    // data-code-field <==> ___.data("codeField")
+    // notice the camelCase -- first word (denoted by dashes in html)
+    // not capitalized, all subsequent words have first letter capitalized
+    // $ means JQuery
     var codeField = $("#" + id).data("codeField");
     var editor = editors[id];
     var code = editor.getValue();
     $("input[name=" + codeField + "]").val(code);
+    // .something means 'class called something' -- the period means 'class'
+    // #something means 'id called something' -- the pound sign means 'id'
+    // something means 'element called something' -- <something>
+    // ex:
+    // input  --> <input>
+    // p      --> <p>
+    // div    --> <div>
+    // you can specify its attributes with []--
+    // ex:
+    // input[name=prompt]   ---> <input name="prompt">
+    // ^Select with JQuery           ^In HTML
 }
 
 function initEditors()
@@ -113,4 +130,3 @@ $( document ).ready(function() {
 
 
 });
-
