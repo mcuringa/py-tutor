@@ -1,7 +1,7 @@
 import random
 import json
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core import serializers
 from django.contrib import messages
@@ -9,21 +9,58 @@ from django.contrib import messages
 from tutor.models import *
 
 @login_required
-def study(request):
+def study(request, try_again_id=0, study_tag=None):
     """Randomly choose the next question for the user to study.
        If no questions exist, prompt the user to create one."""
+
+
     if request.method == "POST":
         respond(request)
+    
     questions = Question.objects.all()
     if not questions:
         context = {"questions" : False}
     else:
-        question = serve_question(request.user)
+        if try_again_id > 0:
+            question = Question.objects.get(pk=try_again_id)  # everything above and including this line, Matt did.
+            response_form = ResponseForm.objects.get(study_tag = study_tag)
+            # This was my attemt to accomplish #2 ^--
+
+        elif study_tag is not None:
+            print ('the study tag is:', study_tag)
+            questions = Question.objects.get(study_tag= study_tag) # should we be saying questions or question for this variable?
+            # Now I sort of think I should put a 'context' right here,
+            # here I'm trying to say, questions = only questions that have the same tag
+            # ^ is that the same as '#1 looking up a random question with the tag?' <-- I feel like I'm missing choice.random somewhere in here.
+
+            # v v v then, serve from only these questions (stay in the same study_tag group.)
+            # I'm trying to do #1 and
+
+            # for tag in Tag.objects.all().fliter(study_tag= str(study_tag))
+            # Example for #5??  6 ^-> for test in Test.objects.all().filter(question=pk):
+
+            questions = serve_question(request.user)#.choice.random < or something?
+
+#-------------List of Things I Need To Do -----------------------
+
+            #1. look up a random question with the tag
+            #2. change the form, so that when they go to the next question,  <---------- I think I don't know what 'change the form' means here.
+                                                                                        # what is the response form / question form? the page that shows up with questions, and reponse listings?
+            # if they're studying wihtin a tag, they stay in the tag
+            #3. for try again, if they're studying with a tag, they need to stay within the tag.
+
+            # v do these first v
+            #4. make sure that the tags get saved and work 
+            #5. filter (look up tag as a string saved with question)
+
+        else:
+            question = serve_question(request.user)
+            
+
         response_form = ResponseForm()
         try:
             response = Response.objects.get(user=request.user, question=question)
             attempt = response.attempt + 1
-            print("try success")
         except: 
             attempt = 1
         context = {
@@ -46,12 +83,13 @@ def respond(request):
     print("respond called")
 
     pk = int(request.POST["qpk"])
-    user_code = request.POST.get('code', False);
+    user_code = request.POST.get('user_code', False);
+    print(request.POST)
     print(user_code)
-
+    # printing whatever was typed into the box as string
 
     #responses are linked to ArchiveQuestions, but we're given a Question key
-    question = ArchiveQuestion.objects.all().filter(parent_id=pk).latest("created")
+    question = Question.objects.get(pk=pk)  
     
     try:
         attempts = Response.objects.all().filter(user=request.user, question=question)
@@ -62,32 +100,35 @@ def respond(request):
     response.code = user_code
 
     #evaluate user's code
+    response.is_correct = True
     testResults = []
     for test in Test.objects.all().filter(question=pk):
-        try:
-            result = test.evaluate(user_code)
-        except ex:
-            print(ex)
-            testResults.append( (test, ex) )
+        ex, success = test.evaluate(user_code)
+        response.is_correct = success
+        testResults.append((test, success))
+
+
+        ## Answer the question, and keep refreshing to see if it's working.
 
     context = {"question" : question, 
                "response" : response, 
                "previous_attempt" : response.attempt - 1,
                "testResults" : testResults }
+               ## Here, make it so it formats the user's code with the assert statements from the 
+               ## Question (question.tests) --
+               ## change the output here in context and in response_correct.html
 
-    response.is_correct = len(testResults) == 0
+    # response.is_correct = len(testResults) == 0
     response.save()
-
-    if not response.is_correct:
-        return render(request, 'tutor/response_incorrect.html', context)
     
-    return render(request, 'tutor/response_correct.html', context)
+    return render(request, 'tutor/response_result.html', context)
 
 def list(request):
     """List the questions in the database"""
     
     questions = Question.objects.all()
     context = {"questions": questions}
+
     
     return render(request, 'tutor/list.html', context)
 
@@ -156,8 +197,44 @@ def save_question(request):
         messages.add_message(request, messages.INFO, 'Please fill out all required fields.')
         url = "/tutor/new"
 
+
     return HttpResponseRedirect(url)
 
+## I have no idea how to save the tags.  This is a guess.
+@login_required
+def save_tags(request):
+    print('saving tags...')
+    question = Question.objects.get(pk=pk)
+    tags = Tags.objects.all().filter(question=question)
+    print (tags)
+    return HttpResponseRedirect(url)
+
+#using this as how to save tag, use tag.
+# @login_required
+# def save_question(request):
+
+#     print('saving a question...')
+#     pk = int(request.POST["pk"])
+#     if pk > 0:
+#         q = Question.objects.get(pk=pk)
+#         form = QuestionForm(request.POST, instance=q)
+#         form.instance.version += 1
+#     else:
+#         form = QuestionForm(request.POST)
+#         form.instance.version = 1
+#         form.instance.creator = request.user
+
+#     form.instance.modifier = request.user
+#     try:
+#       question = form.save()
+#       archive(question)
+#       url = "/tutor/" + str(question.id) + "/edit"
+#     except:
+#         messages.add_message(request, messages.INFO, 'Please fill out all required fields.')
+#         url = "/tutor/new"
+
+
+#     return HttpResponseRedirect(url)
 @login_required
 def delete_question(request, pk):
     """Deletes the selected question and all related ArchiveQuestions."""
@@ -207,7 +284,8 @@ def add_test(request):
         "success": success,
         "message": message,
         "list_append": list_append,
-        "passed": passed
+        "passed": passed,
+        "assert_code": test.to_code()
     }
     # json = serializers.serialize("json", [test])
     # # return a sustring because djano only works with
@@ -228,15 +306,125 @@ def del_test(request, pk):
 def serve_question(user):
     """Serves a user the next applicable question."""
     #get history of user's correct and incorrect responses
-    correct_responses = Response.objects.all().filter(user=user, is_correct=True)
-    incorrect_responses = Response.objects.all().filter(user=user, is_correct=False)
+    # correct_responses = Response.objects.all().filter(user=user, is_correct=True)
+    # incorrect_responses = Response.objects.all().filter(user=user, is_correct=False)
 
-    if not correct_responses:
-        #no questions correctly answered, choose one from level 1
-        print("no correct answers")
-        possible_questions = Question.objects.all().filter(level=1)
-        best_question = random.choice(possible_questions)
-        return best_question
+    questions = Question.objects.all().filter()
+    next_q = random.choice(questions)
+    return next_q
+
+
+# @login_required
+
+# --> it looke like del_test is separate from the del_question function
+# will my duplicate have to follow the same form?
+
+
+# @login_required
+# def delete_question(request, pk):
+#     """Deletes the selected question and all related ArchiveQuestions."""
+
+#     question = Question.objects.get(pk=pk)
+#     archives = ArchiveQuestion.objects.all().filter(parent_id=pk)
+#     for q in archives:
+#         q.delete()
+#     question.delete()
+#     return HttpResponseRedirect("/tutor/list")
+def dup(request, pk=0):
+    new_q = Question.objects.get(pk=pk)
+    tests = Test.objects.all().filter(question=new_q)
+    new_q.pk = None
+    new_q.creator = request.user
+    new_q.modifier = request.user
+    new_q.save()
+
+    for t in tests:
+        t.pk = None
+        t.question = new_q
+        t.save()
+
+
+
+# look up all associated test qs
+# set all test qs  - assign them into variable associated with question
+# we need to reset "creator" manually to be the current user (or "modifier")
+
+
+    messages.add_message(request, messages.INFO, "Test successfully duplicated.")
+    url = "/tutor/" + str(new_q.id) + "/edit"
+
+    return HttpResponseRedirect("/tutor/list")
+
+
+# def dupTests(request, pk=0):
+#     test = Test.objects.get(pk=pk)
+#     question = test.question
+#     test.save()
+
+#     print (test)
+
+#     test.pk = None
+#     test.save()
+
+#     dupTest = test
+#     return HttpResponse(url)
+
+
+# Now I want to make it so that the name changes to (function_name_duplicate1)
+
+# printing (dup_q.test) gave an error, so I htink I have to make a new 
+# function for tests.
+# here's the modle I think I should follow for tests  (although maybe not, this could
+    #just be the 'x' button on "existing tests boxes. ")
+
+
+    ## Is question tied to test?
+
+    ## do a print statement on source_q, and see if there's any tests in there.
+
+    #     for source_test in source_q:
+    #         dup_test.append(source_test)
+    # duplicate_q = 
+
+
+    # context = {"questions": questions}
+    
+    # return render(request, 'tutor/list.html', context)
+
+    # django model copy / deep copy (<-- new copy for all archived *  nevermind)
+
+
+
+    # change primary key to zero, then create archive qs and make them an empty list. 
+    #aquestions = []
+    # the look up all the tests that are part of source_q, for each one, 
+    #create a new test, and add it to your duplicate q
+    # create empty dup question, get the id, and then save all 
+    #the test to the database as you go.
+
+
+    #look up question we want to dup using pk
+
+    #copy it? give it new id?
+
+    #save the new object
+
+    #copy all the tests, too
+
+    #now redirect back to the list
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     #get the questions associated with those responses
     # correct_questions = []

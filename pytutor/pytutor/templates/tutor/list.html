@@ -8,7 +8,11 @@
     <h1>The Question List</h1>
     <ol>
     {% for question in questions %}
-        <li>{{question.function_name}} <a href="/tutor/{{question.id}}/edit/" title="edit this question">[edit]</a> <a href="/tutor/{{question.id}}/delete/" title="delete to this question">[delete]</a></li>
+        <li>{{question.function_name}} 
+       		<a href="/tutor/{{question.id}}/edit/" class="btn btn-primary" title="edit this question">edit</a>
+       		<a href="/tutor/{{question.id}}/dup/" class="btn btn-info" title="duplicate this question">duplicate</a>
+        	<a href="/tutor/{{question.id}}/delete/" class="btn btn-danger"  title="delete to this question">delete</a>
+       </li>
     {% endfor %}
     </ul>
 </section>

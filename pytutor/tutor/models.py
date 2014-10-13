@@ -151,7 +151,7 @@ class Response(models.Model):
     attempt = models.IntegerField(default=1)
     submitted = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User)
-    question = models.ForeignKey(ArchiveQuestion)
+    question = models.ForeignKey(Question) # Question, not AQ
 
 
 class ResponseForm(ModelForm):

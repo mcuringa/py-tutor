@@ -160,3 +160,14 @@ footer a
     border-radius: 4px;
 }
 
+/*----------------------- study stuff */
+
+#respond.passed_test h1
+{
+    color: green;
+}
+
+#respond.failed_test h1
+{
+    color: red;
+}

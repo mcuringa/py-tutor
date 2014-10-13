@@ -12,6 +12,20 @@
     <p>{{response.code}}</p>
     <p>Your submission was correct!</p>
     <a href="/tutor">Next Question >></a>
+
+    <h2>Test Results</h2>
+    <table class="table">
+        <tr>
+            <th>Pass/Fail</th><th>Test</th><th>Error</th>
+        </tr>
+        {% for test, ex in testResults %}
+        <tr class="{{ ex|yesno:"passed,failed" }}{% cycle ' odd' ' even' %}">
+            <td>{{ ex|yesno:"Pass, Fail" }}</td>
+            <td>{{test.to_code}}</td>
+            <td>{% if not ex %}{{test.fail_msg}}{% endif %}</td>
+        {% endfor %}
+    </table>
 </section>
+
 
 {% endblock %}

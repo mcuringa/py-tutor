@@ -4,21 +4,19 @@
 
 {% block body %}
 
-<section id="respond">
+<section id="respond" class="{{ ex|yesno:"passed_test,failed_test" }}">
 	<h1>Question {{question.id}}</h1>
 	<p>{{question.prompt}}</p>
 	<!--<p>Attempt #{{previous_attempt}}</p> Can't get this to properly display somehow-->
     <p>{{user.username}} submitted:</p>
     <code>{{response.code}}</code>
-    <p>Your submission was incorrect.</p>
-    <h2>Test Results
+
+    <h3>Test Results
     <a href="/tutor" class="btn btn-primary" title="get a new question">Next Question</a>
-    <a href="/tutor" class="btn btn-danger" title="try the question again">Try Again</a>
+    <a href="/tutor/{{question.id}}" class="btn btn-danger" title="try the question again">Try Again</a>
 
-    </h2>
+    </h3>
 
-           
-       </li>
     <table class="table">
         <tr>
             <th>Pass/Fail</th><th>Test</th><th>Error</th>

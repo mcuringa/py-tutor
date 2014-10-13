@@ -1,0 +1,49 @@
+Project Details:
+
+Step 1 :
+user selects stage and defines activity and activity material
+
+1st: User selects Question Stage
+a. presentation
+	- user defines activity:
+		~ script reference
+		--- step 2 ---
+
+b. listen and repeat
+	- user defines activity:
+	~ GSE CODE and Descriptor
+	~ script reference: inputs line by line dialogue [maybe textbox for whole thing]
+	--- step 2 ---
+
+c. practice skills
+	- user selects activity
+		a. read and repeat
+			- user defines activity
+			~ script reference: inputs line by line [text box]
+			~ GSE CODE and Descriptor
+			--- step 2 ---
+		b. listening comprehension
+			- user defines activity (selector button: script OR original)
+			~ script / audio reference or original comp.
+			~ GSE CODE and Descriptor
+			--- step 2 ---
+		c reading comprehension
+			-user defines activity 
+			~ original text
+			~ GSE CODE and Descriptor
+			--- step 2 ---
+
+d. production
+	- user defines activity: (selector button: script OR original)
+	~ script / original comp reference
+	~ GSE CODE and Descriptor
+	--- step 2 ---
+
+e. consolidation
+
+Step 2:
+user selects activity type and defines activity:
+This must be tied to the stage and materials 
+
+
+

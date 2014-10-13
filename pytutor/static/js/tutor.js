@@ -47,7 +47,7 @@ function initEditors()
         configureEditor("response-editor");
         $("#submit-user-code").click(function (event) 
         {
-            copyEditorCode(editors["response-editor"]);
+            copyEditorCode("response-editor");
             $("#response-form").submit();
         });
     }
@@ -77,12 +77,16 @@ $( document ).ready(function() {
         //
         if ($( '#version' ).html() == '0') {
             event.preventDefault();
-            $( '#messages' ).css('visibility','visible');
-            $( '#messages' ).css('height','auto');
+            // $( '#messages' ).css('visibility','visible');
+            // $( '#messages' ).css('height','auto');
+            $( '#messages' ).show();
             $( '#message_list' ).append( "<li>You must create a function name and prompt before adding unit tests.</li>" );
         } else {
             // Stop form from submitting normally
             event.preventDefault();
+            
+
+
             var $form = $( this );
             var data = $form.serialize();   
             var url = $form.attr( "action" );
@@ -90,10 +94,9 @@ $( document ).ready(function() {
             $.post( url, data ).success(function( response ) {
                 if ( response.success ){
                     $( "#unit-tests ul" ).append( response.list_append );
-                    $( '#messages' ).css('visibility','visible');
-                    $( '#messages' ).css('height','auto');
+                    $( '#messages' ).show();
                     if ( response.passed ){
-                        $( '#message_list' ).append( "<li>Test successfully added and passed.</li>" );
+                        $( '#message_list' ).append( "<li>" + response.assert_code + "</li>" );
                     } else {
                         $( '#message_list' ).append( "<li>Test successfully added.</li>" );
                         $( '#message_list' ).append( "<li>New test failed on Solution code. "
