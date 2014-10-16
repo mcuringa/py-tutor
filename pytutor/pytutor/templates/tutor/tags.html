@@ -1,0 +1,17 @@
+
+{% extends "base.html" %}
+
+{% block title %}PyTutor Tags{% endblock %}
+
+{% block body %}
+
+<section id="tag_home">
+    <h1>The Tag List</h1>
+    <ol>
+    {% for tag in tags %}
+		<li class="tag-{{tag}}"><a href="/tutor/tag/{{tag}}" title="study this tag" class="btn btn-primary">{{tag}}</a></li>
+ 	{% endfor %}
+	</ol>
+</section>
+{% endblock %}
+

@@ -13,6 +13,7 @@ urlpatterns = patterns('',
     url(r'^tutor/(?P<try_again_id>[0-9]+?)[/]$', 'tutor.views.study'), #try_again_id is a pk of the question to try again
     url(r'^tutor/tag/(?P<study_tag>.*)[/]$', 'tutor.views.study'),
     url(r'^tutor/(?P<try_again_id>[0-9]+?)/tag/(?P<study_tag>.*)[/]$', 'tutor.views.study'),
+     url(r'^tutor/tags', 'tutor.views.tags'),
     # url should be something like
     # tutor/14/tag/chapter_two/
 

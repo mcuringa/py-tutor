@@ -150,6 +150,23 @@ def list(request):
     
     return render(request, 'tutor/list.html', context)
 
+def tags(request):
+    """List the tags in the database"""
+    
+    questions = Question.objects.all()
+    tags = []
+    for question in questions:
+        qtags = question.tags.split(",")
+        qtags = [q.strip() for q in qtags]
+        tags.extend(qtags)
+
+    tags = set(tags)
+    tags = sorted([t for t in tags])
+    context = {"tags": tags}
+
+    
+    return render(request, 'tutor/tags.html', context)
+
 @login_required
 def question_form(request, pk=0):
     
@@ -218,41 +235,7 @@ def save_question(request):
 
     return HttpResponseRedirect(url)
 
-## I have no idea how to save the tags.  This is a guess.
-@login_required
-def save_tags(request):
-    print('saving tags...')
-    question = Question.objects.get(pk=pk)
-    tags = Tags.objects.all().filter(question=question)
-    print (tags)
-    return HttpResponseRedirect(url)
 
-#using this as how to save tag, use tag.
-# @login_required
-# def save_question(request):
-
-#     print('saving a question...')
-#     pk = int(request.POST["pk"])
-#     if pk > 0:
-#         q = Question.objects.get(pk=pk)
-#         form = QuestionForm(request.POST, instance=q)
-#         form.instance.version += 1
-#     else:
-#         form = QuestionForm(request.POST)
-#         form.instance.version = 1
-#         form.instance.creator = request.user
-
-#     form.instance.modifier = request.user
-#     try:
-#       question = form.save()
-#       archive(question)
-#       url = "/tutor/" + str(question.id) + "/edit"
-#     except:
-#         messages.add_message(request, messages.INFO, 'Please fill out all required fields.')
-#         url = "/tutor/new"
-
-
-#     return HttpResponseRedirect(url)
 @login_required
 def delete_question(request, pk):
     """Deletes the selected question and all related ArchiveQuestions."""
