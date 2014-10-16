@@ -18,14 +18,14 @@
     {% endfor %}
     </ul>
 
-<section id="home2">
-<!-- 
+<!-- <section id="home2">
+ 
 # for question in question
 # if question has a tag
 # display the tag up top as a button that will direct to a random question in that tag
 # display the list of questions below it with their [edit][dup][delete] buttons
  -->
-  <h1> Questions by Tag</h1>
+<!--   <h1> Questions by Tag</h1>
   {% for question in questions %}
     {% if study_tag %}
       <li> {{question.tags}} <br>
@@ -36,7 +36,7 @@
       <a href="/tutor{% if study_tag %}/tag/{{study_tag}}/{% endif %}" 
     class="btn btn-primary" title="get a new question">Next Question</a>
 
-    {% if question.tag > }
-</section>
+    {% if question.tag > } 
+</section> -->
 
 {% endblock %}
