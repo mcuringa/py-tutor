@@ -13,6 +13,16 @@
 {% else %}
 
 <section id="respond">
+    {% if tag %}
+        <div class="row">
+            <div class="col-xs-3 pull-right">
+                <div class="panel panel-warning">
+                  <div class="panel-heading">Tag: {{tag}}</div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
 	<div class="panel panel-success">
         <div class="panel-heading">Problem Description</div>
         <div class="panel-body">{{question.prompt}}</div>
@@ -23,6 +33,9 @@
         {% csrf_token %}
         <input type="hidden" name="qpk" value="{{question.id}}">
         <input type="hidden" id="user_code" name="user_code">
+        {% if tag %}
+        <input type="hidden" id="study_tag" value="{{tag}}" name="study_tag">
+        {% endif %}
        
         <div class="fieldWrapper">
             {{ response_form.code.errors }}

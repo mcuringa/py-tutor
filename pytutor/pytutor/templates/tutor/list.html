@@ -8,13 +8,35 @@
     <h1>The Question List</h1>
     <ol>
     {% for question in questions %}
-        <li>{{question.function_name}} 
-       		<a href="/tutor/{{question.id}}/edit/" class="btn btn-primary" title="edit this question">edit</a>
-       		<a href="/tutor/{{question.id}}/dup/" class="btn btn-info" title="duplicate this question">duplicate</a>
-        	<a href="/tutor/{{question.id}}/delete/" class="btn btn-danger"  title="delete to this question">delete</a>
+        <li>{{question.function_name}} <br>
+            {{question.tags}}
+          <br>
+       		<a href="/tutor/{{question.id}}/edit/" class="btn btn-primary btn-xs" title="edit this question">edit</a>
+          <a href="/tutor/{{question.id}}/dup/" class="btn btn-info btn-xs" title="duplicate this question">duplicate</a>
+        	<a href="/tutor/{{question.id}}/delete/" class="btn btn-danger btn-xs"  title="delete to this question">delete</a>
        </li>
     {% endfor %}
     </ul>
+
+<section id="home2">
+<!-- 
+# for question in question
+# if question has a tag
+# display the tag up top as a button that will direct to a random question in that tag
+# display the list of questions below it with their [edit][dup][delete] buttons
+ -->
+  <h1> Questions by Tag</h1>
+  {% for question in questions %}
+    {% if study_tag %}
+      <li> {{question.tags}} <br>
+
+    {% endif %}
+  {% endfor %}
+
+      <a href="/tutor{% if study_tag %}/tag/{{study_tag}}/{% endif %}" 
+    class="btn btn-primary" title="get a new question">Next Question</a>
+
+    {% if question.tag > }
 </section>
 
 {% endblock %}

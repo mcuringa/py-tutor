@@ -10,9 +10,11 @@ urlpatterns = patterns('',
     # TUTOR URL MAPPINGS
     # --------------------------------- STUDYING
     url(r'^tutor$', 'tutor.views.study'),
-    url(r'^tutor/(?P<try_again_id>[0-9]+?)[/]$', 'tutor.views.study'),
+    url(r'^tutor/(?P<try_again_id>[0-9]+?)[/]$', 'tutor.views.study'), #try_again_id is a pk of the question to try again
     url(r'^tutor/tag/(?P<study_tag>.*)[/]$', 'tutor.views.study'),
-
+    url(r'^tutor/(?P<try_again_id>[0-9]+?)/tag/(?P<study_tag>.*)[/]$', 'tutor.views.study'),
+    # url should be something like
+    # tutor/14/tag/chapter_two/
 
     url(r'^tutor/no_questions$', 'tutor.views.no_questions'),
     url(r'^tutor/(?P<pk>[0-9]+?)/respond[/]$', 'tutor.views.study'),

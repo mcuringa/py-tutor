@@ -12,8 +12,20 @@
     <code>{{response.code}}</code>
 
     <h3>Test Results
-    <a href="/tutor" class="btn btn-primary" title="get a new question">Next Question</a>
-    <a href="/tutor/{{question.id}}" class="btn btn-danger" title="try the question again">Try Again</a>
+    <a href="/tutor{% if study_tag %}/tag/{{study_tag}}/{% endif %}" 
+    class="btn btn-primary" title="get a new question">Next Question</a>
+    <a href="/tutor/{{question.id}}{% if study_tag %}/tag/{{study_tag}}/{% endif %}" class="btn btn-danger" title="try the question again">Try Again</a>
+
+
+{% if study_tag %}
+<!--     <a href="/tutor/{{question.id}}/tag/{{study_tag}}/" class="btn btn-danger" title="try the question again">
+    Try Again
+    </a> -->
+{% else %}
+<!--     <a href="/tutor/{{question.id}}" class="btn btn-danger" title="try the question again">
+    Try Again
+    </a> -->
+{% endif %}
 
     </h3>
 

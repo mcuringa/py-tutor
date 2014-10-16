@@ -21,14 +21,30 @@ def study(request, try_again_id=0, study_tag=None):
     if not questions:
         context = {"questions" : False}
     else:
-        if try_again_id > 0:
+        if try_again_id:
             question = Question.objects.get(pk=try_again_id)  # everything above and including this line, Matt did.
-            response_form = ResponseForm.objects.get(study_tag = study_tag)
+            # response_form = ResponseForm.objects.get(study_tag = study_tag)
             # This was my attemt to accomplish #2 ^--
+            #
+            # On try again, we get out of study tag. 
+            # Hannah suggests: we make a new url that takes two parameters--
+            # a try_again_id and a study_tag. The url should direct to this study
+            # view. The button in response_result.html should link
+            # to that URL if study_tag exists, and to the 'normal' (/tutor/pk) try again
+            # url if study_tag does not exist.
+            #
+
+#################### NEXT STEPS #########################
+            # Next Steps:  Create a field ---> (Don't create field, create list of tags for user to choose from.)
+            #where you user can specify which tag they'd like to study.
+            # Consider ordering list_questions by Tag.
+#################### NEXT STEPS #########################
 
         elif study_tag is not None:
             print ('the study tag is:', study_tag)
-            questions = Question.objects.get(study_tag= study_tag) # should we be saying questions or question for this variable?
+            questions = Question.objects.filter(tags__icontains= study_tag) 
+
+            # should we be saying questions or question for this variable?
             # Now I sort of think I should put a 'context' right here,
             # here I'm trying to say, questions = only questions that have the same tag
             # ^ is that the same as '#1 looking up a random question with the tag?' <-- I feel like I'm missing choice.random somewhere in here.
@@ -38,8 +54,8 @@ def study(request, try_again_id=0, study_tag=None):
 
             # for tag in Tag.objects.all().fliter(study_tag= str(study_tag))
             # Example for #5??  6 ^-> for test in Test.objects.all().filter(question=pk):
-
-            questions = serve_question(request.user)#.choice.random < or something?
+            question = random.choice(questions)
+            # questions = serve_question(request.user)#.choice.random < or something?
 
 #-------------List of Things I Need To Do -----------------------
 
@@ -67,7 +83,8 @@ def study(request, try_again_id=0, study_tag=None):
             "question": question, 
             "response_form" : response_form, 
             "questions" : True,
-            "attempt" : attempt
+            "attempt" : attempt,
+            "tag" : study_tag
         }
     
     return render(request, 'tutor/respond.html', context)
@@ -83,7 +100,8 @@ def respond(request):
     print("respond called")
 
     pk = int(request.POST["qpk"])
-    user_code = request.POST.get('user_code', False);
+    user_code = request.POST.get('user_code', False)
+    study_tag = request.POST.get('study_tag', False)
     print(request.POST)
     print(user_code)
     # printing whatever was typed into the box as string
@@ -107,13 +125,13 @@ def respond(request):
         response.is_correct = success
         testResults.append((test, success))
 
-
         ## Answer the question, and keep refreshing to see if it's working.
 
     context = {"question" : question, 
                "response" : response, 
                "previous_attempt" : response.attempt - 1,
-               "testResults" : testResults }
+               "testResults" : testResults,
+               "study_tag": study_tag }
                ## Here, make it so it formats the user's code with the assert statements from the 
                ## Question (question.tests) --
                ## change the output here in context and in response_correct.html
