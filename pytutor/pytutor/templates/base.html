@@ -42,25 +42,25 @@
             <li><a href="/tutor/tags">study tags</a></li>
           </ul>
 
-          <ul class="nav navbar-nav navbar-right">
-          {% if not user.is_authenticated %}
-            <li><a href="/register"><button class="btn btn-warning navbar-right navbar-right-btn">Sign up</button></a></li>
-          {% endif %}
+          <ul class="nav navbar-nav navbar-right vc">
           {% if user.is_authenticated %}
             <!--We'll want this to link to the user's profile, when it exists -->
             <li><a class="btn" href="#profile-coming-soon" title="see my profile">{{ user.username }}</a></li>
+            <li>
+              <button id="friends">
+                <span class="glyphicon glyphicon-user"></span>
+                <span class="badge pull-right danger">3</span>
+              </button>
+            </li>
             <li><a class="btn" href="/logout" title="click to logout">logout</a></li>
           {% else %}
+            <li><a href="/register"><button class="btn btn-warning navbar-right navbar-right-btn">Sign up</button></a></li>
             <li>
               <form class="navbar-form navbar-right form-inline" role="form" action="/login" method="post">
                 {% csrf_token %}
-                <div class="form-group">
                   <input type="text" placeholder="Username" class="form-control" name="username">
-                </div>
-                <div class="form-group">
                   <input type="password" placeholder="Password" class="form-control" name="password">
-                </div>
-                <button type="submit" class="btn btn-info">Log in</button>
+                  <button type="submit" class="btn btn-info">Log in</button>
               </form>
             </li>
           {% endif %}
@@ -85,10 +85,11 @@
     <footer class="footer">
         <div class="container">
             <p class="text-muted">
-            PyTutor is Free Software released under the <a href="http://www.gnu.org/licenses/agpl.html" title="see the license online">GNU Affero General Public License v. 3</a>.<br>
+            <img src="/static/img/agplv3.png" alt="gnu agpl licence logo" class="pull-left">
+            <strong>PyTutor is Free Software</strong> released under the <a href="http://www.gnu.org/licenses/agpl.html" title="see the license online">GNU Affero General Public License v. 3</a>.<br>
             <a href="https://github.com/mcuringa/py-tutor" title="get the source">Source code is available on github</a>.<br>
-            Created for the <a href="http://education.adelphi.edu">Graduate Program in Educational Technology</a>
-            at Adelphi University.
+            Created for the <a href="http://www.auedtech.org">Graduate Program in Educational Technology</a>
+            at <a href="http://education.adelphi.edu">Adelphi University</a>.
         </div>
     </footer>
 

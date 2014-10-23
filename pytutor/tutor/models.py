@@ -26,11 +26,11 @@ class AbstractQuestion(models.Model):
 
     function_name = models.CharField(max_length=300)
     prompt = models.TextField()
-    solution = models.TextField(blank=True, null=True)
+    solution = models.TextField(blank=True)
     level = models.IntegerField(choices=level_choices, default=1)
-    tags = models.CharField(max_length=500, blank=True, null=True)
+    tags = models.CharField(max_length=500, blank=True)
     version = models.IntegerField(default=0)
-    comment = models.CharField(max_length=500, blank=True, null=True)
+    comment = models.CharField(max_length=500, blank=True)
     modified = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
     creator = models.ForeignKey(User, related_name="%(app_label)s_%(class)s_creator")
@@ -39,7 +39,7 @@ class AbstractQuestion(models.Model):
     class Meta:
         abstract = True
 
-
+# enumerate(["sent","pending","friend"],start=1)]
 
 class Question(AbstractQuestion):
 
@@ -78,12 +78,24 @@ class ArchiveQuestion(AbstractQuestion):
         self.creator = q.creator
         self.parent = q
 
-class Tag(models.Model):
-    """Tags are the set of case-insensitive tags
-    that are applied to Questions in the tutoring
-    system."""
 
-    tag = models.CharField(max_length=300)
+class FriendConnect(models.Model):
+    """Messages are sent between users"""
+    status_choices = ["sent", "pending", "friend"]
+
+    status = models.CharField(max_length=20, blank=True)
+    friend = models.ForeignKey(User, related_name="friend")
+    sent = models.DateTimeField(auto_now=True)
+
+class Message(models.Model):
+    """Messages are sent between users"""
+
+    msg = models.TextField()
+    msg_from = models.ForeignKey(User, related_name="from_user")
+    msg_to = models.ForeignKey(User, related_name="to_user")
+    sent = models.DateTimeField(auto_now=True)
+    unread = models.BooleanField(default=True)
+
 
 
 class Test(models.Model):

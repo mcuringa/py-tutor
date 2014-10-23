@@ -10,6 +10,12 @@ body
   margin-bottom: 80px;
 }
 
+.vc
+{
+  display: flex; 
+  align-items: center;
+}
+
 footer.footer
 {
   position: absolute;
