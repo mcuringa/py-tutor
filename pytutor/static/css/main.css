@@ -1,99 +1,23 @@
-html {
-    height: 100%;
+html 
+{
+  position: relative;
+  min-height: 100%;
 }
+
 body 
-{ 
-    font-family: Ubuntu, Futura, "Gill Sans", "Century Gothic", "Trebuchet MS", sans-serif;   
-    background-color: white;
-    margin: 0;
-    padding: 0;
-    color: black;
-    background: white;
-    padding-top: 2em;
-    font-size: 14px;
-    padding-top: 50px;
-    height: 100%;
-}
-
-a
 {
-    text-decoration: none;
+  padding-top: 50px;
+  margin-bottom: 80px;
 }
 
-/****************************************** HEADER STUFF */
-
-header
+footer.footer
 {
-    border-bottom: thin solid black;
-    position: fixed;
-    width: 100%;
-    margin: 0;
-    padding: 0;
-    padding-left: 2em;
-    top: 0;
-    height: 2em;
-    background-color: rgba(255,255,255,.9);
-}
-
-header h1
-{
-    float: left;
-    font-size: 140%;
-    line-height: 1.15em;
-    margin: 0;
-    padding: 0 1em 0.25em 0;
-}
-
-.navbar-right h1 {
-    margin-top: -10px;
-}
-
-section
-{
-    clear: both;
-    max-width: 990px;
-    padding-left: 2em;
-
-}
-
-.navbar-right-btn {
-    margin: 8px;
-}
-
-.center
-{
-    margin: 0 auto;
-    text-align: center;
-}
-
-.clear
-{
-    clear: both;
-}
-
-
-h1 a
-{
-    color: black;
-    text-decoration: none;
-}
-
-span.helptext
-{
-    display: block;
-    font-size: 90%;
-    color: gray;
-    padding-left: 2em;
-}
-
-
-
-dt
-{
-    float:left;
-    display: inline;
-    font-weight: bold;
-    margin-right: .5em;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 80px;
+  padding-top: 10px;
+  background-color: #f5f5f5;
 }
 
 #messages
@@ -103,53 +27,6 @@ dt
     height: 0px;
 }
 
-.messages_present {
-    visibility: visible !important;
-    height: auto !important;
-}
-
-
-#test-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-
-#test-list li {
-    margin: 2px 0px;
-    padding: 10px;
-    border-radius: 10px;
-}
-
-.btn-danger a, .btn-danger a:link {
-    color: #FFF;
-    text-decoration: none;
-}
-
-/* FOOTER */
-footer
-{
-    /* official adelphi "brown" */
-/*    position: absolute; */
-    height: 40px;
-    padding: 2em;
-    text-align: center;
-    bottom: 0;
-    right: 0;
-    left: 0;
-}
-footer a
-{
-    color: black;
-    text-decoration: underline;
-}
-
-/*----------------------- question form */
-
-.failed { color: red; }
-.passed { color: green;}
-
-/*----------------------- response form */
 .code-editor, #response-editor 
 { 
     font-size: 130%;
@@ -160,14 +37,8 @@ footer a
     border-radius: 4px;
 }
 
-/*----------------------- study stuff */
-
-#respond.passed_test h1
+#user-code
 {
-    color: green;
-}
-
-#respond.failed_test h1
-{
-    color: red;
+    height: 140px;
+    overflow: scroll;
 }

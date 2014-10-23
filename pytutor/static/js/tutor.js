@@ -41,6 +41,11 @@ function copyEditorCode(id)
 function initEditors()
 {
 
+    if($("#user-code").length)
+    {
+        var userCodeEditor = configureEditor("user-code");
+
+    }
 
     if($("#response-editor").length)
     {
