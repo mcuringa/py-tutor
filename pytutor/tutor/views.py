@@ -79,8 +79,9 @@ def study(request, try_again_id=0, study_tag=None):
             attempt = response.attempt + 1
         except: 
             attempt = 1
+        
         context = {
-            "question": question, 
+            "question": question,
             "response_form" : response_form, 
             "questions" : True,
             "attempt" : attempt,
