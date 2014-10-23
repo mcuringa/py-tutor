@@ -97,7 +97,7 @@ class Test(models.Model):
     """
     args = models.CharField(max_length=500, help_text="The arguments to pass to the function.")
     result = models.TextField(help_text="Python code that will evaluate to the expected result of this unit test.")
-    fail_msg = models.TextField(blank=True, null=True, help_text="A message for the user if their function fails this test.")
+    fail_msg = models.TextField(blank=True, help_text="A message for the user if their function fails this test.")
     question = models.ForeignKey(Question)
     
     def evaluate(self, user_function=""):
@@ -123,6 +123,7 @@ class Test(models.Model):
             return (ae, False)
         except Exception as ex:
             print("exception executing code")
+            print(ex)
             return (ex, False)
         
 
