@@ -4,6 +4,8 @@
 
 {% block body %}
 
+{% load markdown_deux_tags %}
+
 {% if not questions %}
 
 <section>
@@ -23,9 +25,9 @@
         </div>
     {% endif %}
 
-	<div class="panel panel-success">
-        <div class="panel-heading">Problem Description</div>
-        <div class="panel-body">{{question.prompt}}</div>
+	<div class="panel panel-primary">
+        <div class="panel-heading">Question {{question.id}}: question.function_name</div>
+        <div class="panel-body"><div class="well">{{question.prompt|markdown}}</div></div>
         <div class="panel-footer">Attempt #{{ attempt }}</div>
     </div>
     

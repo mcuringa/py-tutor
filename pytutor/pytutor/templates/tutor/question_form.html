@@ -7,7 +7,7 @@
 <div class="col-xs-12 col-md-6">
 <section id="question-form">
     <h1>Question Editor</h1>
-    <dl id="question-info">
+    <dl id="question-info" class="dl-horizontal">
         <dt>Created by:</dt>
           <dd>{{question.instance.creator}} on {{question.instance.created}}</dd>
         <dt>Last modified by:</dt>
@@ -59,7 +59,7 @@
             {{ question.comment }} 
         </div>
         <button id="save-question" class="btn btn-default btn-success">Save</button>
-        <button class="btn btn-danger"><a href="/tutor/{{question.instance.id}}/delete">Delete Question</a></button>
+        <a href="/tutor/{{question.instance.id}}/delete" class="btn btn-danger">Delete Question</a>
     </form>
 </section>
 </div>
@@ -74,10 +74,14 @@
         <input type="submit" value="add test" class="btn btn-default btn-success">
     </form>
     <h3>Existing Tests</h3>
-    <ul id="test-list">
+    <ul id="test-list" class="list-unstyled">
     {% for id, test in tests.items %}
         <li class="{% if test.2 %}bg-success{% else %}bg-danger{% endif %}">
-            Test: {{test.0}}<br>Result: {{test.1}}<br><a href="/tutor/test/{{id}}/del" alt="Delete this test">x</a>
+            <p>
+                <a href="/tutor/test/{{id}}/del" alt="Delete this test" class="btn btn-danger pull-right">x</a>
+                Test: {{test.0}}<br>
+                Result: {{test.1}}
+            </p>
         </li>
     {% endfor %}
     </ul>
