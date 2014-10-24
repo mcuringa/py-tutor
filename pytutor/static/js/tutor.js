@@ -12,7 +12,7 @@ function configureEditor(id)
     editor.getSession().setUseWrapMode(true);
     editor.getSession().setUseSoftTabs(true);
     editors[id] = editor;
-    return editor
+    return editor;
 }
 
 function copyEditorCode(id)
@@ -59,7 +59,9 @@ function initEditors()
 
     if($("#prompt-editor").length)
     {
-        configureEditor("prompt-editor");
+        var prompt = configureEditor("prompt-editor");
+        prompt.getSession().setMode("ace/mode/markdown");        
+        
         configureEditor("solution-editor");
 
         $("#save-question").click(function (event) 
