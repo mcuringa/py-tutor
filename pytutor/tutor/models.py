@@ -139,6 +139,12 @@ class Test(models.Model):
             return (ex, False)
         
 
+    def compile_code(self, code):
+        fun = compile(code, '<string>', 'exec')
+        return fun
+
+
+
     def to_code(self):
         str = 'assert {}({}) == {}, """{}"""'.format(self.question.function_name, self.args, self.result, self.fail_msg)
         return str

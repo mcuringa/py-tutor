@@ -7,10 +7,13 @@
 
 <section id="respond" class="{{ ex|yesno:"passed_test,failed_test" }}">
 
-    <div class="panel panel-primary">
-        <div class="panel-heading">Question {{question.id}}: question.function_name</div>
+    <div class="panel {{ ex|yesno:"panel-success,panel-danger" }}">
+        <div class="panel-heading">Question {{question.id}}: {{question.function_name}}</div>
         <div class="panel-body">
-            <div class="well">{{question.prompt|markdown}}</div>
+        {{ex}}
+            <div class="alert alert-info alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                {{question.prompt|markdown}}</div>
             <h3>Your Code</h3>
             <div id="user-code" class="code-editor">{{response.code}}</div>
         </div>
