@@ -164,7 +164,6 @@ def tags(request):
     tags = set(tags)
     tags = sorted([t for t in tags])
     context = {"tags": tags}
-
     
     return render(request, 'tutor/tags.html', context)
 
@@ -182,22 +181,10 @@ def question_form(request, pk=0):
         #form.id_comment = "" #this doesn't actually clear the field
         history = ArchiveQuestion.objects.all().filter(parent_id=pk)
         tests = Test.objects.all().filter(question=question)
-        test_results = {}
+        test_results = [t.evaluate() for t in tests]
+
         if tests.count() == 0:
             messages.add_message(request, messages.INFO, 'This question has no unit tests. Without unit tests, a response to this question won\'t be properly evaluated. Create a unit test below!')
-        else:
-            for test in tests:
-                print(test.to_code())
-                r = test.evaluate()
-
-                if r[1] == False:
-                    messages.add_message(request, messages.INFO, 'Test ' + str(test.to_code()) + ' failed on Solution code. Check this test case and your solution code to fix the issue.')
-                    result = "Test failed on 'Solution' code."
-                    passed = False
-                else:
-                    result = "Test passed on 'Solution' code!"
-                    passed = True
-                test_results[test.pk] = (test.to_code(), result, passed)
 
     test_form = TestForm()
 

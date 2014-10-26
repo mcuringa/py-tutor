@@ -10,6 +10,11 @@ body
   margin-bottom: 90px;
 }
 
+.well ul, .well ol, .well dl
+{
+  margin-bottom: 0;
+}
+
 .vc
 {
   display: flex; 

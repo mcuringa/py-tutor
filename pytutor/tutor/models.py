@@ -107,55 +107,55 @@ class Test(models.Model):
         function and the expected result. If all
         Question tests pass, the Response is considered correct.
     """
-    args = models.CharField(max_length=500, help_text="The arguments to pass to the function.")
-    result = models.TextField(help_text="Python code that will evaluate to the expected result of this unit test.")
-    fail_msg = models.TextField(blank=True, help_text="A message for the user if their function fails this test.")
+    args = models.CharField(blank=True, max_length=500)
+    result = models.TextField()
     question = models.ForeignKey(Question)
     
-    def evaluate(self, user_function=""):
-        """Evaluate the user_function against this test's assertion. 
-        If no user function given, evaluate test on question's given solution.
-        Quietly return, or throw an Exception."""
-        if user_function == "":
-            user_function = Question.objects.get(pk=self.question.pk).solution
-        try:
-            # compile the user's function
-            fun = compile(user_function, '<string>', 'exec')
-            # create empty context to exec the code
-            ns = {}
-            # compile the funciton into our context
-            exec(fun, ns)
-            # run the assertion for this test
-            exec(self.to_code(), ns)
-            #testResults.append( (test, None) )
-            return (None, True)
-        except AssertionError as ae:
-            print("test failed...")
-            print(ae)
-            return (ae, False)
-        except Exception as ex:
-            print("exception executing code")
-            print(ex)
-            return (ex, False)
+    def evaluate(self, code=""):
+        """Compile and execute the code in its own
+           namespace, checking to see if the 
+           function returns the expected result
+           when called with the given args.
+           Returns a tuple of the return value
+           and Exeception (or None)"""
         
+        if code == "":
+            code = Question.objects.get(pk=self.question.pk).solution
 
-    def compile_code(self, code):
-        fun = compile(code, '<string>', 'exec')
-        return fun
+        ns = {}
+        result = None
+        fail = None
 
+        try:
+            # can get a syntax error here
+            f = compile(code, '<string>', 'exec')
+            # create the function in scope ns
+            exec(f, ns)
+            
+            # create the string we're going to evaluate
+            # might get a runtime error
+            call = "result = {}({})".format(self.question.function_name, self.args)
+            exec(call, ns)
 
+            # if the result doesn't match the expected value
+            # we'll get an assert error
+            result = ns["result"]
+            assert result == eval(self.result) 
+        except Exception as ex:
+            fail = ex
+
+        return (self, fail, result)
 
     def to_code(self):
-        str = 'assert {}({}) == {}, """{}"""'.format(self.question.function_name, self.args, self.result, self.fail_msg)
+        str = 'assert {}({}) == {}'.format(self.question.function_name, self.args, self.result)
         return str
 
 class TestForm(ModelForm):
     args = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     result = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-    fail_msg = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     class Meta:
         model = Test
-        fields = ["args", "result", "fail_msg"]
+        fields = ["args", "result"]
 
 
 class Response(models.Model):

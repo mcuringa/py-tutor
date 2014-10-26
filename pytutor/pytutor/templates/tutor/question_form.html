@@ -6,23 +6,22 @@
 <div class="row">
 <div class="col-xs-12 col-md-8">
 <section id="question-form">
-    <h1>Question Editor</h1>
-    <dl id="question-info" class="dl-horizontal">
-        <dt>Created by:</dt>
-          <dd>{{question.instance.creator}} on {{question.instance.created}}</dd>
-        <dt>Last modified by:</dt>
-          <dd>{{question.instance.modifier}} on {{question.instance.modified}}</dd>
-        <dt>Version:</dt>
-          <dd id="version">{{question.instance.version}}</dd>
-    </dl>
-    
+    <h2>Question Editor</h2>
+    <div class="well">
+        <dl id="question-info" class="dl-horizontal">
+            <dt>Created by:</dt>
+              <dd>{{question.instance.creator}} on {{question.instance.created}}</dd>
+            <dt>Last modified by:</dt>
+              <dd>{{question.instance.modifier}} on {{question.instance.modified}}</dd>
+            <dt>Version:</dt>
+              <dd id="version">{{question.instance.version}}</dd>
+        </dl>
+    </div>
     <form action="/tutor/save" method="post" id="question-form" role="form">
         {% csrf_token %}
         <input type="hidden" name="pk" value="{{pk}}">
-
         <input type="hidden" id="id_prompt" name="prompt">
         <input type="hidden" id="id_solution" name="solution">
-
        
         <div class="form-group">
             {{ question.function_name.errors }}
@@ -89,23 +88,26 @@
                         The valid Python object the function should return.
                     </p>
                 </div>
-                <div class="form-group">
-                    {{ test_form.fail_msg.label_tag }} 
-                    {{ test_form.fail_msg }} 
-                </div>
             </fieldset>
             <input type="submit" value="add test" class="btn btn-success">
         </form>
         <h4>Existing Tests</h4>
         <ul id="test-list" class="list-unstyled">
-        {% for id, test in tests.items %}
-            <li class="{% if test.2 %}bg-success{% else %}bg-danger{% endif %}">
-                <p>
-                    <a href="/tutor/test/{{id}}/del" alt="Delete this test" class="btn btn-primary pull-right">x</a>
-                    Test: {{test.0}}<br>
-                    Result: {{test.1}}
-                </p>
-            </li>
+        {% for test, ex, result in tests %}
+            {% if ex == None %}
+                <li class="bg-success clearfix">
+                    <a href="/tutor/test/{{test.id}}/del" alt="Delete this test" class="btn btn-primary pull-right">x</a>
+                    <span class="badge badge-success">Pass</span>
+                    <code>{{test.to_code}}</code>
+                </li>
+            {% else %}
+                <li class="bg-danger clearfix vc">
+                    <a href="/tutor/test/{{test.id}}/del" alt="Delete this test" class="btn btn-primary pull-right">x</a>
+                    <span class="badge badge-danger">Fail</span>
+                    <p class="code">{{test.to_code}}</p>
+                    <div><pre>{{ex}}</pre></div>
+                </li>
+            {% endif %}
         {% endfor %}
         </ul>
     </div>
@@ -113,7 +115,7 @@
 </div>
 
 </div> <!--//row -->
-<br><br>
+
 <div class="panel panel-primary">
     <div class="panel-heading">Revision History</div>
     <table class="table table-striped">
