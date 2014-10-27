@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% load tutor_extras %}
+
 {% block title %}PyTutor::Question Editor{% endblock %}
 
 {% block body %}
@@ -101,11 +103,14 @@
                     <code>{{test.to_code}}</code>
                 </li>
             {% else %}
-                <li class="bg-danger clearfix vc">
-                    <a href="/tutor/test/{{test.id}}/del" alt="Delete this test" class="btn btn-primary pull-right">x</a>
+                <li class="bg-danger">
                     <span class="label label-danger">Fail</span>
-                    <p class="code">{{test.to_code}}</p>
-                    <div><pre>{{ex}}</pre></div>
+                    <code>{{test.to_code}}</code>
+                </li>
+                <li class="bg-danger pad-top">
+                    <div class="code-editor error-message lang-bash">
+{{ ex|error_msg }}
+</div>
                 </li>
             {% endif %}
         {% endfor %}

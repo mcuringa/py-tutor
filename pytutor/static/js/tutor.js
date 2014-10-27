@@ -15,36 +15,34 @@ function configureEditor(id)
     return editor;
 }
 
+/**
+ * Copy the from ace editor into a hidden filed to 
+ * submit user-generated code
+ */
 function copyEditorCode(id)
 {
-    // data-code-field <==> ___.data("codeField")
-    // notice the camelCase -- first word (denoted by dashes in html)
-    // not capitalized, all subsequent words have first letter capitalized
-    // $ means JQuery
     var codeField = $("#" + id).data("codeField");
     var editor = editors[id];
     var code = editor.getValue();
     $("input[name=" + codeField + "]").val(code);
-    // .something means 'class called something' -- the period means 'class'
-    // #something means 'id called something' -- the pound sign means 'id'
-    // something means 'element called something' -- <something>
-    // ex:
-    // input  --> <input>
-    // p      --> <p>
-    // div    --> <div>
-    // you can specify its attributes with []--
-    // ex:
-    // input[name=prompt]   ---> <input name="prompt">
-    // ^Select with JQuery           ^In HTML
 }
 
 function initEditors()
 {
 
+    $('.code-editor.lang-bash').each(function(i, editor) {
+        var ace = configureEditor(editor);
+        ace.renderer.setShowGutter(false); 
+        ace.getSession().setMode("ace/mode/sh");
+        ace.setTheme("ace/theme/chrome");
+        var code = $(editor).html()
+        var linesOfCode = code.split("\n");
+        $(editor).height((linesOfCode.length * 1.5 + 2) + "em");
+    });
+
     if($("#user-code").length)
     {
         var userCodeEditor = configureEditor("user-code");
-
     }
 
     if($("#response-editor").length)
@@ -91,8 +89,6 @@ $( document ).ready(function() {
         } else {
             // Stop form from submitting normally
             event.preventDefault();
-            
-
 
             var $form = $( this );
             var data = $form.serialize();   
