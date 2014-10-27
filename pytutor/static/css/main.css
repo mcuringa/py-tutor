@@ -20,6 +20,11 @@ body
   padding-top: 1em;
 }
 
+#study-tags .btn-inline, .margin-bottom
+{
+  margin-bottom: .5em;
+}
+
 .well ul, .well ol, .well dl
 {
   margin-bottom: 0;
