@@ -4,7 +4,7 @@
 
 {% block body %}
 <div class="row">
-<div class="col-xs-12 col-md-8">
+<div class="col-xs-12 col-md-7">
 <section id="question-form">
     <h2>Question Editor</h2>
     <div class="well">
@@ -62,7 +62,7 @@
     </form>
 </section>
 </div>
-<div class="col-xs-12 col-md-4">
+<div class="col-xs-12 col-md-5">
 <section id="unit-tests" class="panel panel-primary">
     <header class="panel-heading">
         <h2 class="panel-title">Unit Tests</h2>
@@ -97,13 +97,13 @@
             {% if ex == None %}
                 <li class="bg-success clearfix">
                     <a href="/tutor/test/{{test.id}}/del" alt="Delete this test" class="btn btn-primary pull-right">x</a>
-                    <span class="badge badge-success">Pass</span>
+                    <span class="label label-success">Pass</span>
                     <code>{{test.to_code}}</code>
                 </li>
             {% else %}
                 <li class="bg-danger clearfix vc">
                     <a href="/tutor/test/{{test.id}}/del" alt="Delete this test" class="btn btn-primary pull-right">x</a>
-                    <span class="badge badge-danger">Fail</span>
+                    <span class="label label-danger">Fail</span>
                     <p class="code">{{test.to_code}}</p>
                     <div><pre>{{ex}}</pre></div>
                 </li>
@@ -119,10 +119,14 @@
 <div class="panel panel-primary">
     <div class="panel-heading">Revision History</div>
     <table class="table table-striped">
-        <tr><th>version</th><th>date modified</th><th>modified by</th></tr>
+        <thead>
+            <tr><th>version</th><th>date modified</th><th>modified by</th></tr>
+        </thead>
+        <tbody>
         {% for aq in history %}
             <tr><td>{{aq.version}}</td><td>{{aq.modified}}</td><td>{{aq.modifier}}</td></tr>
         {% endfor %}
+        </tbody>
     </table>
 </div>
 
