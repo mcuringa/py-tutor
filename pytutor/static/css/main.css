@@ -10,6 +10,11 @@ body
   margin-bottom: 90px;
 }
 
+.pad-top
+{
+  padding-top: 1em;
+}
+
 .well ul, .well ol, .well dl
 {
   margin-bottom: 0;
@@ -39,7 +44,7 @@ footer.footer
 }
 
 .code-editor, #response-editor 
-{ 
+{
     font-size: 130%;
     position: relative;
     height: 300px;

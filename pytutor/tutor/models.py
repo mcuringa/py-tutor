@@ -140,7 +140,14 @@ class Test(models.Model):
             # if the result doesn't match the expected value
             # we'll get an assert error
             result = ns["result"]
-            assert result == eval(self.result) 
+
+            if not result == eval(self.result):
+                msg = """
+                Called: {}({})
+                Expected: {}
+                Actual result: {}""".format(self.question.function_name, self.args, self.result, result)
+                ex = AssertionError(msg)
+
         except Exception as ex:
             fail = ex
 
