@@ -5,6 +5,9 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core import serializers
 from django.contrib import messages
+from django.db.models import Q
+
+
 
 from tutor.models import *
 
@@ -142,11 +145,24 @@ def respond(request):
     
     return render(request, 'tutor/response_result.html', context)
 
-def list(request):
+def list(request, editor_name=""):
     """List the questions in the database"""
+    print ("editor:", editor_name)
+
+    context = {}
+    if len(editor_name) > 0:
+        # filter the questions on this editor
+
+        context["editor_name"] =  editor_name
+        print("context:", context)
+        questions = Question.objects.all().filter(Q(creator__username=editor_name) | Q(modifier__username=editor_name)).order_by('-modified')
+
+    else:
+        editor_name = "All"
+        questions = Question.objects.all().order_by('-modified')
+
     
-    questions = Question.objects.all()
-    context = {"questions": questions}
+    context["questions"] = questions
 
     
     return render(request, 'tutor/list.html', context)

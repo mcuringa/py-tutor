@@ -24,7 +24,9 @@ urlpatterns = patterns('',
 
 
     # --------------------------------- EDITING
-    url(r'^tutor/list', 'tutor.views.list'),
+    url(r'^tutor/list/(?P<editor_name>.*)[/]$', 'tutor.views.list'),
+
+    url(r'^tutor/list[/]$', 'tutor.views.list'),
     url(r'^tutor/(?P<pk>[0-9]+?)/dup[/]$', 'tutor.views.dup'),
     # url(r'^tutor/(?P<pk>[0-9]+?)/dup[/]$', 'tutor.views.dup'),
     url(r'^tutor/new', 'tutor.views.question_form'),

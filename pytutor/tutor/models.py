@@ -151,7 +151,7 @@ class Test(models.Model):
         return str
 
 class TestForm(ModelForm):
-    args = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    args = forms.CharField(required = False, widget=forms.TextInput(attrs={'class': 'form-control'}))
     result = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     class Meta:
         model = Test
