@@ -10,6 +10,11 @@ body
   margin-bottom: 90px;
 }
 
+.wrap, .btn.wrap
+{
+  white-space: normal;
+}
+
 .pad-top
 {
   padding-top: 1em;
