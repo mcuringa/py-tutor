@@ -1,55 +1,33 @@
 {% extends "base.html" %}
 
-{% block title %}PyTutor Home{% endblock %}
+{% block title %}Question Results{% endblock %}
 {% load markdown_deux_tags %}
 
 {% block body %}
 
-<section id="respond" class="{{ ex|yesno:"passed_test,failed_test" }}">
+<section id="respond">
 
-    <div class="panel {{ ex|yesno:"panel-success,panel-danger" }}">
-        <div class="panel-heading">Question {{question.id}}: {{question.function_name}}</div>
+    <div class="panel {{ passed_tests|yesno:"panel-success,panel-danger" }}">
+        <div class="panel-heading clearfix">
+            <a href="/tutor/{{question.id}}{% if study_tag %}/tag/{{study_tag}}/{% endif %}" 
+               class="btn btn-danger pull-right" title="try the question again">Try Again</a>
+            <a href="/tutor{% if study_tag %}/tag/{{study_tag}}/{% endif %}" 
+               class="btn btn-primary pull-right" title="get a new question">Next Question</a>
+            <h2 class="panel-title">Question {{question.id}}: {{question.function_name}}</h2>
+        </div>
+        
         <div class="panel-body">
-        {{ex}}
             <div class="alert alert-info alert-dismissible" role="alert">
                 <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                 {{question.prompt|markdown}}</div>
             <h3>Your Code</h3>
-            <div id="user-code" class="code-editor">{{response.code}}</div>
+            {{user_code|safe}}
         </div>
-        <div class="panel-footer">
-            <a href="/tutor{% if study_tag %}/tag/{{study_tag}}/{% endif %}" 
-               class="btn btn-primary" title="get a new question">Next Question</a>
-            <a href="/tutor/{{question.id}}{% if study_tag %}/tag/{{study_tag}}/{% endif %}" 
-               class="btn btn-danger" title="try the question again">Try Again</a>
-        </div>
+        <h3>Test Results</h3>
+        {% include "tutor/test-results.html" %}
     </div>
 
-    <h3>Test Results</h3>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Pass/Fail</th><th>Test</th><th>Error</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for test, success in testResults %}
-            {% if success == True %}
-                <tr class="passed {% cycle 'odd' 'even' %}">
-                    <td><span class="label label-success">Pass</td>
-                    <td><code>{{test.to_code}}</code></td>
-                    <td>-</td>
-                </tr>
-            {% else %}
-                <tr class="failed {% cycle ' odd' ' even' %}">
-                    <td><span class="label label-danger">Fail</span></td>
-                    <td><tt>{{test.to_code}}</tt></td>
-                    <td>{{test.fail_msg}}</td>
-                </tr>
-            {% endif %}
-        {% endfor %}
-        </tbody>
-    </table>
+
 </section>
 
 {% endblock %}

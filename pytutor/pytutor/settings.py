@@ -37,6 +37,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'markdown_deux',
+    'django_pygments',
     'pytutor',
     'tutor'
 )

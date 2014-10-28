@@ -1,138 +1,119 @@
 {% extends "base.html" %}
 
-{% load tutor_extras %}
-
 {% block title %}PyTutor::Question Editor{% endblock %}
 
 {% block body %}
 <div class="row">
-<div class="col-xs-12 col-md-7">
-<section id="question-form">
-    <h2>Question Editor</h2>
-    <div class="well">
-        <dl id="question-info" class="dl-horizontal">
-            <dt>Created by:</dt>
-              <dd>{{question.instance.creator}} on {{question.instance.created}}</dd>
-            <dt>Last modified by:</dt>
-              <dd>{{question.instance.modifier}} on {{question.instance.modified}}</dd>
-            <dt>Version:</dt>
-              <dd id="version">{{question.instance.version}}</dd>
-        </dl>
-    </div>
-    <form action="/tutor/save" method="post" id="question-form" role="form">
-        {% csrf_token %}
-        <input type="hidden" name="pk" value="{{pk}}">
-        <input type="hidden" id="id_prompt" name="prompt">
-        <input type="hidden" id="id_solution" name="solution">
-       
-        <div class="form-group">
-            {{ question.function_name.errors }}
-            {{ question.function_name.label_tag }} 
-            {{ question.function_name }}
-            <p class="help-block">Enter the name of the function the studier <em>must</em> create.</p>
-        </div>
-        <div class="form-group">
-            {{ question.prompt.errors }}
-            {{ question.prompt.label_tag }}
-            <div id="prompt-editor" class="code-editor" data-code-field="prompt">{{question.instance.prompt}}</div>
-            <p class="help-block">Provide clear instructions and sample ouput where appropriate. This field accepts <tt>markdown</tt>.</p>
-
-        </div>
-        <div class="form-group">
-            {{ question.solution.errors }}
-            {{ question.solution.label_tag }}
-            <div id="solution-editor" class="code-editor" data-code-field="solution">{{question.instance.solution}}</div>
-            <p class="help-block">Write your solution Python code here. It <em>must</em> pass all of the tetsts.</p>
-        </div>
-        <div class="form-group">
-            {{ question.level.errors }}
-            {{ question.level.label_tag }} 
-            {{ question.level }} 
-        </div>
-        <div class="form-group">
-            {{ question.tags.errors }}
-            {{ question.tags.label_tag }} 
-            {{ question.tags }} 
-        </div>
-        <div class="form-group">
-            {{ question.comment.errors }}
-            {{ question.comment.label_tag }} 
-            {{ question.comment }} 
-        </div>
-        <button id="save-question" class="btn btn-success">Save</button>
-        <a href="/tutor/{{question.instance.id}}/delete" class="btn btn-danger">Delete Question</a>
-    </form>
-</section>
-</div>
-<div class="col-xs-12 col-md-5">
-<section id="unit-tests" class="panel panel-primary">
-    <header class="panel-heading">
-        <h2 class="panel-title">Unit Tests</h2>
-    </header>
-    <div class="panel-body">
-        <form id="test-form" class="" action="/tutor/test/save" method="post">
-            {% csrf_token %}
-            <fieldset>
-                <legend>New Test</legend>
-                <input type="hidden" name="question_id" value="{{pk}}">
+    <div class="col-md-7">
+        <section id="question-form">
+            <h2>Question Editor</h2>
+            <div class="well">
+                <dl id="question-info" class="dl-horizontal">
+                    <dt>Created by:</dt>
+                      <dd>{{question.instance.creator}} on {{question.instance.created}}</dd>
+                    <dt>Last modified by:</dt>
+                      <dd>{{question.instance.modifier}} on {{question.instance.modified}}</dd>
+                    <dt>Version:</dt>
+                      <dd id="version">{{question.instance.version}}</dd>
+                </dl>
+            </div>
+            <form action="/tutor/save" method="post" id="question-form" role="form">
+                {% csrf_token %}
+                <input type="hidden" name="pk" value="{{pk}}">
+                <input type="hidden" id="id_prompt" name="prompt">
+                <input type="hidden" id="id_solution" name="solution">
+               
                 <div class="form-group">
-                    {{ test_form.args.label_tag }} 
-                    {{ test_form.args }}
-                    <p class="help-text">
-                        Valid Python arguments for this function, 
-                        e.g. <var>'hi'</var>, <var>2,8</var>, or <var>[10,-6,15]</var>
-                    </p>
+                    {{ question.function_name.errors }}
+                    {{ question.function_name.label_tag }} 
+                    {{ question.function_name }}
+                    <p class="help-block">Enter the name of the function the studier <em>must</em> create.</p>
                 </div>
                 <div class="form-group">
-                    {{ test_form.result.label_tag }} 
-                    {{ test_form.result }}
-                    <p class="help-text">
-                        The valid Python object the function should return.
-                    </p>
+                    {{ question.prompt.errors }}
+                    {{ question.prompt.label_tag }}
+                    <div id="prompt-editor" class="code-editor" data-code-field="prompt">{{question.instance.prompt}}</div>
+                    <p class="help-block">Provide clear instructions and sample ouput where appropriate. This field accepts <tt>markdown</tt>.</p>
+
                 </div>
-            </fieldset>
-            <input type="submit" value="add test" class="btn btn-success">
-        </form>
-        <h4>Existing Tests</h4>
-        <ul id="test-list" class="list-unstyled">
-        {% for test, ex, result in tests %}
-            {% if ex == None %}
-                <li class="bg-success clearfix">
-                    <a href="/tutor/test/{{test.id}}/del" alt="Delete this test" class="btn btn-primary pull-right">x</a>
-                    <span class="label label-success">Pass</span>
-                    <code>{{test.to_code}}</code>
-                </li>
-            {% else %}
-                <li class="bg-danger">
-                    <span class="label label-danger">Fail</span>
-                    <code>{{test.to_code}}</code>
-                </li>
-                <li class="bg-danger pad-top">
-                    <div class="code-editor error-message lang-bash">
-{{ ex|error_msg }}
-</div>
-                </li>
-            {% endif %}
-        {% endfor %}
-        </ul>
+                <div class="form-group">
+                    {{ question.solution.errors }}
+                    {{ question.solution.label_tag }}
+                    <div id="solution-editor" class="code-editor" data-code-field="solution">{{question.instance.solution}}</div>
+                    <p class="help-block">Write your solution Python code here. It <em>must</em> pass all of the tetsts.</p>
+                </div>
+                <div class="form-group">
+                    {{ question.level.errors }}
+                    {{ question.level.label_tag }} 
+                    {{ question.level }} 
+                </div>
+                <div class="form-group">
+                    {{ question.tags.errors }}
+                    {{ question.tags.label_tag }} 
+                    {{ question.tags }} 
+                </div>
+                <div class="form-group">
+                    {{ question.comment.errors }}
+                    {{ question.comment.label_tag }} 
+                    {{ question.comment }} 
+                </div>
+                <button id="save-question" class="btn btn-success">Save</button>
+                <a href="/tutor/{{question.instance.id}}/delete" class="btn btn-danger">Delete Question</a>
+            </form>
+        </section>
     </div>
-</section>
+    <div class="col-md-5">
+        <section id="unit-tests" class="panel panel-primary">
+            <header class="panel-heading">
+                <h2 class="panel-title">Unit Tests</h2>
+            </header>
+            <div class="panel-body">
+                <form id="test-form" class="" action="/tutor/test/save" method="post">
+                    {% csrf_token %}
+                    <fieldset>
+                        <legend>New Test</legend>
+                        <input type="hidden" name="question_id" value="{{pk}}">
+                        <div class="form-group">
+                            {{ test_form.args.label_tag }} 
+                            {{ test_form.args }}
+                            <p class="help-text">
+                                Valid Python arguments for this function, 
+                                e.g. <var>'hi'</var>, <var>2,8</var>, or <var>[10,-6,15]</var>
+                            </p>
+                        </div>
+                        <div class="form-group">
+                            {{ test_form.result.label_tag }} 
+                            {{ test_form.result }}
+                            <p class="help-text">
+                                The valid Python object the function should return.
+                            </p>
+                        </div>
+                    </fieldset>
+                    <input type="submit" value="add test" class="btn btn-success">
+                </form>
+                <h4>Existing Tests</h4>
+                {% include "tutor/test-results.html" %}
+            </div>
+        </section>
+    </div>
+
+</div> <!--/row -->
+
+<div class="row margin-top">
+    <div class="col-md-10 col-md-offset-1">
+        <div class="panel panel-primary">
+            <div class="panel-heading">Revision History</div>
+            <table class="table table-striped">
+                <thead>
+                    <tr><th>version</th><th>date modified</th><th>modified by</th></tr>
+                </thead>
+                <tbody>
+                {% for aq in history %}
+                    <tr><td>{{aq.version}}</td><td>{{aq.modified}}</td><td>{{aq.modifier}}</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
-
-</div> <!--//row -->
-
-<div class="panel panel-primary">
-    <div class="panel-heading">Revision History</div>
-    <table class="table table-striped">
-        <thead>
-            <tr><th>version</th><th>date modified</th><th>modified by</th></tr>
-        </thead>
-        <tbody>
-        {% for aq in history %}
-            <tr><td>{{aq.version}}</td><td>{{aq.modified}}</td><td>{{aq.modifier}}</td></tr>
-        {% endfor %}
-        </tbody>
-    </table>
-</div>
-
 {% endblock %}

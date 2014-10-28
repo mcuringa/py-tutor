@@ -143,10 +143,10 @@ class Test(models.Model):
 
             if not result == eval(self.result):
                 msg = """
-                Called: {}({})
-                Expected: {}
-                Actual result: {}""".format(self.question.function_name, self.args, self.result, result)
-                ex = AssertionError(msg)
+       Called: {}({})
+     Expected: {}
+Actual result: {}""".format(self.question.function_name, self.args, self.result, result)
+                fail = AssertionError(msg)
 
         except Exception as ex:
             fail = ex

@@ -35,9 +35,17 @@ function initEditors()
         ace.renderer.setShowGutter(false); 
         ace.getSession().setMode("ace/mode/sh");
         ace.setTheme("ace/theme/chrome");
+
+        ace.setOptions({
+            readOnly: true,
+            highlightActiveLine: false,
+            highlightGutterLine: false
+        });
+
         var code = $(editor).html()
         var linesOfCode = code.split("\n");
         $(editor).height((linesOfCode.length * 1.5 + 2) + "em");
+
     });
 
     if($("#user-code").length)
