@@ -25,8 +25,13 @@
         </div>
     {% endif %}
 
-	<div class="panel panel-primary">
-        <div class="panel-heading">Question {{question.id}}: {{question.function_name}}</div>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h2 class="panel-title">
+                    Question {{question.id}}: {{question.function_name}}
+                    <a href="/tutor/{{question.id}}/edit" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+            </h2>
+        </div>
         <div class="panel-body"><div class="well">{{question.prompt|markdown}}</div></div>
         <div class="panel-footer">Attempt #{{ attempt }}</div>
     </div>
@@ -45,7 +50,8 @@
             <div id="response-editor" data-code-field="user_code"># write a function called {{question.function_name}}
 
 
-</div>
+</div><!-- leave that alone, it's part of pre formatted text -->
+
         </div>
         <button id="submit-user-code" class="btn btn-primary">Run tests!</button>
     </form>

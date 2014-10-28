@@ -1,5 +1,7 @@
 import random
 import json
+
+from django.template import loader, Context
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
@@ -79,6 +81,58 @@ def question_form(request, pk=0):
 
     return render(request, 'tutor/question_form.html', context)
 
+
+@login_required
+def add_test(request):
+
+    
+    questionId = int(request.POST["question_id"])
+    q = Question.objects.get(pk=questionId)
+    form = TestForm(request.POST)
+    form.instance.question = q
+    try:
+        test = form.save()
+        success = True
+
+        user_function = q.solution
+        test, ex, result = test.evaluate(user_function)
+        passed = ex == None
+
+        c = Context({
+            'test': test,
+            'ex': ex,
+            'result': result
+        })
+
+        t = loader.get_template('tutor/test-results.html')
+        list_append = t.render(c)
+
+    except:
+        message = "Tests require expected results."
+        success = False
+        passed = False
+        list_append = ""
+
+
+    if passed:
+        message = "Test added and passed."
+    else:
+        message = "Test added successfully, but code failed."
+
+
+    data = {
+        "success": success,
+        "message": message,
+        "list_append": list_append,
+        "passed": passed
+    }
+
+    return HttpResponse(json.dumps(data), content_type="application/json")
+
+
+
+
+
 @login_required
 def save_question(request):
 
@@ -122,48 +176,6 @@ def archive(question):
     aq.archive(question)
     aq.modifier = question.modifier
     aq.save()
-
-@login_required
-def add_test(request):
-    questionId = int(request.POST["question_id"])
-    q = Question.objects.get(pk=questionId)
-    form = TestForm(request.POST)
-    form.instance.question = q
-    try:
-        test = form.save()
-        success = True
-
-    except:
-        message = "Tests require arguments, expected results, and a fail message."
-        success = False
-        passed = False
-        list_append = ""
-
-    if success:
-        message = ""
-        user_function = test.question.solution
-        result = test.evaluate(user_function)
-        if result[1]:
-            #this test passed
-            passed = True
-            list_append = "<li class=\"bg-success\">" + test.to_code() + "<br>Result: Test passed on 'Solution' code!<br>" + "<a href=\"/tutor/test/" + str(test.id) + "/del\" alt=\"Delete this test\">x</li>"
-        else:
-            #this test didn't
-            passed = False
-            list_append = "<li class=\"bg-danger\">" + test.to_code() + "<br>Result: Test failed on 'Solution' code.<br>" + "<a href=\"/tutor/test/" + str(test.id) + "/del\" alt=\"Delete this test\">x</li>"
-    data = {
-        "success": success,
-        "message": message,
-        "list_append": list_append,
-        "passed": passed,
-        "assert_code": test.to_code()
-    }
-    # json = serializers.serialize("json", [test])
-    # # return a sustring because djano only works with
-    # # iterables, but we just want a single json object
-    # data = json[1:-1]
-
-    return HttpResponse(json.dumps(data), content_type="application/json")
 
 @login_required
 def del_test(request, pk):

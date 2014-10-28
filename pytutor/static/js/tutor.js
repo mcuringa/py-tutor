@@ -88,13 +88,15 @@ $( document ).ready(function() {
     $( "#test-form" ).submit(function( event ) 
     {
         //
-        if ($( '#version' ).html() == '0') {
+        if ($( '#version' ).html() == '0')
+        {
             event.preventDefault();
-            // $( '#messages' ).css('visibility','visible');
-            // $( '#messages' ).css('height','auto');
+            $( '#messages' ).css('visibility','visible');
             $( '#messages' ).show();
             $( '#message_list' ).append( "<li>You must create a function name and prompt before adding unit tests.</li>" );
-        } else {
+        }
+        else
+        {
             // Stop form from submitting normally
             event.preventDefault();
 
@@ -103,20 +105,18 @@ $( document ).ready(function() {
             var url = $form.attr( "action" );
 
             $.post( url, data ).success(function( response ) {
-                if ( response.success ){
+                if ( response.success )
+                {
                     $( "#unit-tests ul" ).append( response.list_append );
                     $( '#messages' ).show();
-                    if ( response.passed ){
-                        $( '#message_list' ).append( "<li>" + response.assert_code + "</li>" );
-                    } else {
-                        $( '#message_list' ).append( "<li>Test successfully added.</li>" );
-                        $( '#message_list' ).append( "<li>New test failed on Solution code. "
-                            + "Check this test case and your solution code to fix the issue.</li>" );
-                    }
-                } else {
+                    $( '#messages' ).css('visibility','visible');
+                    $( '#message_list' ).append("<li>" + response.msg + "</li>");
+                }
+                else
+                {
                     //data not valid
                     $( '#messages' ).css('visibility','visible');
-                    $( '#messages' ).css('height','auto');
+                    $( '#messages' ).show();
                     $( '#message_list' ).append( "<li>" + response.message + "</li>" );
                 }
             });

@@ -6,16 +6,18 @@
 <div class="row">
     <div class="col-md-7">
         <section id="question-form">
-            <h2>Question Editor</h2>
-            <div class="well">
-                <dl id="question-info" class="dl-horizontal">
-                    <dt>Created by:</dt>
-                      <dd>{{question.instance.creator}} on {{question.instance.created}}</dd>
-                    <dt>Last modified by:</dt>
-                      <dd>{{question.instance.modifier}} on {{question.instance.modified}}</dd>
-                    <dt>Version:</dt>
-                      <dd id="version">{{question.instance.version}}</dd>
-                </dl>
+            <div class="panel panel-default">
+                <div class="panel-heading"><h2 class="panel-title">Question Editor</h2></div>
+                <div class="panel-body">
+                    <dl id="question-info" class="dl-horizontal">
+                        <dt>Created by:</dt>
+                          <dd>{{question.instance.creator}} on {{question.instance.created}}</dd>
+                        <dt>Last modified by:</dt>
+                          <dd>{{question.instance.modifier}} on {{question.instance.modified}}</dd>
+                        <dt>Version:</dt>
+                          <dd id="version">{{question.instance.version}}</dd>
+                    </dl>
+                </div>
             </div>
             <form action="/tutor/save" method="post" id="question-form" role="form">
                 {% csrf_token %}
@@ -92,7 +94,11 @@
                     <input type="submit" value="add test" class="btn btn-success">
                 </form>
                 <h4>Existing Tests</h4>
-                {% include "tutor/test-results.html" %}
+                <ul id="test-list" class="list-group">
+                {% for test, ex, result in tests %}
+                    {% include "tutor/test-results.html" %}
+                {% endfor %}
+                </ul>
             </div>
         </section>
     </div>

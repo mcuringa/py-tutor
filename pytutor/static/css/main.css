@@ -91,4 +91,9 @@ footer.footer
     height: 140px;
     overflow: scroll;
 }
+#respond #test-list a.delete-test
+{
+    display: none;
+    visibility: hidden;
+}
 

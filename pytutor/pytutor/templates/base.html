@@ -13,7 +13,9 @@
     <!-- Bootstrap core CSS -->
     <link href="/static/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap theme -->
+<!--
     <link href="/static/css/bootstrap-theme.min.css" rel="stylesheet">
+-->
     
     <link href="/static/css/pygments.css" rel="stylesheet">
     
@@ -36,7 +38,7 @@
         </div>
         <!--main nav-->
         <nav class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">        
+          <ul class="nav navbar-nav nav-pills">        
             <li><a href="/tutor">study</a></li>
             <li><a href="/tutor/new">new question</a></li>
             <li><a href="/tutor/list/{{user.username}}">list questions</a></li>
@@ -48,9 +50,9 @@
             <!--We'll want this to link to the user's profile, when it exists -->
             <li><a class="btn" href="#profile-coming-soon" title="see my profile">{{ user.username }}</a></li>
             <li>
-              <button id="friends">
+              <button id="friends" class="btn navbar-btn btn-default btn-xs">
                 <span class="glyphicon glyphicon-user"></span>
-                <span class="badge pull-right">3</span>
+                <span class="badge">3</span>
               </button>
             </li>
             <li><a class="btn" href="/logout" title="click to logout">logout</a></li>

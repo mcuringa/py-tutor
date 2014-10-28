@@ -13,7 +13,10 @@
                class="btn btn-danger pull-right" title="try the question again">Try Again</a>
             <a href="/tutor{% if study_tag %}/tag/{{study_tag}}/{% endif %}" 
                class="btn btn-primary pull-right" title="get a new question">Next Question</a>
-            <h2 class="panel-title">Question {{question.id}}: {{question.function_name}}</h2>
+            <h2 class="panel-title">
+                    Question {{question.id}}: {{question.function_name}}
+                    <a href="/tutor/{{question.id}}/edit" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
+            </h2>
         </div>
         
         <div class="panel-body">
@@ -22,9 +25,13 @@
                 {{question.prompt|markdown}}</div>
             <h3>Your Code</h3>
             {{user_code|safe}}
+            <h3>Test Results</h3>
+            <ul id="test-list" class="list-group">
+            {% for test, ex, result in tests %}
+                {% include "tutor/test-results.html" %}
+            {% endfor %}
+            </ul>
         </div>
-        <h3>Test Results</h3>
-        {% include "tutor/test-results.html" %}
     </div>
 
 
