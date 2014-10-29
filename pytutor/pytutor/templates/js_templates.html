@@ -1,0 +1,23 @@
+<!--
+Define underscore.js templates here, these will be included on every page
+by base.html, so only global tempaltes should be defined here, 
+if they are specific to a single template, just define them there.
+-->
+{% verbatim %}
+<script id="th-sort-tmpl" type="text/template">
+    <a href="#{{col}}" title="sort data" class="btn btn-block text-white">{{header}}<span class="glyphicon glyphicon-search hidden asc"></span><span class="glyphicon glyphicon-search hidden desc"></span></a>
+</script>
+
+<script id="msg-li-tmpl" type="text/template">
+
+    <li class="alert alert-{{level}} alert-dismissible list-group-item" role="alert">
+      <button type="button" class="close margin-right" 
+              data-dismiss="alert">
+        <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+      </button>
+      {{ msg }}
+    </li>
+
+</script>
+{% endverbatim %}
+

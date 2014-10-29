@@ -116,21 +116,22 @@ def add_test(request):
 
     if passed:
         message = "Test added and passed."
+        msg_level = "success"
     else:
         message = "Test added successfully, but code failed."
+        msg_level = "warning"
 
 
     data = {
         "success": success,
-        "message": message,
+        "msg": message,
         "list_append": list_append,
-        "passed": passed
+        "passed": passed,
+        "msg_level": msg_level
     }
+    print(json.dumps(data))
 
     return HttpResponse(json.dumps(data), content_type="application/json")
-
-
-
 
 
 @login_required
@@ -169,6 +170,9 @@ def delete_question(request, pk):
     for q in archives:
         q.delete()
     question.delete()
+
+    messages.success(request, "Question deleted.")
+
     return HttpResponseRedirect("/tutor/list")
 
 def archive(question):
@@ -182,10 +186,9 @@ def del_test(request, pk):
     test = Test.objects.get(pk=pk)
     question = test.question
     test.delete()
-    messages.add_message(request, messages.INFO, "Test successfully deleted.")
+    messages.success(request, "Test deleted.")
     url = "/tutor/" + str(question.id) + "/edit"
     return HttpResponseRedirect(url)
-
 
 
 def dup(request, pk=0):

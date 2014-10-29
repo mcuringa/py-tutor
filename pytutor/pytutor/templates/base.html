@@ -57,7 +57,6 @@
             </li>
             <li><a class="btn" href="/logout" title="click to logout">logout</a></li>
           {% else %}
-            <li><a href="/register"><button class="btn btn-warning navbar-right navbar-right-btn">Sign up</button></a></li>
             <li>
               <form class="navbar-form navbar-right form-inline" role="form" action="/login" method="post">
                 {% csrf_token %}
@@ -66,6 +65,7 @@
                   <button type="submit" class="btn btn-info">Log in</button>
               </form>
             </li>
+            <li><a href="/register"><button class="btn btn-warning navbar-right navbar-right-btn">Sign up</button></a></li>
           {% endif %}
           </ul>
         </nav><!--/.navbar-collapse -->
@@ -73,30 +73,37 @@
     </header>
 
 
-    <section class="container">
-        {% if messages %}
-            <div id="messages" class="alert alert-info" role="alert">
-                <ul id="message_list">
-                    {% for message in messages %}
-                    <li>{{ message }}</li>
-                    {% endfor %}
-                </ul>
-            </div>
-        {% endif %}
-
+    <section class="container-fluid">
+        <div class="row clearfix">
+            <ul id="messages" class="list-unstyled list-group col-md-6 col-md-offset-3">
+                {% for msg in messages %}
+                    <li class="alert alert-info alert-dismissible list-group-item list-group-item-{{msg.tags}}" role="alert">
+                      <button type="button" class="close margin-right" 
+                              data-dismiss="alert">
+                        <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+                      </button>
+                      Tags: "{{ msg.tags }}"
+                      {{ msg }}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
         {% block body %}Every child template should put something here...{% endblock %}
     </section>
 
-    <footer class="footer">
-        <div class="container">
-            <p class="text-muted">
-            <img src="/static/img/agplv3.png" alt="gnu agpl licence logo" class="pull-left">
-            <strong>PyTutor is Free Software</strong> released under the <a href="http://www.gnu.org/licenses/agpl.html" title="see the license online">GNU Affero General Public License v. 3</a>.<br>
-            <a href="https://github.com/mcuringa/py-tutor" title="get the source">Source code is available on github</a>.<br>
-            Created for the <a href="http://www.auedtech.org">Graduate Program in Educational Technology</a>
-            at <a href="http://education.adelphi.edu">Adelphi University</a>.
-        </div>
+    <footer class="footer text-muted clearfix">
+        <img src="/static/img/agplv3.png" alt="gnu agpl licence logo" class="pull-left pad-right">
+        
+        <strong>PyTutor is Free Software</strong> released under the 
+        <a href="http://www.gnu.org/licenses/agpl.html" title="see the license online">GNU Affero General Public License v. 3</a>.<br>
+        
+        <a href="https://github.com/mcuringa/py-tutor" title="get the source">Source code is available on github</a>.
+        
+        Created for the <a href="http://www.auedtech.org">Graduate Program in Educational Technology</a>
+        at <a href="http://education.adelphi.edu">Adelphi University</a>.
     </footer>
+
+    {% include "js_templates.html" %}
 
 </body>
 

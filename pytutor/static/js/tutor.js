@@ -1,5 +1,9 @@
 //foo
 
+//make underscore templates look like django templates
+_.templateSettings = {
+  interpolate: /\{\{(.+?)\}\}/g
+};
 
 var editors = Array();
 
@@ -14,6 +18,89 @@ function configureEditor(id)
     editors[id] = editor;
     return editor;
 }
+
+
+TableSorter = {}
+
+TableSorter.init = function()
+{
+
+    var tables = $('.table-sortable');
+    var sortableBtnTmpl = _.template('<a href="#{{col}}" title="sort data" class="btn btn-block">{{header}}<span class="margin-left collapse asc">▲</span><span class="margin-left collapse desc">▼</span></a>');
+
+    //go through each header and add a click event
+    _.each(tables, function(t) 
+    {
+
+        var headers = $(t).find('th');
+        _.each(headers, function(header, col) 
+        {
+            var data = {
+                'col': col,
+                'header': $(header).html()
+            };
+
+            $(header).data("sort", "desc");            
+            $(header).html(sortableBtnTmpl(data));
+            $(header).click(function(e) {
+                TableSorter.sortTable(t, col); 
+            });
+            
+        });
+    });
+
+}
+
+TableSorter.sortTable = function(table, col)
+{
+    
+    //$(header).data("sortDirection", "desc");
+    var headers = $(table).find('th');
+    var rows = $(table).find('tbody tr');
+    var header = headers[col];
+    var sortDirection = $(header).data("sort");
+
+    $(headers).removeClass('active');
+    $(header).addClass('active');
+    $(headers).find('.desc').hide();
+    $(headers).find('.asc').hide();
+
+
+    var sorted = _.sortBy(rows, function(row) 
+    {
+        var cols = $(row).find('td');
+        var html = $(cols[col]).html()
+        var sortVal = $(cols[col]).data("sortVal");
+
+        if(_.isUndefined(sortVal) || _.isNull(sortVal) || '' == sortVal)
+            sortVal = html;
+        
+        var sortNum = parseFloat(sortVal);
+        if(_.isNaN(sortNum))
+        {
+            return sortVal;
+        }
+        return sortNum;
+    });
+
+    if("desc" == sortDirection)
+    {
+        $(header).data("sort", "asc");
+        $(header).find('.asc').show();
+        $(header).find('.desc').hide();
+    }
+    else
+    {
+        sorted.reverse();
+        $(header).data("sort", "desc");
+        
+        $(header).find('.desc').show();
+        $(header).find('.asc').hide();
+    }
+    $(table).find('tbody').html(sorted);    
+
+}
+
 
 /**
  * Copy the from ace editor into a hidden filed to 
@@ -79,49 +166,55 @@ function initEditors()
     }
 }
 
+msg = function(msg, level)
+{
+    var html = $('#msg-li-tmpl').html();
+    var tmpl = _.template(html);
+    var li = tmpl({msg: msg, level: level});
+    $( '#messages' ).append(li);
+    $( '#messages' ).show();
+}
+
+function submitTestForm(e)
+{
+        //
+    if ($( '#version' ).html() == '0')
+    {
+        e.preventDefault();
+        msg("You must create a function name and prompt before adding unit tests.", danger);
+    }
+    else
+    {
+        // Stop form from submitting normally
+        e.preventDefault();
+
+        var $form = $( this );
+        var data = $form.serialize();   
+        var url = $form.attr( "action" );
+
+        $.post( url, data ).success(function( response ) 
+        {
+            console.log(response['list_append']);
+            if ( response.success )
+            {
+                $( "#test-list" ).append( response.list_append );
+                msg(response.msg, response.msg_level);
+            }
+            else
+            {
+                msg(response.msg, 'danger');
+            }
+        });
+    }
+
+}
 
 
 
 $( document ).ready(function() {
     
     //question form stuff
-    $( "#test-form" ).submit(function( event ) 
-    {
-        //
-        if ($( '#version' ).html() == '0')
-        {
-            event.preventDefault();
-            $( '#messages' ).css('visibility','visible');
-            $( '#messages' ).show();
-            $( '#message_list' ).append( "<li>You must create a function name and prompt before adding unit tests.</li>" );
-        }
-        else
-        {
-            // Stop form from submitting normally
-            event.preventDefault();
-
-            var $form = $( this );
-            var data = $form.serialize();   
-            var url = $form.attr( "action" );
-
-            $.post( url, data ).success(function( response ) {
-                if ( response.success )
-                {
-                    $( "#unit-tests ul" ).append( response.list_append );
-                    $( '#messages' ).show();
-                    $( '#messages' ).css('visibility','visible');
-                    $( '#message_list' ).append("<li>" + response.msg + "</li>");
-                }
-                else
-                {
-                    //data not valid
-                    $( '#messages' ).css('visibility','visible');
-                    $( '#messages' ).show();
-                    $( '#message_list' ).append( "<li>" + response.message + "</li>" );
-                }
-            });
-        }
-    });
+    $( "#test-form" ).submit(submitTestForm);
 
     initEditors();
 
@@ -131,20 +224,14 @@ $( document ).ready(function() {
         $(this).tab('show');
     });
 
-    $("#question-form :text").each(function(){
+    $("input, select").each(function(){
         $( this ).addClass("form-control");
     });
-    $("#question-form select").each(function(){
-        $( this ).addClass("form-control");
-    });
-    $("#question-form textarea ").each(function(){
-        $( this ).addClass("form-control");
-    });
-    $("#test-form :text").each(function(){
-        $( this ).addClass("form-control");
-    });
+
     $( "#id_comment").val("");
 
+
+    TableSorter.init();
 
 
 

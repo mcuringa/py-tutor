@@ -4,82 +4,53 @@
 
 {% block body %}
 
-<section id="home">
-    <h1>The Question List</h1>
-<div class="panel panel-primary">
-
-    <div class="panel-heading"><h2 class="panel-title">{{editor_name}} Questions</h2></div>
+<section id="question-list"class="panel panel-primary">
+    <div class="panel-heading"><h2 class="panel-title">Question List: {{editor_name}}</h2></div>
     <div class="panel-body">
-        <a href="/tutor/list/{{user.username}}" class="btn btn-warning btn-s" title="My questions">My Questions</a>
-        <a href="/tutor/list" class="btn btn-warning btn-s" title="All Questions">All Questions</a>
+        <a href="/tutor/list/{{user.username}}" class="btn btn-warning btn-sm" title="My questions">My Questions</a>
+        <a href="/tutor/list" class="btn btn-warning btn-sm" title="All Questions">All Questions</a>
 
-        <table class="table table-striped">
+        <table id="question-list" class="table table-striped table-bordered table-condensed table-sortable">
             <thead>
                 <tr>
                   <th class="text-center">Function Name</th>
                   <th class="text-center">Created</th>
+                  <th class="text-center">Creator</th>
                   <th class="text-center">Modified</th>
+                  <th class="text-center">Last modifer</th>
                   <th class="text-center">Edits</th>
+                  <th class="text-center">Level</th>
                   <th class="text-center">Tags</th>
                 </tr>
             </thead>
             <tbody>
             {% for question in questions %}
                 <tr>
-                  <td>
+                  <td data-sort-val="{{question.function_name}}">
                         <a href="/tutor/{{question.id}}/edit/"
                             title="edit this question"><strong><tt>{{question.function_name}}</tt></strong></a>
-                        <div>
+                        <div class="hidden"> <!-- will add to mouse over quick edit -->
                             <a href="/tutor/{{question.id}}/edit/" class="btn btn-primary btn-xs" title="edit this question">edit</a>
                             <a href="/tutor/{{question.id}}/dup/" class="btn btn-info btn-xs" title="duplicate this question">duplicate</a>
                             <a href="/tutor/{{question.id}}/delete/" class="btn btn-danger btn-xs"  title="delete to this question">delete</a>
                         </div>
                   </td>
+                  <td data-sort-val="{{question.created.timestamp}}">{{question.created}}</td>
                   <td class="text-center">
                         <a href="/tutor/list/{{question.creator}}/" title="questions created or modified by {{question.creator}}">{{question.creator}}</a><br>
-                        {{question.created}}
                   </td>
+                  <td data-sort-val="{{question.modified.timestamp}}">{{question.modified}}</td>
                   <td class="text-center">
                         <a href="/tutor/list/{{question.modifier}}/" title="questions created or modified by {{question.modifier}}">{{question.modifier}}</a><br>
-                        {{question.modified}}
                   </td>
                   <td class="text-center">{{question.version}}</td>
+                  <td class="text-center">{{question.level}}</td>
                   <td>{{question.tags}}</td>
                 </tr>
               {% endfor %}
             </tbody>
         </table>
     </div>
-</div>
-
-
-<!-- : 
-1. Create " My Questions "
-2. Create " All Questions"
-If username given, show user's question.
-  else show all questions 
- -->
-<!-- <section id="home2">
- 
-# for question in question
-# if question has a tag
-# display the tag up top as a button that will direct to a random question in that tag
-# display the list of questions below it with their [edit][dup][delete] buttons
- -->
-<!--   <h1> Questions by Tag</h1>
-  {% for question in questions %}
-    {% if study_tag %}
-      <li> {{question.tags}} <br>
-
-    {% endif %}
-  {% endfor %}
-
-      <a href="/tutor{% if study_tag %}/tag/{{study_tag}}/{% endif %}" 
-    class="btn btn-primary" title="get a new question">Next Question</a>
-
-    {% if question.tag > } 
-</section> -->
-
-
+</section>
 
 {% endblock %}
