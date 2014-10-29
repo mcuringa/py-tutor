@@ -6,63 +6,50 @@
 
 <section id="home">
     <h1>The Question List</h1>
- <!--    <ol> -->
-<!--     {% for question in questions %}
-        <li>{{question.function_name}} <br>
-            {{question.tags}}
-          <br>
-       		<a href="/tutor/{{question.id}}/edit/" class="btn btn-primary btn-xs" title="edit this question">edit</a>
-          <a href="/tutor/{{question.id}}/dup/" class="btn btn-info btn-xs" title="duplicate this question">duplicate</a>
-        	<a href="/tutor/{{question.id}}/delete/" class="btn btn-danger btn-xs"  title="delete to this question">delete</a>
-       </li>
-    {% endfor %}
-    </ul> -->
-
-
-
 <div class="panel panel-primary">
 
-  <div class="panel-heading">{{editor_name}} Questions</div>
+    <div class="panel-heading"><h2 class="panel-title">{{editor_name}} Questions</h2></div>
+    <div class="panel-body">
+        <a href="/tutor/list/{{user.username}}" class="btn btn-warning btn-s" title="My questions">My Questions</a>
+        <a href="/tutor/list" class="btn btn-warning btn-s" title="All Questions">All Questions</a>
 
-<br>
-  <a href="/tutor/list/{{user.username}}" class="btn btn-warning btn-s" title="My questions">My Questions</a>
-  <a href="/tutor/list" class="btn btn-warning btn-s" title="All Questions">All Questions</a>
-  <br>
-    <table class="table">
-        <thead>
-            <tr>
-              <th>Function Name</th>
-              <th>Created</th>
-              <th>Date Created</th>
-              <th>Modified</th>
-              <th>Modifier</th>
-              <th>Edits</th>
-              <th>Tags</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for question in questions %}
-            <tr class="{% cycle 'bg-info' '' %}">
-              <td>{{question.function_name}}</td>
-              <td>{{question.creator}}</td>
-              <td>{{question.created}}</td>
-              <td>{{question.modified}}</td>
-              <td>{{question.modifier}}</td>
-              <td>{{question.version}}</td>
-              <td>{{question.tags}}</td>
-            </tr>
-  
-            <tr class="{% cycle 'bg-info' '' %}">
-              <td colspan="7">
-                <a href="/tutor/{{question.id}}/edit/" class="btn btn-primary btn-xs" title="edit this question">edit</a>
-                <a href="/tutor/{{question.id}}/dup/" class="btn btn-info btn-xs" title="duplicate this question">duplicate</a>
-                <a href="/tutor/{{question.id}}/delete/" class="btn btn-danger btn-xs"  title="delete to this question">delete</a>
-               </td>
-            </tr>
-          {% endfor %}
-        </tbody>
-    </table>
-
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                  <th class="text-center">Function Name</th>
+                  <th class="text-center">Created</th>
+                  <th class="text-center">Modified</th>
+                  <th class="text-center">Edits</th>
+                  <th class="text-center">Tags</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for question in questions %}
+                <tr>
+                  <td>
+                        <a href="/tutor/{{question.id}}/edit/"
+                            title="edit this question"><strong><tt>{{question.function_name}}</tt></strong></a>
+                        <div>
+                            <a href="/tutor/{{question.id}}/edit/" class="btn btn-primary btn-xs" title="edit this question">edit</a>
+                            <a href="/tutor/{{question.id}}/dup/" class="btn btn-info btn-xs" title="duplicate this question">duplicate</a>
+                            <a href="/tutor/{{question.id}}/delete/" class="btn btn-danger btn-xs"  title="delete to this question">delete</a>
+                        </div>
+                  </td>
+                  <td class="text-center">
+                        <a href="/tutor/list/{{question.creator}}/" title="questions created or modified by {{question.creator}}">{{question.creator}}</a><br>
+                        {{question.created}}
+                  </td>
+                  <td class="text-center">
+                        <a href="/tutor/list/{{question.modifier}}/" title="questions created or modified by {{question.modifier}}">{{question.modifier}}</a><br>
+                        {{question.modified}}
+                  </td>
+                  <td class="text-center">{{question.version}}</td>
+                  <td>{{question.tags}}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 
 

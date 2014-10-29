@@ -126,6 +126,11 @@ $( document ).ready(function() {
     initEditors();
 
 
+    $("#question-edit-tabs a").click(function (e) {
+        e.preventDefault();
+        $(this).tab('show');
+    });
+
     $("#question-form :text").each(function(){
         $( this ).addClass("form-control");
     });

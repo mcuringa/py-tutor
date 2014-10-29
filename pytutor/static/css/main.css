@@ -68,6 +68,12 @@ footer.footer
   background-color: #f5f5f5;
 }
 
+.tab-pane.panel
+{
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+}
+
 #messages
 {
     visibility: hidden;
