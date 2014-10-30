@@ -1,5 +1,6 @@
 import random
 import json
+import difflib
 
 from django.template import loader, Context
 from django.contrib.auth.decorators import login_required
@@ -9,6 +10,8 @@ from django.core import serializers
 from django.contrib import messages
 from django.db.models import Q
 
+
+from pyquery import PyQuery as pq
 
 
 from tutor.models import *
@@ -190,7 +193,7 @@ def del_test(request, pk):
     url = "/tutor/" + str(question.id) + "/edit"
     return HttpResponseRedirect(url)
 
-
+@login_required
 def dup(request, pk=0):
     new_q = Question.objects.get(pk=pk)
     tests = Test.objects.all().filter(question=new_q)
@@ -208,4 +211,30 @@ def dup(request, pk=0):
     url = "/tutor/" + str(new_q.id) + "/edit"
 
     return HttpResponseRedirect("/tutor/list")
+
+def html_diff(s1, s2):
+    ugly = difflib.HtmlDiff().make_table(s1.split("\n"), s2.split("\n"))
+
+    d = pq(ugly)
+    #d("td").attr("nowrap", "")
+    #d("table").add_class("table table-striped table-condensed")
+    return ugly
+
+
+@login_required
+def diff(request, pk, v1, v2):
+    q1 = ArchiveQuestion.objects.get(parent__id=pk, version=v1)
+    q2 = ArchiveQuestion.objects.get(parent__id=pk, version=v2)
+    titles = html_diff(q1.function_name, q2.function_name)
+    prompts = html_diff(q1.prompt, q2.prompt)
+    solutions = html_diff(q1.solution, q2.solution)
+    
+    context = {
+        "q1": q1,
+        "q2": q2,
+        "titles": titles,
+        "prompts": prompts,
+        "solutions": solutions,
+    }
+    return render(request, 'tutor/diff.html', context)
 

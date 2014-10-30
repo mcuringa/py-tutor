@@ -211,7 +211,25 @@ function submitTestForm(e)
 
 
 
+
+
+function fixDiff()
+{
+    var tables = $("table.diff");
+    $(tables).removeAttr("cellpadding");
+    $(tables).removeAttr("cellspacing");
+    $(tables).removeAttr("rules");
+    $(tables).addClass("table table-condensed table-bordered table-hover");
+    $("table.diff colgroup").remove();
+    $("table.diff td").removeAttr("nowrap");
+    $("td.diff_next").remove();
+}
+
+
 $( document ).ready(function() {
+
+
+    fixDiff();
     
     //question form stuff
     $( "#test-form" ).submit(submitTestForm);

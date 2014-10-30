@@ -25,13 +25,15 @@ urlpatterns = patterns('',
 
     url(r'^tutor/list[/]$', 'tutor.editor_views.list'),
     url(r'^tutor/(?P<pk>[0-9]+?)/dup[/]$', 'tutor.editor_views.dup'),
-    # url(r'^tutor/(?P<pk>[0-9]+?)/dup[/]$', 'tutor.views.dup'),
+    url(r'^tutor/(?P<pk>[0-9]+?)/diff/(?P<v1>[0-9]+?),(?P<v2>[0-9]+?)$', 'tutor.editor_views.diff'),
     url(r'^tutor/new', 'tutor.editor_views.question_form'),
     url(r'^tutor/(?P<pk>[0-9]+?)/edit[/]$', 'tutor.editor_views.question_form'),
     url(r'^tutor/(?P<pk>[0-9]+?)/delete[/]$', 'tutor.editor_views.delete_question'),
     url(r'^tutor/save', 'tutor.editor_views.save_question'),
     url(r'^tutor/test/save', 'tutor.editor_views.add_test'),
     url(r'^tutor/test/(?P<pk>[0-9]+?)/del', 'tutor.editor_views.del_test'),
+
+
 
     # --------------------------------- USERS
     url(r'^login$', 'tutor.user_views.user_login'),

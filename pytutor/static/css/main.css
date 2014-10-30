@@ -101,3 +101,36 @@ footer.footer
     visibility: hidden;
 }
 
+/* diff styles */
+
+table.diff
+{
+    min-width: 100%;
+    width: 100%;
+    max-width: 100%;
+    font-family: "Monaco","Menlo","Ubuntu Mono","Consolas","source-code-pro",monospace;
+    table-layout: fixed;
+}
+
+table.diff td
+{
+    max-width: 40%;
+    white-space: normal;
+    word-wrap:break-word;
+}
+
+.diff_header {background-color:#e0e0e0}
+td.diff_header
+{
+    min-width: 2.5em;
+    width: 2.5em;
+    text-align:right;
+    word-wrap:normal;
+}
+.diff_next {background-color:#c0c0c0}
+.diff_add {background-color:#dff0d8}
+.diff_chg {background-color:#fcf8e3}
+.diff_sub {background-color:#f2dede}
+
+
+
