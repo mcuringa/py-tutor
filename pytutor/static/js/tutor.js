@@ -15,6 +15,8 @@ function configureEditor(id)
     editor.getSession().setMode("ace/mode/python");
     editor.getSession().setUseWrapMode(true);
     editor.getSession().setUseSoftTabs(true);
+    ace.getSession().setNewLineMode("unix");
+
     editors[id] = editor;
     return editor;
 }
@@ -31,7 +33,6 @@ TableSorter.init = function()
     //go through each header and add a click event
     _.each(tables, function(t) 
     {
-
         var headers = $(t).find('th');
         _.each(headers, function(header, col) 
         {
@@ -45,10 +46,8 @@ TableSorter.init = function()
             $(header).click(function(e) {
                 TableSorter.sortTable(t, col); 
             });
-            
         });
     });
-
 }
 
 TableSorter.sortTable = function(table, col)
@@ -122,7 +121,7 @@ function initEditors()
         ace.renderer.setShowGutter(false); 
         ace.getSession().setMode("ace/mode/sh");
         ace.setTheme("ace/theme/chrome");
-
+        
         ace.setOptions({
             readOnly: true,
             highlightActiveLine: false,
