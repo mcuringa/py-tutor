@@ -3,10 +3,39 @@
 {% block title %}PyTutor::Question Editor{% endblock %}
 
 {% block body %}
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <a href="/question/{{question.id}}/edit" title="back to the question editor"
+           class="btn btn-warning pull-right">Go Back</a>
 
-{{titles|safe}}
-{{prompts|safe}}
-{{solutions|safe}}
-
+        <h2 title="panel-title">Compare revisions: <small><code>{{question.function_name}}</code></small></h2>
+    </div>
+    <div class="panel-body container-fluid">
+        <div class="row pad-left pad-right">
+        {% for v in versions %}
+            <div class="well col-md-6 clearfix">
+            {% if v.version == question.version %}
+                <div class="btn btn-success pull-right">Current Version</div>
+            {% else %}
+                <a href="/question/{{question.id}}/revert/{{v.version}}" 
+                   title="revert to this version" class="btn btn-danger pull-right">Revert</a>
+            {% endif %}
+                <dl class="dl-horizontal pull-left">
+                    <dt>version:</dt><dd>{{v.version}}</dd>
+                    <dt>modified:</dt><dd>{{v.modified}}</dd>
+                    <dt>modifier:</dt><dd>{{v.modifier}}</dd>
+                    <dt>comment:</dt><dd>{{v.comment}}</dd>
+                </dl>
+            </div>
+        {% endfor %}
+        </div>
+        <h3 class="text-center">Function name</h3>
+        {{titles|safe}}
+        <h3 class="text-center">Question prompt</h3>
+        {{prompts|safe}}
+        <h3 class="text-center">Solution code</h3>
+        {{solutions|safe}}
+    </div>
+</div>
 
 {% endblock %}

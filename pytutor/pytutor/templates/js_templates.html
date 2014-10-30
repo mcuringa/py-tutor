@@ -5,7 +5,7 @@ if they are specific to a single template, just define them there.
 -->
 {% verbatim %}
 <script id="th-sort-tmpl" type="text/template">
-    <a href="#{{col}}" title="sort data" class="btn btn-block text-white">{{header}}<span class="glyphicon glyphicon-search hidden asc"></span><span class="glyphicon glyphicon-search hidden desc"></span></a>
+    <a href="#sort{{col}}" title="sort data" class="btn btn-block">{{header}}<span class="margin-left collapse asc">▲</span><span class="margin-left collapse desc">▼</span></a>
 </script>
 
 <script id="msg-li-tmpl" type="text/template">

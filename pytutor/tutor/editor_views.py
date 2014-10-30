@@ -10,10 +10,6 @@ from django.core import serializers
 from django.contrib import messages
 from django.db.models import Q
 
-
-from pyquery import PyQuery as pq
-
-
 from tutor.models import *
 
 def list(request, editor_name=""):
@@ -23,18 +19,13 @@ def list(request, editor_name=""):
     context = {}
     if len(editor_name) > 0:
         # filter the questions on this editor
-
-        context["editor_name"] =  editor_name
-        print("context:", context)
         questions = Question.objects.all().filter(Q(creator__username=editor_name) | Q(modifier__username=editor_name)).order_by('-modified')
-
     else:
         editor_name = "All"
         questions = Question.objects.all().order_by('-modified')
 
-    
+    context["editor_name"] =  editor_name
     context["questions"] = questions
-
     
     return render(request, 'tutor/list.html', context)
 
@@ -45,11 +36,11 @@ def tags(request):
     tags = []
     for question in questions:
         qtags = question.tags.split(",")
-        qtags = [q.strip() for q in qtags]
+        qtags = [q.strip() for q in qtags if len(q.strip() > 0)]
         tags.extend(qtags)
 
     tags = set(tags)
-    tags = sorted([t for t in tags])
+    tags = sorted(list(tags))
     context = {"tags": tags}
     
     return render(request, 'tutor/tags.html', context)
@@ -65,13 +56,16 @@ def question_form(request, pk=0):
 
         question = Question.objects.get(pk=pk)        
         form = QuestionForm(instance=question)
-        #form.id_comment = "" #this doesn't actually clear the field
-        history = ArchiveQuestion.objects.all().filter(parent_id=pk)
+        history = ArchiveQuestion.objects.all().filter(parent_id=pk).order_by('-version')
         tests = Test.objects.all().filter(question=question)
         test_results = [t.evaluate() for t in tests]
 
         if tests.count() == 0:
-            messages.add_message(request, messages.INFO, 'This question has no unit tests. Without unit tests, a response to this question won\'t be properly evaluated. Create a unit test below!')
+            msg = """This question has no unit tests. 
+            Without unit tests, a response to this 
+            question won't be properly evaluated. Create a unit test below!"""
+
+            messages.warning(request, msg)
 
     test_form = TestForm()
 
@@ -140,7 +134,6 @@ def add_test(request):
 @login_required
 def save_question(request):
 
-    print('saving a question...')
     pk = int(request.POST["pk"])
     if pk > 0:
         q = Question.objects.get(pk=pk)
@@ -155,14 +148,13 @@ def save_question(request):
     try:
       question = form.save()
       archive(question)
-      url = "/tutor/" + str(question.id) + "/edit"
+      messages.success(request, "Question saved.")
     except:
-        messages.add_message(request, messages.INFO, 'Please fill out all required fields.')
-        url = "/tutor/new"
+        messages.warning(request, 'Please fill out all required fields.')
 
+    url = "/question/{}/edit".format(pk)
 
     return HttpResponseRedirect(url)
-
 
 @login_required
 def delete_question(request, pk):
@@ -176,7 +168,7 @@ def delete_question(request, pk):
 
     messages.success(request, "Question deleted.")
 
-    return HttpResponseRedirect("/tutor/list")
+    return HttpResponseRedirect("/question/list")
 
 def archive(question):
     aq = ArchiveQuestion()
@@ -190,7 +182,7 @@ def del_test(request, pk):
     question = test.question
     test.delete()
     messages.success(request, "Test deleted.")
-    url = "/tutor/" + str(question.id) + "/edit"
+    url = "/question/{}/edit".format(question.id)
     return HttpResponseRedirect(url)
 
 @login_required
@@ -207,22 +199,20 @@ def dup(request, pk=0):
         t.question = new_q
         t.save()
 
-    messages.add_message(request, messages.INFO, "Test successfully duplicated.")
-    url = "/tutor/" + str(new_q.id) + "/edit"
+    messages.success(request, "Test successfully duplicated.")
+    url = "/question/{}/edit".format(new_q.pk)
 
-    return HttpResponseRedirect("/tutor/list")
+    return HttpResponseRedirect("/question/list")
 
 def html_diff(s1, s2):
     ugly = difflib.HtmlDiff().make_table(s1.split("\n"), s2.split("\n"))
 
-    d = pq(ugly)
-    #d("td").attr("nowrap", "")
-    #d("table").add_class("table table-striped table-condensed")
     return ugly
 
 
 @login_required
 def diff(request, pk, v1, v2):
+    
     q1 = ArchiveQuestion.objects.get(parent__id=pk, version=v1)
     q2 = ArchiveQuestion.objects.get(parent__id=pk, version=v2)
     titles = html_diff(q1.function_name, q2.function_name)
@@ -230,11 +220,40 @@ def diff(request, pk, v1, v2):
     solutions = html_diff(q1.solution, q2.solution)
     
     context = {
-        "q1": q1,
-        "q2": q2,
+        "question": q1.parent,
+        "versions": [q1,q2],
         "titles": titles,
         "prompts": prompts,
         "solutions": solutions,
     }
     return render(request, 'tutor/diff.html', context)
+
+
+@login_required
+def revert(request, pk, versionNum):
+    print("pk:", pk)
+    print("versionNum:", versionNum)
+
+    version = ArchiveQuestion.objects.get(parent__id=pk, version=versionNum)
+    question = version.parent
+    question.function_name = version.function_name
+    question.prompt = version.prompt
+    question.solution = version.solution
+    question.tags = version.tags
+    question.level = version.level
+
+    question.modifier = request.user
+
+    question.msg = "Reverted to revision {} by {}".format(versionNum, request.user.username)
+    question = question.save()
+    archive(question)
+
+    messages.success(request, "Question successfully reverted to revision {}.".format(versionNum))
+
+    url = "/question/{}/edit".format(pk)
+
+    return HttpResponseRedirect(url)
+
+
+
 

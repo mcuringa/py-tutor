@@ -3,13 +3,13 @@
 
 {% if ex == None %}
     <li class="list-group-item list-group-item-success clearfix">
-        <a href="/tutor/test/{{test.id}}/del" alt="Delete this test" class="delete-test btn pull-right btn-xs btn-default"><span class="glyphicon glyphicon-minus-sign"></span></a>
+        <a href="/question/test/{{test.id}}/del" alt="Delete this test" class="delete-test btn pull-right btn-xs btn-default"><span class="glyphicon glyphicon-minus-sign"></span></a>
         <h4 class="inline"><span class="label label-success">Pass</span></h4>
         <tt>{{test.to_code}}</tt>
     </li>
 {% else %}
     <li class="list-group-item list-group-item-danger clearfix">
-        <a href="/tutor/test/{{test.id}}/del" alt="Delete this test" class="delete-test btn pull-right btn-xs btn-danger"><span class="glyphicon glyphicon-minus-sign"></span></a>
+        <a href="/question/test/{{test.id}}/del" alt="Delete this test" class="delete-test btn pull-right btn-xs btn-danger"><span class="glyphicon glyphicon-minus-sign"></span></a>
         <h4 class="inline"><span class="label label-danger">Fail</span></h4>
         <tt>{{test.to_code}}</tt>
         <pre>{{ ex|error_msg }}</pre>

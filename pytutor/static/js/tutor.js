@@ -26,7 +26,7 @@ TableSorter.init = function()
 {
 
     var tables = $('.table-sortable');
-    var sortableBtnTmpl = _.template('<a href="#{{col}}" title="sort data" class="btn btn-block">{{header}}<span class="margin-left collapse asc">▲</span><span class="margin-left collapse desc">▼</span></a>');
+    var sortableBtnTmpl = _.template($('#th-sort-tmpl').html());
 
     //go through each header and add a click event
     _.each(tables, function(t) 
