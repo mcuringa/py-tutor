@@ -22,7 +22,15 @@ class AbstractQuestion(models.Model):
     with a clear revision history and easy system for rolling them
     back."""
 
-    level_choices = [(i,i) for i in range(1,11)]
+    levels = ["Basics: simple function, variables, operators (e.g., +,-,*/)",
+        "Conditional statements, built-in functions",
+        "Strings, basics",
+        "Lists and loops",
+        "Dictionaries, tuples, sets; string functions",
+        "Multi-step problems, libraries, OOP, etc",
+        "Hard problems"]
+
+    level_choices = [(i,"{}. {}".format(i,x)) for i,x in enumerate(levels, start=1)]
 
     function_name = models.CharField(max_length=300)
     prompt = models.TextField()
@@ -38,10 +46,28 @@ class AbstractQuestion(models.Model):
 
     class Meta:
         abstract = True
+        ordering = ['-modified']
 
 # enumerate(["sent","pending","friend"],start=1)]
 
 class Question(AbstractQuestion):
+
+    FAILED = 1
+    ACTIVE = 2
+    DELETED = 3
+
+    status = models.IntegerField(default=FAILED)
+
+    def update_status(self):
+        tests = Test.objects.all().filter(question=self)
+        self.status = Question.ACTIVE
+        if len(tests) == 0: 
+            self.status = Question.FAILED
+        
+        for test, fail, result in [t.evaluate(self.solution) for t in tests]:
+            if fail is not None:
+                self.status = Question.FAILED
+                return
 
     class Meta:
         unique_together = (('id', 'version'),)
@@ -77,7 +103,9 @@ class ArchiveQuestion(AbstractQuestion):
         self.created = q.created
         self.creator = q.creator
         self.parent = q
-
+    
+    class Meta:
+        unique_together = (('parent', 'version'),)
 
 class FriendConnect(models.Model):
     """Messages are sent between users"""

@@ -15,7 +15,7 @@ function configureEditor(id)
     editor.getSession().setMode("ace/mode/python");
     editor.getSession().setUseWrapMode(true);
     editor.getSession().setUseSoftTabs(true);
-    ace.getSession().setNewLineMode("unix");
+    editor.getSession().setNewLineMode("unix");
 
     editors[id] = editor;
     return editor;

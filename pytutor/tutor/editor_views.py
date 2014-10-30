@@ -69,11 +69,19 @@ def question_form(request, pk=0):
 
     test_form = TestForm()
 
+    if question.status == Question.FAILED:
+        state = "danger"
+    elif question.status == Question.ACTIVE:
+        state = "success"
+    else:
+        state = "warning"
+
     context = { "question": form,
                 "pk": pk,
                 "history": history,
                 "test_form": test_form,
-                "tests": test_results
+                "tests": test_results,
+                "state": state
               }
 
     return render(request, 'tutor/question_form.html', context)
@@ -235,17 +243,23 @@ def revert(request, pk, versionNum):
     print("versionNum:", versionNum)
 
     version = ArchiveQuestion.objects.get(parent__id=pk, version=versionNum)
+    print("version:", version.function_name)
+
+    # question = Question.objects.get(pk=pk)
     question = version.parent
+    print("question:", question)
+
     question.function_name = version.function_name
     question.prompt = version.prompt
     question.solution = version.solution
     question.tags = version.tags
     question.level = version.level
+    question.version = question.version + 1
 
     question.modifier = request.user
 
-    question.msg = "Reverted to revision {} by {}".format(versionNum, request.user.username)
-    question = question.save()
+    question.comment = "Reverted to revision {} by {}".format(versionNum, request.user.username)
+    question.save()
     archive(question)
 
     messages.success(request, "Question successfully reverted to revision {}.".format(versionNum))
