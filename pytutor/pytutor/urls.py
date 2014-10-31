@@ -7,6 +7,9 @@ urlpatterns = patterns('',
     #BASE URL MAPPINGS
     url(r'^$', 'pytutor.views.home'),
 
+    # User URL MAPPINGS
+    url(r'^study/report$', 'tutor.student_views.report'),
+
     # TUTOR URL MAPPINGS
     # --------------------------------- STUDYING
     url(r'^tutor$', 'tutor.study_views.study'),
@@ -15,7 +18,7 @@ urlpatterns = patterns('',
     url(r'^tutor/(?P<try_again_id>[0-9]+?)/tag/(?P<study_tag>.*)[/]$', 'tutor.study_views.study'),
     url(r'^tutor/(?P<pk>[0-9]+?)/respond[/]$', 'tutor.study_views.study'),
     url(r'^tutor/tags', 'tutor.study_views.tags'),
-    url(r'^tutor/no_questions$', 'tutor.study_views.no_questions'),
+    # url(r'^tutor/no_questions$', 'tutor.study_views.no_questions'),
     url(r'^tutor/response/submit', 'tutor.study_views.respond'),
 
 
