@@ -52,6 +52,7 @@ def question_form(request, pk=0):
         form = QuestionForm()
         history = []
         test_results = []
+        qstate = "default"
     else:
 
         question = Question.objects.get(pk=pk)        
@@ -60,6 +61,14 @@ def question_form(request, pk=0):
         tests = Test.objects.all().filter(question=question)
         test_results = [t.evaluate() for t in tests]
 
+        if question.status == Question.FAILED:
+            qstate = "danger"
+        elif question.status == Question.ACTIVE:
+            qstate = "success"
+        else:
+            qstate = "warning"
+
+
         if tests.count() == 0:
             msg = """This question has no unit tests. 
             Without unit tests, a response to this 
@@ -67,20 +76,17 @@ def question_form(request, pk=0):
 
             messages.warning(request, msg)
 
+
+
     test_form = TestForm()
 
-    #if form.instance.status == Question.FAILED:
-        #state = "danger"
-    #elif form.instance.status == Question.ACTIVE:
-        #state = "success"
-    #else:
-        #state = "warning"
 
     context = { "question": form,
                 "pk": pk,
                 "history": history,
                 "test_form": test_form,
                 "tests": test_results,
+                "qstate": qstate
               }
 
     return render(request, 'tutor/question_form.html', context)
@@ -92,6 +98,10 @@ def add_test(request):
     
     questionId = int(request.POST["question_id"])
     q = Question.objects.get(pk=questionId)
+
+    if q.status == Question.DELETED:
+        raise ValueError("Cannot add tests to DELETED Questions")
+
     form = TestForm(request.POST)
     form.instance.question = q
     try:
@@ -101,6 +111,10 @@ def add_test(request):
         user_function = q.solution
         test, ex, result = test.evaluate(user_function)
         passed = ex == None
+        if q.status == Question.ACTIVE and not passed:
+            print("failed test, update question")
+            q.stats = Question.FAILED
+            q.save()
 
         c = Context({
             'test': test,
