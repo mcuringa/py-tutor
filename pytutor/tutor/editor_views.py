@@ -47,7 +47,7 @@ def tags(request):
 
 @login_required
 def question_form(request, pk=0):
-    
+
     if pk == 0:
         form = QuestionForm()
         history = []
@@ -69,19 +69,18 @@ def question_form(request, pk=0):
 
     test_form = TestForm()
 
-    if question.status == Question.FAILED:
-        state = "danger"
-    elif question.status == Question.ACTIVE:
-        state = "success"
-    else:
-        state = "warning"
+    #if form.instance.status == Question.FAILED:
+        #state = "danger"
+    #elif form.instance.status == Question.ACTIVE:
+        #state = "success"
+    #else:
+        #state = "warning"
 
     context = { "question": form,
                 "pk": pk,
                 "history": history,
                 "test_form": test_form,
                 "tests": test_results,
-                "state": state
               }
 
     return render(request, 'tutor/question_form.html', context)
