@@ -183,11 +183,14 @@ def delete_question(request, pk):
 
     question = Question.objects.get(pk=pk)
     archives = ArchiveQuestion.objects.all().filter(parent_id=pk)
+
     for q in archives:
         q.delete()
     question.delete()
 
     messages.success(request, "Question deleted.")
+
+
 
     return HttpResponseRedirect("/question/list")
 
