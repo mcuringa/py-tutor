@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+{% load humanize %}
+
 {% block title %}PyTutor::Question Editor{% endblock %}
 
 {% block body %}
@@ -126,13 +128,14 @@
                   </thead>
                   <tbody>
                   {% for aq in history %}
-                      <tr>
+                      <tr data-toggle="tooltip" data-placement="bottom" data-content="comment: {{aq.comment}}">
                           <td>{{aq.version}}</td>
                           <td class="text-center" data-sort-value="{{aq.modified.timestap}}">
                           {%if aq.version == question.instance.version %}
-                              <abbr title="latest revisions">{{aq.modified}}</abbr>
+                              <abbr title="latest revisions">{{aq.modified|naturaltime}}</abbr>
                           {% else %}
-                              <a href="/question/{{pk}}/diff/{{question.instance.version}},{{aq.version}}">{{aq.modified}}</a>
+                              <a href="/question/{{pk}}/diff/{{question.instance.version}},{{aq.version}}"
+                                 title="click to see diff with current version">{{aq.modified|naturaltime}}</a>
                           {% endif %}
                            </td>
                           <td class="text-center">{{aq.modifier}}</td>

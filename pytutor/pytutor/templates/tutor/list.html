@@ -1,5 +1,8 @@
 {% extends "base.html" %}
 
+{% load humanize %}
+
+
 {% block title %}PyTutor Home{% endblock %}
 
 {% block body %}
@@ -7,13 +10,16 @@
 <section id="question-list"class="panel panel-primary">
     <div class="panel-heading"><h2 class="panel-title">Question List: {{editor_name}}</h2></div>
     <div class="panel-body">
-        <a href="/question/list/{{user.username}}" class="btn btn-warning btn-sm" title="My questions">My Questions</a>
-        <a href="/question/list" class="btn btn-warning btn-sm" title="All Questions">All Questions</a>
+        <ul class="nav nav-pills" role="tablist">
+          <li role="presentation" class="active"><a href="/question/list/{{user.username}}" title="questions I created or modified">My Questions</a></li>
+          <li role="presentation"><a href="/question/list" title="all questions">All Questions</a></li>
+        </ul>
 
         <table id="question-list" class="table table-striped table-bordered table-condensed table-sortable">
             <thead>
                 <tr>
                   <th class="text-center">Function Name</th>
+                  <th class="text-center">Status</th>
                   <th class="text-center">Created</th>
                   <th class="text-center">Creator</th>
                   <th class="text-center">Modified</th>
@@ -35,11 +41,21 @@
                             <a href="/question/{{question.id}}/delete/" class="btn btn-danger btn-xs"  title="delete to this question">delete</a>
                         </div>
                   </td>
-                  <td data-sort-val="{{question.created.timestamp}}">{{question.created}}</td>
+                  <td data-sort-val="{{question.status_label}}">
+                        {% if question.status  == 2 %}                           
+                            <label class="label label-success center-block">Active</label>
+                        {% elif question.status == 1 %}
+                            <label class="label label-danger center-block">Failed</label>
+                        {% else %}
+                           <label class="label label-default disabled center-block">Disabled</label>
+                        {% endif %}
+                  </td>
+                  
+                  <td data-sort-val="{{question.created.timestamp}}">{{question.created|naturaltime}}</td>
                   <td class="text-center">
                         <a href="/question/list/{{question.creator}}/" title="questions created or modified by {{question.creator}}">{{question.creator}}</a><br>
                   </td>
-                  <td data-sort-val="{{question.modified.timestamp}}">{{question.modified}}</td>
+                  <td data-sort-val="{{question.modified.timestamp}}">{{question.modified|naturaltime}}</td>
                   <td class="text-center">
                         <a href="/question/list/{{question.modifier}}/" title="questions created or modified by {{question.modifier}}">{{question.modifier}}</a><br>
                   </td>
