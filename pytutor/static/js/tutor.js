@@ -227,6 +227,10 @@ function fixDiff()
 
 $( document ).ready(function() {
 
+    var tips = $("*[data-toggle='tooltip']");
+    console.log(tips.length);
+    $(tips).popover({html:false, trigger: 'hover'});
+
 
     fixDiff();
     
