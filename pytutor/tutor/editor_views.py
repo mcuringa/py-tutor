@@ -180,6 +180,9 @@ def save_question(request):
     form.instance.modifier = request.user
     try:
       question = form.save()
+      pk = question.id
+      print("question id:", pk)
+
       archive(question)
       messages.success(request, "Question saved.")
     except:

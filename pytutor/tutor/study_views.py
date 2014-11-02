@@ -71,7 +71,7 @@ def respond(request):
     for t in Test.objects.all().filter(question=pk):
         (test, ex, result) = t.evaluate(user_code)
         testResults.append((test, ex, result))
-        if ex is not None:
+        if ex is not None and passed_tests:
             passed_tests = False
 
 
