@@ -44,6 +44,9 @@ class AbstractQuestion(models.Model):
     creator = models.ForeignKey(User, related_name="%(app_label)s_%(class)s_creator")
     modifier = models.ForeignKey(User, related_name="%(app_label)s_%(class)s_modifer")
 
+    def level_label(self):
+        return AbstractQuestion.levels[self.level - 1]
+
     class Meta:
         abstract = True
         ordering = ['-modified']
@@ -55,8 +58,12 @@ class Question(AbstractQuestion):
     FAILED = 1
     ACTIVE = 2
     DELETED = 3
+    status_labels = ["failed", "active", "deleted"]
 
     status = models.IntegerField(default=FAILED)
+
+    def status_label(self):
+        return Question.status_labels[self.status - 1]
 
     def update_status(self):
         tests = Test.objects.all().filter(question=self)

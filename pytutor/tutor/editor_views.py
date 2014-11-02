@@ -111,10 +111,15 @@ def add_test(request):
         user_function = q.solution
         test, ex, result = test.evaluate(user_function)
         passed = ex == None
-        if q.status == Question.ACTIVE and not passed:
-            print("failed test, update question")
-            q.stats = Question.FAILED
-            q.save()
+        print("updating question status")
+
+        q.update_status()
+        print("q status:", q.status)
+
+        # if q.status == Question.ACTIVE and not passed:
+        #     print("failed test, update question")
+        #     q.stats = Question.FAILED
+        #     q.save()
 
         c = Context({
             'test': test,
@@ -147,7 +152,6 @@ def add_test(request):
         "passed": passed,
         "msg_level": msg_level
     }
-    print(json.dumps(data))
 
     return HttpResponse(json.dumps(data), content_type="application/json")
 
