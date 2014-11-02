@@ -113,7 +113,7 @@ def add_test(request):
         passed = ex == None
         if q.status == Question.ACTIVE and not passed:
             print("failed test, update question")
-            q.stats = Question.FAILED
+            q.status = Question.FAILED
             q.save()
 
         c = Context({
@@ -182,15 +182,18 @@ def delete_question(request, pk):
     """Deletes the selected question and all related ArchiveQuestions."""
 
     question = Question.objects.get(pk=pk)
-    archives = ArchiveQuestion.objects.all().filter(parent_id=pk)
+    responses = Response.objects.all().filter(question=question)
+    archives = ArchiveQuestion.objects.all().filter(parent_id=pk).order_by('-version')
 
-    for q in archives:
-        q.delete()
-    question.delete()
-
-    messages.success(request, "Question deleted.")
-
-
+    if len(responses) == 0: # hard delete
+        for q in archives:
+            q.delete()
+        question.delete()
+        messages.success(request, "Question deleted.")
+    else:
+        question.status = Question.DELETED
+        question.save()
+        messages.success(request, "Question de-activated.")
 
     return HttpResponseRedirect("/question/list")
 
@@ -205,7 +208,14 @@ def del_test(request, pk):
     test = Test.objects.get(pk=pk)
     question = test.question
     test.delete()
-    messages.success(request, "Test deleted.")
+    oldStatus = question.status
+    print("old status:", oldStatus)
+    active = question.update_status()
+    print("new status:", question.status)
+    msg = "Test deleted."
+    if question.status != oldStatus:
+        msg += " Status changed to " + question.status_label()
+    messages.success(request, msg)
     url = "/question/{}/edit".format(question.id)
     return HttpResponseRedirect(url)
 
