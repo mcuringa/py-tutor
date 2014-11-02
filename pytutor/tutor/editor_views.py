@@ -95,7 +95,6 @@ def question_form(request, pk=0):
 @login_required
 def add_test(request):
 
-    
     questionId = int(request.POST["question_id"])
     q = Question.objects.get(pk=questionId)
 
@@ -111,6 +110,7 @@ def add_test(request):
         user_function = q.solution
         test, ex, result = test.evaluate(user_function)
         passed = ex == None
+
         if q.status == Question.ACTIVE and not passed:
             print("failed test, update question")
             q.status = Question.FAILED
@@ -147,10 +147,22 @@ def add_test(request):
         "passed": passed,
         "msg_level": msg_level
     }
-    print(json.dumps(data))
 
     return HttpResponse(json.dumps(data), content_type="application/json")
 
+@login_required
+def del_test(request, pk):
+    test = Test.objects.get(pk=pk)
+    question = test.question
+    test.delete()
+    oldStatus = question.status
+    active = question.update_status()
+    msg = "Test deleted."
+    if question.status != oldStatus:
+        msg += " Status changed to {}.".format(question.status_label())
+    messages.success(request, msg)
+    url = "/question/{}/edit".format(question.id)
+    return HttpResponseRedirect(url)
 
 @login_required
 def save_question(request):
@@ -202,22 +214,6 @@ def archive(question):
     aq.archive(question)
     aq.modifier = question.modifier
     aq.save()
-
-@login_required
-def del_test(request, pk):
-    test = Test.objects.get(pk=pk)
-    question = test.question
-    test.delete()
-    oldStatus = question.status
-    print("old status:", oldStatus)
-    active = question.update_status()
-    print("new status:", question.status)
-    msg = "Test deleted."
-    if question.status != oldStatus:
-        msg += " Status changed to " + question.status_label()
-    messages.success(request, msg)
-    url = "/question/{}/edit".format(question.id)
-    return HttpResponseRedirect(url)
 
 @login_required
 def dup(request, pk=0):

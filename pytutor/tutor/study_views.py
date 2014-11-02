@@ -19,7 +19,7 @@ def study(request, try_again_id=0, study_tag=None):
 
     questions = Question.objects.all()
     if not questions:
-        messages.add_message(request, messages.INFO, 'There are currently no questions to study.')
+        messages.info(request, 'There are currently no questions to study.')
         return home(request)
 
     if try_again_id:

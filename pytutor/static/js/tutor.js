@@ -193,11 +193,15 @@ function submitTestForm(e)
 
         $.post( url, data ).success(function( response ) 
         {
-            console.log(response['list_append']);
             if ( response.success )
             {
                 $( "#test-list" ).append( response.list_append );
                 msg(response.msg, response.msg_level);
+                if(!response.passed)
+                {
+                    $('#question-panel').removeClass('panel-success').addClass('panel-danger');
+                    $('#question-status-label').html('Failed')
+                }
             }
             else
             {

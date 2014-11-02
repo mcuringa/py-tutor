@@ -61,14 +61,16 @@
             <li><a class="btn" href="/logout" title="click to logout">logout</a></li>
           {% else %}
             <li>
-              <form class="navbar-form navbar-right form-inline" role="form" action="/login" method="post">
-                {% csrf_token %}
+              <form class="navbar-form navbar-right form-inline margin-right" role="form" action="/login" method="post">
+                  {% csrf_token %}
                   <input type="text" placeholder="Username" class="form-control" name="username">
                   <input type="password" placeholder="Password" class="form-control" name="password">
-                  <button type="submit" class="btn btn-info">Log in</button>
+                  
+                  <button title="log in with your username and password" type="submit" class="btn btn-info">Log in</button>
+                  <button type="submit" name="register" value="True"
+                          title="create a new account with this username and password" class="btn btn-warning">Sign up</button>
               </form>
             </li>
-            <li><a href="/register"><button class="btn btn-warning navbar-right navbar-right-btn">Sign up</button></a></li>
           {% endif %}
           </ul>
         </nav><!--/.navbar-collapse -->

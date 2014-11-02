@@ -9,7 +9,7 @@
     <div class="col-md-6">
         <section id="question-form">
 
-            <div class="panel panel-{{qstate}}">
+            <div id="question-panel" class="panel panel-{{qstate}}">
                 <div class="panel-heading">
                     <h2 class="panel-title">Question Editor <small>(id. {{pk}}, v. {{question.instance.version}})</h2>
                 </div>
@@ -20,7 +20,7 @@
                         <dt>Last modified by:</dt>
                         <dd>{{question.instance.modifier}} on {{question.instance.modified}}</dd>
                         <dt>Status:</dt>
-                        <dd>{{question.instance.status}}</dd>
+                        <dd id="question-status-label">{{question.instance.status_label}}</dd>
                     </dl>
                 </div>
             </div>

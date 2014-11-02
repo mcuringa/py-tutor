@@ -1,12 +1,13 @@
 from django.shortcuts import render
+from django.http import HttpResponse, HttpResponseRedirect
 
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
 
 from django.contrib import messages
 
-from django.contrib.auth.forms import UserCreationForm
 
-from django.http import HttpResponse, HttpResponseRedirect
 
 
 def register(request):
@@ -14,32 +15,39 @@ def register(request):
     form = UserCreationForm()
 
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.add_message(request, messages.INFO, 'Your account is created, welcome to PyTutor.')
 
+        username = request.POST['username']
+        password = request.POST['password']
 
-            #now, log the user in
-            username = request.POST['username']
-            password = request.POST['password1']
-            user = authenticate(username=username, password=password)
-            login(request, user)
-            
+        if len(password) < 3:
+            messages.warning(request, 'Could not create account. Your password must be at least 3 chars long.')
             return HttpResponseRedirect('/')
-        else:
-            messages.add_message(request, messages.INFO, 'There was a problem creating your account.')
-    
-    context = {"form": form}
 
-    return render(request, 'register.html', context)
+        try:        
+            user = User.objects.create_user(username=username, password=password)
+            print("new user created:", user)
+            
+            user = authenticate(username=username, password=password)
+            messages.info(request, "Your account has been created and you are logged in. Welcome to PyTutor.")
+            login(request, user)
+        except Exception as ex:
+            try:
+                User.objects.get(username=username)
+            except:
+                messages.warning(request, 'There was a problem creating your account.')
+            messages.warning(request, 'No account created: {} is already in use.'.format(username))
+    
+    return HttpResponseRedirect('/')
 
 def user_login(request):
     
     if request.method == 'POST':
+        if "register" in request.POST:
+            return register(request)
 
         username = request.POST['username']
         password = request.POST['password']
+            
         user = authenticate(username=username, password=password)
         if user is not None:
             login(request, user)
