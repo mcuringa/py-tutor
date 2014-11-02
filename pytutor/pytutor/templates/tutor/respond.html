@@ -14,47 +14,47 @@
 
 {% else %}
 
-<section id="respond">
-    {% if tag %}
-        <div class="row">
-            <div class="col-xs-3 pull-right">
-                <div class="panel panel-warning">
-                  <div class="panel-heading">Study Tag: {{tag}}</div>
+<section id="respond" class="container-fluid">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <h2 class="panel-title">
+                            Question {{question.id}}: {{question.function_name}}
+                            <a href="/question/{{question.id}}/edit" class="btn btn-xs" title="edit this question">
+                                <span class="glyphicon glyphicon-pencil"></span></a>
+                    </h2>
                 </div>
+                <div class="panel-body"><div class="well">{{question.prompt|markdown}}</div></div>
+                <div class="panel-footer">Attempt #{{ attempt }}</div>
+            </div>
+            <form action="/tutor/response/submit" method="post" id="response-form">
+                {% csrf_token %}
+                <input type="hidden" name="qpk" value="{{question.id}}">
+                <input type="hidden" id="user_code" name="user_code">
+                {% if tag %}
+                <input type="hidden" id="study_tag" value="{{tag}}" name="study_tag">
+                {% endif %}
+               
+                <div class="fieldWrapper">
+                    {{ response_form.code.errors }}
+                    {{ response_form.code.label_tag }} 
+                    <div id="response-editor" data-code-field="user_code"># write a function called {{question.function_name}}
+</div><!-- leave that alone, it's part of pre formatted text -->
+
+                </div>
+                <button id="submit-user-code" class="btn btn-primary">Run tests!</button>
+            </form>
+        </div>
+    {% if tag %}
+        <div class="col-md-2">
+            <div class="panel panel-warning">
+              <div class="panel-heading">Study Tag: {{tag}}</div>
             </div>
         </div>
     {% endif %}
+</div>
 
-    <div class="panel panel-primary">
-        <div class="panel-heading">
-            <h2 class="panel-title">
-                    Question {{question.id}}: {{question.function_name}}
-                    <a href="/tutor/{{question.id}}/edit" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-            </h2>
-        </div>
-        <div class="panel-body"><div class="well">{{question.prompt|markdown}}</div></div>
-        <div class="panel-footer">Attempt #{{ attempt }}</div>
-    </div>
-    
-    <form action="/tutor/response/submit" method="post" id="response-form">
-        {% csrf_token %}
-        <input type="hidden" name="qpk" value="{{question.id}}">
-        <input type="hidden" id="user_code" name="user_code">
-        {% if tag %}
-        <input type="hidden" id="study_tag" value="{{tag}}" name="study_tag">
-        {% endif %}
-       
-        <div class="fieldWrapper">
-            {{ response_form.code.errors }}
-            {{ response_form.code.label_tag }} 
-            <div id="response-editor" data-code-field="user_code"># write a function called {{question.function_name}}
-
-
-</div><!-- leave that alone, it's part of pre formatted text -->
-
-        </div>
-        <button id="submit-user-code" class="btn btn-primary">Run tests!</button>
-    </form>
 </section>
 
 {% endif %}
