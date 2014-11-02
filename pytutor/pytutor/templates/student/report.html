@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}PyTutor Home{% endblock %}
+
+{% block body %}
+
+<section id="question-list"class="panel panel-primary">
+    <div class="panel-heading"><h2 class="panel-title">User Report:{{user}}</h2></div>
+    <div class="panel-body">
+
+ 
+        <a href="/question/list/{{user.username}}" class="btn btn-warning btn-sm" title="My questions">Questions</a>
+        <a href="/question/list" class="btn btn-warning btn-sm" title="All Questions">Usage</a>
+
+        <table id="question-list" class="table table-striped table-bordered table-condensed table-sortable">
+            <thead>
+                <tr>
+                  <th class="text-center">Correct Answers</th>
+                  <th class="text-center">Wrong Answers</th>
+                
+                </tr>
+            </thead>
+            <tbody>
+            {% for r in student_responses %}
+             <tr>
+                <td data-sort-val="{{student_responses}}">{{r.is_correct}}</td>
+              </tr>
+
+              {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section> 
+
+{% endblock %}
