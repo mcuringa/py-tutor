@@ -12,6 +12,7 @@ from django.db.models import Q
 
 from tutor.models import *
 
+
 def list(request, editor_name=""):
     """List the questions in the database"""
     print ("editor:", editor_name)
@@ -104,16 +105,13 @@ def add_test(request):
         user_function = q.solution
         test, ex, result = test.evaluate(user_function)
         passed = ex == None
-
-        if q.status == Question.ACTIVE and not passed:
-            print("failed test, update question")
-            q.status = Question.FAILED
-            q.save()
+        updated = q.test_and_update(test=test)
 
         c = Context({
             'test': test,
             'ex': ex,
-            'result': result
+            'result': result,
+            'status_updated': updated
         })
 
         t = loader.get_template('tutor/test-results.html')
@@ -153,19 +151,9 @@ def del_test(request, pk):
 
     test.delete()
     msg = "Test deleted."
-    oldStatus = question.status
-    passed, results = question.run_tests()
-    print(results)
-    print("passed tests after delete:", passed)
-    if passed:
-        question.status = Question.ACTIVE
-    else:
-        question.status = Question.FAILED
+    updated = question.test_and_update()
     
-    question.save()
-    
-    if question.status != oldStatus:
-        
+    if updated:
         msg += " Status changed to {}.".format(question.status_label())
 
     messages.success(request, msg)
@@ -190,15 +178,7 @@ def save_question(request):
         question = form.save()
 
         if pk > 0:
-            oldStatus = question.status
-            passed, results = question.run_tests()
-            if passed:
-                question.status = Question.ACTIVE
-            else:
-                question.status = Question.FAILED
-
-            if oldStatus != question.status:
-                question.save()
+            updated = question.test_and_update()
 
         pk = question.id
 

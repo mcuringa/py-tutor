@@ -44,11 +44,10 @@ class AbstractQuestion(models.Model):
     creator = models.ForeignKey(User, related_name="%(app_label)s_%(class)s_creator")
     modifier = models.ForeignKey(User, related_name="%(app_label)s_%(class)s_modifer")
 
-
     def run_tests(self):
         tests = Test.objects.all().filter(question=self)
         if len(tests) == 0:
-            return (False, [])
+            return (False, [])  
 
         results = []
         passed = True
@@ -79,6 +78,31 @@ class Question(AbstractQuestion):
 
     def status_label(self):
         return Question.status_labels[self.status - 1]
+
+    def test_and_update(self, t=None):
+        print("test and update")
+        if self.status == Question.DELETED:
+            return False
+        
+        if t is not None:
+            test, ex, result = test.evaluate(user_function)
+            passed = ex == None
+
+        else:
+            passed, results = self.run_tests()
+        
+        print("passed:", passed)
+        print("current status:", self.status)
+        if self.status == Question.ACTIVE and not passed:
+            self.status = Question.FAILED
+            self.save()
+            return True
+        elif self.status == Question.FAILED and passed:
+            self.status = Question.ACTIVE
+            self.save()
+            return True
+
+        return False
 
     class Meta:
         unique_together = (('id', 'version'),)
