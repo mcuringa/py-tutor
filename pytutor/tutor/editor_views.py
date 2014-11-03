@@ -54,12 +54,10 @@ def question_form(request, pk=0):
         test_results = []
         qstate = "default"
     else:
-
         question = Question.objects.get(pk=pk)        
         form = QuestionForm(instance=question)
         history = ArchiveQuestion.objects.all().filter(parent_id=pk).order_by('-version')
-        tests = Test.objects.all().filter(question=question)
-        test_results = [t.evaluate() for t in tests]
+        passed, test_results = question.run_tests()
 
         if question.status == Question.FAILED:
             qstate = "danger"
@@ -68,15 +66,11 @@ def question_form(request, pk=0):
         else:
             qstate = "warning"
 
-
-        if tests.count() == 0:
+        if len(test_results) == 0:
             msg = """This question has no unit tests. 
-            Without unit tests, a response to this 
-            question won't be properly evaluated. Create a unit test below!"""
+            Without tests, this question can't be studied!"""
 
             messages.warning(request, msg)
-
-
 
     test_form = TestForm()
 
@@ -154,12 +148,26 @@ def add_test(request):
 def del_test(request, pk):
     test = Test.objects.get(pk=pk)
     question = test.question
+    if question.status == Question.DELETED:
+        raise ValueError("Cannot delete tests to DELETED Questions")
+
     test.delete()
-    oldStatus = question.status
-    active = question.update_status()
     msg = "Test deleted."
+    oldStatus = question.status
+    passed, results = question.run_tests()
+    print(results)
+    print("passed tests after delete:", passed)
+    if passed:
+        question.status = Question.ACTIVE
+    else:
+        question.status = Question.FAILED
+    
+    question.save()
+    
     if question.status != oldStatus:
+        
         msg += " Status changed to {}.".format(question.status_label())
+
     messages.success(request, msg)
     url = "/question/{}/edit".format(question.id)
     return HttpResponseRedirect(url)
@@ -179,14 +187,25 @@ def save_question(request):
 
     form.instance.modifier = request.user
     try:
-      question = form.save()
-      pk = question.id
-      print("question id:", pk)
+        question = form.save()
 
-      archive(question)
-      messages.success(request, "Question saved.")
-    except:
-        messages.warning(request, 'Please fill out all required fields.')
+        if pk > 0:
+            oldStatus = question.status
+            passed, results = question.run_tests()
+            if passed:
+                question.status = Question.ACTIVE
+            else:
+                question.status = Question.FAILED
+
+            if oldStatus != question.status:
+                question.save()
+
+        pk = question.id
+
+        archive(question)
+        messages.success(request, "Question saved.")
+    except ValueError as vex:
+        messages.warning(request, 'Please fill out all required fields.' )
 
     url = "/question/{}/edit".format(pk)
 

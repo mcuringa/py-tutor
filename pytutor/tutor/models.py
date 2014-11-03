@@ -44,6 +44,21 @@ class AbstractQuestion(models.Model):
     creator = models.ForeignKey(User, related_name="%(app_label)s_%(class)s_creator")
     modifier = models.ForeignKey(User, related_name="%(app_label)s_%(class)s_modifer")
 
+
+    def run_tests(self):
+        tests = Test.objects.all().filter(question=self)
+        if len(tests) == 0:
+            return (False, [])
+
+        results = []
+        passed = True
+        
+        for test, fail, result in [t.evaluate(self.solution) for t in tests]:
+            passed = passed and fail is None
+            results.append((test, fail, result))
+        
+        return (passed, results)
+
     def level_label(self):
         return AbstractQuestion.levels[self.level - 1]
 
@@ -64,19 +79,6 @@ class Question(AbstractQuestion):
 
     def status_label(self):
         return Question.status_labels[self.status - 1]
-
-    def update_status(self):
-        tests = Test.objects.all().filter(question=self)
-        self.status = Question.ACTIVE
-        if len(tests) == 0: 
-            self.status = Question.FAILED
-        
-        for test, fail, result in [t.evaluate(self.solution) for t in tests]:
-            if fail is not None:
-                self.status = Question.FAILED
-                self.save()
-                return
-        self.save()
 
     class Meta:
         unique_together = (('id', 'version'),)
