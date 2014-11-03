@@ -196,7 +196,7 @@ Actual result: {}""".format(self.question.function_name, self.args, self.result,
 
 class TestForm(ModelForm):
     args = forms.CharField(required = False, widget=forms.TextInput(attrs={'class': 'form-control'}))
-    result = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    result = forms.CharField(widget=forms.Textarea)
     class Meta:
         model = Test
         fields = ["args", "result"]
@@ -214,7 +214,7 @@ class Response(models.Model):
     attempt = models.IntegerField(default=1)
     submitted = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User)
-    question = models.ForeignKey(Question) # Question, not AQ
+    question = models.ForeignKey(Question)
 
 
 class ResponseForm(ModelForm):
