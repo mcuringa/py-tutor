@@ -104,8 +104,8 @@ def add_test(request):
 
         user_function = q.solution
         test, ex, result = test.evaluate(user_function)
-        passed = ex == None
-        updated = q.test_and_update(test=test)
+        passed = (ex == None)
+        updated = q.test_and_update()
 
         c = Context({
             'test': test,
@@ -263,15 +263,11 @@ def diff(request, pk, v1, v2):
 
 @login_required
 def revert(request, pk, versionNum):
-    print("pk:", pk)
-    print("versionNum:", versionNum)
 
     version = ArchiveQuestion.objects.get(parent__id=pk, version=versionNum)
-    print("version:", version.function_name)
 
     # question = Question.objects.get(pk=pk)
     question = version.parent
-    print("question:", question)
 
     question.function_name = version.function_name
     question.prompt = version.prompt
@@ -283,7 +279,7 @@ def revert(request, pk, versionNum):
     question.modifier = request.user
 
     question.comment = "Reverted to revision {} by {}".format(versionNum, request.user.username)
-    question.save()
+    question.test_and_update()
     archive(question)
 
     messages.success(request, "Question successfully reverted to revision {}.".format(versionNum))
