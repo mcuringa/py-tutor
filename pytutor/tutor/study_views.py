@@ -45,7 +45,7 @@ def study(request, try_again_id=0, study_tag=None):
         "tag" : study_tag
     }
     
-    return render(request, 'tutor/respond.html', context)
+    return render(request, 'tutor/study.html', context)
 
 @login_required
 def respond(request):

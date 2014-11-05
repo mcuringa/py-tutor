@@ -89,6 +89,20 @@ footer.footer
     border-radius: 4px;
 }
 
+#study-editor-col
+{
+    min-height: 100%;
+    height: 100%;
+    position: relative;
+}
+
+
+#study-editor-col, #response-editor 
+{
+    position: absolute;
+    bottom: 0;
+    top: 0;
+}
 
 #user-code
 {
