@@ -53,6 +53,9 @@ def respond(request):
 
     pk = int(request.POST["qpk"])
     user_code = request.POST.get('user_code', False)
+    action = request.POST.get('action', 'foo')
+    print("study code action:", action)
+    
     study_tag = request.POST.get('study_tag', False)
     question = Question.objects.get(pk=pk)  
     
@@ -66,21 +69,14 @@ def respond(request):
 
     #evaluate user's code
     response.is_correct = True
-    testResults = []
-    passed_tests = True
-    for t in Test.objects.all().filter(question=pk):
-        (test, ex, result) = t.evaluate(user_code)
-        testResults.append((test, ex, result))
-        if ex is not None and passed_tests:
-            passed_tests = False
-
+    passed, test_results = question.run_tests(user_code)
 
     context = {"question" : question, 
                "response" : response, 
                "user_code": syn(user_code),
                "previous_attempt" : response.attempt - 1,
-               "tests" : testResults,
-               "passed_tests" : passed_tests,
+               "tests" : test_results,
+               "passed_tests" : passed,
                "study_tag": study_tag }
 
     response.save()

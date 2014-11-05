@@ -147,6 +147,12 @@ function initEditors()
             copyEditorCode("response-editor");
             $("#response-form").submit();
         });
+        var mainHeight = $(window).height();
+        mainHeight -= $('#top-header').height();
+        mainHeight -= $('#bottom-footer').height();
+        mainHeight -= 80;
+
+        $('#response-editor').height(mainHeight);
     }
 
     if($("#prompt-editor").length)
@@ -214,6 +220,24 @@ function submitTestForm(e)
             }
         });
     }
+}
+
+
+
+function submitStudyCode(e, action)
+{
+
+    // Stop form from submitting normally
+    e.preventDefault();
+
+    var $form = $("#response-form");
+    var data = $form.serialize() + "&action=" + action;   
+    var url = $form.attr( "action" );
+
+    $.post( url, data ).success(function( response ) 
+    {
+        $( "#test-results" ).html( results );
+    });
 
 }
 
@@ -246,6 +270,10 @@ $( document ).ready(function() {
     
     //question form stuff
     $( "#test-form" ).submit(submitTestForm);
+    var runUserFunction = function(e) {submitStudyCode(e, "run");}
+    var testUserFunction = function(e) {submitStudyCode(e, "test");}
+    $( "#run-code" ).click(runUserFunction);
+    $( "#test-code" ).click(testUserFunction);
 
     initEditors();
 

@@ -34,7 +34,7 @@
 
 {% include "tutor/delete_confirm.html" %}
 
-    <header class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <header id="top-header" class="navbar navbar-default navbar-fixed-top" role="navigation">
       <div class="container-fluid">
         <div class="navbar-header">
           <a class="navbar-brand" href="/">PyTutor</a>
@@ -78,7 +78,7 @@
     </header>
 
 
-    <section class="container-fluid">
+    <section id="main" class="container-fluid">
         <div class="row clearfix">
             <ul id="messages" class="list-unstyled list-group col-md-6 col-md-offset-3">
                 {% for msg in messages %}
@@ -95,14 +95,19 @@
         {% block body %}Every child template should put something here...{% endblock %}
     </section>
 
-    <footer class="footer text-muted clearfix">
-        <img src="/static/img/agplv3.png" alt="gnu agpl licence logo" class="pull-left pad-right">
-        
+    <footer id="bottom-footer" class="footer text-muted clearfix bg-default">
+        <div class="pull-left pad-right">
+            <img src="/static/img/agplv3.png" alt="gnu agpl licence logo"><br>
+            <img src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" alt="Creative Commons cc-by-sa logo">
+        </div>
         <strong>PyTutor is Free Software</strong> released under the 
-        <a href="http://www.gnu.org/licenses/agpl.html" title="see the license online">GNU Affero General Public License v. 3</a>.<br>
-        
-        <a href="https://github.com/mcuringa/py-tutor" title="get the source">Source code is available on github</a>.
-        
+        <a href="http://www.gnu.org/licenses/agpl.html" title="see the license online">GNU AGPL v3</a>.
+        <a href="https://github.com/mcuringa/py-tutor" title="get the source">Source code is available on github</a>.<br>
+
+
+
+        <strong>User contributions to PyTutor</strong>, (question prompts, solution/test code, etc) are licensed under the
+        <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/" title="read the license">Creative Commons BY-SA License</a>.<br>
         Created for the <a href="http://www.auedtech.org">Graduate Program in Educational Technology</a>
         at <a href="http://education.adelphi.edu">Adelphi University</a>.
     </footer>
