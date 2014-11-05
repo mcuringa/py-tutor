@@ -202,6 +202,11 @@ function submitTestForm(e)
                     $('#question-panel').removeClass('panel-success').addClass('panel-danger');
                     $('#question-status-label').html('Failed')
                 }
+                else
+                {
+                    $('#question-panel').removeClass('panel-danger').addClass('panel-success');
+                    $('#question-status-label').html('Passed')
+                }
             }
             else
             {
@@ -213,9 +218,10 @@ function submitTestForm(e)
 }
 
 
-
-
-
+/**
+ * A client-side post-fix for the ugly diff
+ * table that python provides
+ */
 function fixDiff()
 {
     var tables = $("table.diff");
