@@ -44,15 +44,23 @@ class AbstractQuestion(models.Model):
     creator = models.ForeignKey(User, related_name="%(app_label)s_%(class)s_creator")
     modifier = models.ForeignKey(User, related_name="%(app_label)s_%(class)s_modifer")
 
-    def run_tests(self):
+    def run_tests(self, code=""):
         tests = Test.objects.all().filter(question=self)
         if len(tests) == 0:
-            return (False, [])  
+            return (False, [])
+        
+        print("======= code from run_tests =========")
+        print(code)
+
+
+        if code == "":
+            code = self.solution
 
         results = []
         passed = True
-        
-        for test, fail, result in [t.evaluate(self.solution) for t in tests]:
+
+
+        for test, fail, result in [t.evaluate(code) for t in tests]:
             passed = passed and fail is None
             results.append((test, fail, result))
         

@@ -1,42 +1,6 @@
-{% extends "base.html" %}
-
-{% block title %}Question Results{% endblock %}
-{% load markdown_deux_tags %}
-
-{% block body %}
-
-<section id="respond" class="container-fluid">
-<div class="row">
-    <div class="col-md-8 col-md-offset-2">
-        <div class="panel {{ passed_tests|yesno:'panel-success,panel-danger' }}">
-            <div class="panel-heading clearfix">
-                <a href="/tutor/{{question.id}}{% if study_tag %}/tag/{{study_tag}}/{% endif %}" 
-                   class="btn btn-danger pull-right" title="try the question again">Try Again</a>
-                <a href="/tutor{% if study_tag %}/tag/{{study_tag}}/{% endif %}" 
-                   class="btn btn-primary pull-right" title="get a new question">Next Question</a>
-                <h2 class="panel-title">
-                        Question {{question.id}}: {{question.function_name}}
-                        <a href="/question/{{question.id}}/edit" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-pencil"></span></a>
-                </h2>
-            </div>
-            
-            <div class="panel-body">
-                <div class="alert alert-info alert-dismissible" role="alert">
-                    <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-                    {{question.prompt|markdown}}</div>
-                <h3>Your Code</h3>
-                {{user_code|safe}}
-                <h3>Test Results</h3>
-                <ul id="test-list" class="list-group">
-                {% for test, ex, result in tests %}
-                    {% include "tutor/test-results.html" %}
-                {% endfor %}
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
-
-</section>
-
-{% endblock %}
+<h3>Test Results</h3>
+<ul id="test-list" class="list-group">
+{% for test, ex, result in tests %}
+    {% include "tutor/test-results.html" %}
+{% endfor %}
+</ul>

@@ -231,12 +231,14 @@ function submitStudyCode(e, action)
     e.preventDefault();
 
     var $form = $("#response-form");
+    copyEditorCode("response-editor");
     var data = $form.serialize() + "&action=" + action;   
     var url = $form.attr( "action" );
 
     $.post( url, data ).success(function( response ) 
     {
-        $( "#test-results" ).html( results );
+        $( "#test-results" ).html( response );
+        console.log(response);
     });
 
 }

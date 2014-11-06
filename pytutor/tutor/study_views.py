@@ -55,9 +55,13 @@ def respond(request):
     user_code = request.POST.get('user_code', False)
     action = request.POST.get('action', 'foo')
     print("study code action:", action)
-    
     study_tag = request.POST.get('study_tag', False)
     question = Question.objects.get(pk=pk)  
+
+    print("======= code from user_code =========")
+    print(user_code)
+
+    passed, test_results = question.run_tests(user_code)    
     
     try:
         attempts = Response.objects.all().filter(user=request.user, question=question)
@@ -66,10 +70,11 @@ def respond(request):
     
     response = Response(attempt=len(attempts) + 1, user=request.user, question=question)
     response.code = user_code
-
     #evaluate user's code
-    response.is_correct = True
-    passed, test_results = question.run_tests(user_code)
+    response.is_correct = passed
+    response.save()
+
+    print("passed all tests:", passed)
 
     context = {"question" : question, 
                "response" : response, 
@@ -79,7 +84,7 @@ def respond(request):
                "passed_tests" : passed,
                "study_tag": study_tag }
 
-    response.save()
+    
     
     return render(request, 'tutor/response_result.html', context)
 
