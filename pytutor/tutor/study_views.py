@@ -17,6 +17,7 @@ def study(request, try_again_id=0, study_tag=None):
     """Randomly choose the next question for the user to study.
        If no questions exist, prompt the user to create one."""
 
+
     questions = Question.objects.all()
     if not questions:
         messages.info(request, 'There are currently no questions to study.')
@@ -37,12 +38,16 @@ def study(request, try_again_id=0, study_tag=None):
     except: 
         attempt = 1
     
+    os_ctrl = "ctrl"
+    if "Macintosh" in request.META["HTTP_USER_AGENT"]:
+        os_ctrl = "cmd"
     context = {
         "question": question,
         "response_form" : response_form, 
         "questions" : True,
         "attempt" : attempt,
-        "tag" : study_tag
+        "tag" : study_tag,
+        "os_ctrl": os_ctrl
     }
     
     return render(request, 'tutor/study.html', context)
@@ -58,9 +63,6 @@ def respond(request):
     study_tag = request.POST.get('study_tag', False)
     question = Question.objects.get(pk=pk)  
 
-    print("======= code from user_code =========")
-    print(user_code)
-
     passed, test_results = question.run_tests(user_code)    
     
     try:
@@ -74,14 +76,12 @@ def respond(request):
     response.is_correct = passed
     response.save()
 
-    print("passed all tests:", passed)
-
     context = {"question" : question, 
                "response" : response, 
                "user_code": syn(user_code),
                "previous_attempt" : response.attempt - 1,
                "tests" : test_results,
-               "passed_tests" : passed,
+               "passed" : passed,
                "study_tag": study_tag }
 
     

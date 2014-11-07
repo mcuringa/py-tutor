@@ -1,4 +1,4 @@
-<h3>Test Results</h3>
+<h4 class="{%if passed %}bg-success{%else%}bg-danger{%endif%}">Test Results{%if passed%} <a href="/tutor" class="btn btn-success btn-xs">Next Question</a>{% endif %}</h4>
 <ul id="test-list" class="list-group">
 {% for test, ex, result in tests %}
     {% include "tutor/test-results.html" %}

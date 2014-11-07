@@ -11,26 +11,51 @@
         <div id="study-editor-col" class="col-md-7">
         <div id="editor-tools" class="btn-group btn-group-justified">
             <div class="btn-group no-bl-radius">
-                <button id="run-code" class="btn btn-default btn-sm clearfix" title="alt-b to run your code with your args">Run
-                <kbd>alt-b</kbd></button>
+                <button id="run-code" 
+                        data-html="true"
+                        data-toggle="tooltip" data-placement="bottom"
+                        class="btn btn-default btn-sm clearfix" title="<kbd>{{os_ctrl}}-b</kbd> to test and run your code">Run <span class="glyphicon glyphicon-play-circle"></span>
+                </button>
             </div>
             <div class="btn-group">
-                <button id="test-code" class="btn btn-default btn-sm clearfix" title="alt-t to submit and test your code">Submit
-                <kbd>alt-t</kbd></button>
+                <button id="skip" href="/study"
+                        data-html="true" data-toggle="tooltip" data-placement="bottom"
+                        class="btn btn-default btn-sm clearfix" title="<kbd>{{os_ctrl}}-k</kbd> to skip this question">
+                    Skip <span class="glyphicon glyphicon-refresh text-success"></span></button>
             </div>
             <div class="btn-group">
-                <button id="skip" class="btn btn-default btn-sm clearfix" title="alt-k to skip and mark as too hard">Too Hard
-                <kbd>alt-k</kbd></button>
+                <button id="help-me" 
+                        data-html="true" data-toggle="tooltip" data-placement="bottom"
+                        class="disabled btn btn-default btn-sm clearfix" title="Send a help alert to your friends.">
+                    Help Me! <span class="glyphicon glyphicon-bullhorn text-primary"></span>
+                </button>
             </div>
             <div class="btn-group">
-                <button id="help-me" class="btn btn-default btn-sm clearfix" title="send your friends a help alert">Help!</button>
+                <button id="panic" 
+                        data-html="true" data-toggle="tooltip" data-placement="bottom"
+                        class="disabled btn btn-default btn-sm" title="Post a site-wide call for help.">
+                    Panic! <span class="glyphicon glyphicon-exclamation-sign text-danger"></span>
+                </button>
             </div>
+
             <div class="btn-group no-br-radius">
-                <button id="panic" class="btn btn-default btn-sm" title="put out a site-wide call for help">Panic!</button>
+                <button type="button" class="disabled btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                    <span class="glyphicon glyphicon-flag"></span> Flag Question <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="#" title="the question instructions are unclear or need editing">Unclear</a></li>
+                    <li><a href="#" title="this question seems too easy for level {{question.level}}">Too Easy</a></li>
+                    <li><a href="#" title="this question seems too hard for level {{question.level}}">Too Hard</a></li>
+                    <li><a href="#" title="this question is innapropriate, contains spam, etc">Innapropriate</a></li>
+                </ul>
             </div>
+
+
         </div><!-- /run/submit button group -->
 
-            <div id="response-editor" data-code-field="user_code"># write a function called {{question.function_name}}</div>
+            <div id="response-editor" data-code-field="user_code"># write a function called {{question.function_name}}
+
+</div>
         </div> <!-- / col 1 -->
 
         <div class="col-md-5">
@@ -53,14 +78,14 @@
                         <input type="hidden" id="study_tag" value="{{tag}}" name="study_tag">
                         {% endif %} 
 
-                        <div class="form-group">
+<!--                         <div class="form-group">
                             <label for="id_args">Args:</label> 
                             <input class="form-control" id="id_args" name="args" type="text">
                             <p class="help-text">
                                 Python arguments for you to test your function, 
                                 e.g. <var>'hi'</var>, <var>2,8</var>, or <var>[10,-6,15]</var>
                             </p>
-                        </div>
+                        </div> -->
                     </form>
                     <div id="test-results"></div>
                 </div><!-- / panel body -->

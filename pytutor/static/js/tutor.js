@@ -224,11 +224,11 @@ function submitTestForm(e)
 
 
 
-function submitStudyCode(e, action)
+function submitStudyCode(action)
 {
 
     // Stop form from submitting normally
-    e.preventDefault();
+    //e.preventDefault();
 
     var $form = $("#response-form");
     copyEditorCode("response-editor");
@@ -238,7 +238,7 @@ function submitStudyCode(e, action)
     $.post( url, data ).success(function( response ) 
     {
         $( "#test-results" ).html( response );
-        console.log(response);
+        editors["response-editor"].focus();
     });
 
 }
@@ -264,24 +264,39 @@ function fixDiff()
 $( document ).ready(function() {
 
     var tips = $("*[data-toggle='tooltip']");
-    console.log(tips.length);
-    $(tips).popover({html:false, trigger: 'hover'});
-
+    $(tips).popover({trigger: 'hover'});
 
     fixDiff();
-    
-    //question form stuff
-    $( "#test-form" ).submit(submitTestForm);
-    var runUserFunction = function(e) {submitStudyCode(e, "run");}
-    var testUserFunction = function(e) {submitStudyCode(e, "test");}
-    $( "#run-code" ).click(runUserFunction);
-    $( "#test-code" ).click(testUserFunction);
-
     initEditors();
+
+   //question form stuff
+    $( "#test-form" ).submit(submitTestForm);
+    var runUserFunction = function() {submitStudyCode("run"); return false;}
+    $( "#run-code" ).click(runUserFunction);
+    // var testUserFunction = function(e) {submitStudyCode(e, "test");}
+    // $( "#test-code" ).click(testUserFunction);
+    if($( "#run-code" ))
+    {
+        var editor = editors["response-editor"];
+        editor.focus();
+        editor.gotoLine(3);
+
+        editor.commands.addCommand({
+            name: "build",
+            bindKey: {win: "Ctrl-B", mac: "Command-B"},
+            exec: function(editor) { runUserFunction(); }
+        });
+
+        editor.commands.addCommand({
+            name: "skip",
+            bindKey: {win: "Ctrl-K", mac: "Command-K"},
+            exec: function(editor) { window.location = "/tutor"; }
+        });
+
+    }
 
 
     $("#question-edit-tabs a").click(function (e) {
-        e.preventDefault();
         $(this).tab('show');
     });
 
@@ -293,7 +308,7 @@ $( document ).ready(function() {
 
 
     TableSorter.init();
-
+    
 
 
 });
