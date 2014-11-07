@@ -1,0 +1,84 @@
+{% load humanize %}
+
+<div class="well">
+	<h4>Question Editor <small>(id. {{pk}}, v. {{question.instance.version}})</h4>
+    <dl id="question-info" class="dl-horizontal">
+        <dt>Created by:</dt>
+        <dd>{{question.instance.creator}} on {{question.instance.created}}</dd>
+        <dt>Last modified by:</dt>
+        <dd>{{question.instance.modifier}} on {{question.instance.modified}}</dd>
+        <dt>Status:</dt>
+        <dd id="question-status-label">{{question.instance.status_label}}</dd>
+    </dl>
+</div>
+<ul id="question-edit-tabs" class="nav nav-tabs" role="tablist">
+  <li class="active"><a href="#tests" role="tab" data-toggle="tab">Test Cases</a></li>
+  <li><a href="#history" role="tab" data-toggle="tab">View History</a></li>
+</ul>
+<div class="tab-content">
+    <div class="tab-pane active panel panel-default" id="tests">
+        <header class="panel-heading">
+            <h2 class="panel-title">Tests</h2>
+        </header>
+        <div class="panel-body">
+            <form id="test-form" class="" action="/question/test/save" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="question_id" value="{{pk}}">
+                <div class="form-group">
+                    {{ test_form.args.label_tag }} 
+                    {{ test_form.args }}
+                    <p class="help-text">
+                        Valid Python arguments for this function, 
+                        e.g. <var>'hi'</var>, <var>2,8</var>, or <var>[10,-6,15]</var>
+                    </p>
+                </div>
+                <div class="form-group">
+                    {{ test_form.result.label_tag }} 
+                    <textarea id="id_result" class="form-control" name="result"></textarea>
+                    <p class="help-text">
+                        The valid Python object the function should return.
+                    </p>
+                </div>
+                <input type="submit" value="add test" class="btn btn-success">
+            </form>
+            <h4>Test Results</h4>
+            <ul id="test-list" class="list-group">
+            {% for test, ex, result in tests %}
+                {% include "tutor/test-results.html" %}
+            {% endfor %}
+            </ul>
+        </div>
+    </div>
+  <div class="tab-pane panel panel-default" id="history">
+    <header class="panel-heading">
+        <h2 class="panel-title">Revisions</h2>
+    </header>
+    <div class="panel-body">
+      <table class="table table-striped table-sortable table-condensed">
+          <thead>
+              <tr>
+                  <th>version</th>
+                  <th class="text-center">date modified</th>
+                  <th class="text-center">modified by</th>
+              </tr>
+          </thead>
+          <tbody>
+          {% for aq in history %}
+              <tr data-toggle="tooltip" data-placement="bottom" data-content="comment: {{aq.comment}}">
+                  <td>{{aq.version}}</td>
+                  <td class="text-center" data-sort-value="{{aq.modified.timestap}}">
+                  {%if aq.version == question.instance.version %}
+                      <abbr title="latest revisions">{{aq.modified|naturaltime}}</abbr>
+                  {% else %}
+                      <a href="/question/{{pk}}/diff/{{question.instance.version}},{{aq.version}}"
+                         title="click to see diff with current version">{{aq.modified|naturaltime}}</a>
+                  {% endif %}
+                   </td>
+                  <td class="text-center">{{aq.modifier}}</td>
+              </tr>
+          {% endfor %}
+          </tbody>
+      </table>
+    </div>
+  </div>
+</div>

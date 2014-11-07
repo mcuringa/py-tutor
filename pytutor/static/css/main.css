@@ -57,6 +57,11 @@ body
   display: inline;
 }
 
+.well h1, .well h2, .well h3, .well h4
+{
+  margin-top: 0px;
+} 
+
 .well ul, .well ol, .well dl, .panel-body ul, .panel-body ol, .panel-body dl
 {
   margin-bottom: 0;
@@ -87,7 +92,10 @@ body
     border: 1px solid #e1e1e8;
     border-radius: 4px;
 }
-
+#prompt-editor
+{
+    height: 6em;
+}
 /** Study screen */
 #study-editor-col
 {

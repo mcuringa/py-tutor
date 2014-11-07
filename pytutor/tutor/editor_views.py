@@ -74,14 +74,17 @@ def question_form(request, pk=0):
             messages.warning(request, msg)
 
     test_form = TestForm()
-
+    os_ctrl = "ctrl"
+    if "Macintosh" in request.META["HTTP_USER_AGENT"]:
+        os_ctrl = "cmd"
 
     context = { "question": form,
                 "pk": pk,
                 "history": history,
                 "test_form": test_form,
                 "tests": test_results,
-                "qstate": qstate
+                "qstate": qstate,
+                "os_ctrl": os_ctrl
               }
 
     return render(request, 'tutor/question_form.html', context)
@@ -185,7 +188,7 @@ def save_question(request):
         archive(question)
         messages.success(request, "Question saved.")
     except ValueError as vex:
-        messages.warning(request, 'Please fill out all required fields.' )
+        messages.error(request, form.errors )
 
     url = "/question/{}/edit".format(pk)
 
