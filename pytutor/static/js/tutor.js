@@ -50,11 +50,7 @@ function initEditors()
     if($("#prompt-editor").length)
     {
         var prompt = configureEditor("prompt-editor");
-        console.log("configured prompt editor");
-        var foo = editors["prompt-editor"];
-
-        foo.getSession().setMode("ace/mode/markdown");   
-        foo.renderer.setShowGutter(false); 
+        prompt.getSession().setMode("ace/mode/markdown");   
 
         configureEditor("solution-editor");
 
@@ -89,7 +85,6 @@ function submitQuestion(e)
     if(e)
         e.preventDefault();
 
-    console.log("submitting queston");
     copyEditorCode("prompt-editor");
     copyEditorCode("solution-editor");
     $("#question-form").submit();
@@ -104,9 +99,10 @@ msg = function(msg, level)
     $( '#messages' ).show();
 }
 
-function submitTestForm()
+function submitTestForm(e)
 {
-        //
+
+    e.preventDefault();
     if ($( '#version' ).html() == '0')
     {
         msg("You must save your function name and prompt before adding tests.", danger);
