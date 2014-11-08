@@ -48,10 +48,6 @@ class AbstractQuestion(models.Model):
         tests = Test.objects.all().filter(question=self)
         if len(tests) == 0:
             return (False, [])
-        
-        print("======= code from run_tests =========")
-        print(code)
-
 
         if code == "":
             code = self.solution
