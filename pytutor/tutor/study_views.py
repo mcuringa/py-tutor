@@ -12,6 +12,9 @@ from pytutor.views import home
 from tutor.templatetags.tutor_extras import syn
 from tutor.models import *
 
+import tutor.study as sm
+
+
 @login_required
 def study(request, try_again_id=0, study_tag=None):
     """Randomly choose the next question for the user to study.
@@ -29,7 +32,7 @@ def study(request, try_again_id=0, study_tag=None):
         questions = Question.objects.filter(tags__icontains=study_tag) 
         question = random.choice(questions)
     else:
-        question = serve_question(request.user)
+        question = sm.next_question(request.user)
 
     response_form = ResponseForm()
     try:
