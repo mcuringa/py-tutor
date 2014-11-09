@@ -8,7 +8,7 @@ body
 {
     padding: 0;
     margin: 0;
-    padding-top: 70px;
+    padding-top: 34px;
     margin-bottom: 90px;
     height: 100%;
     width: 100%;
@@ -37,6 +37,9 @@ body
   white-space: normal;
 }
 
+.nopad { padding: 0 !important;}
+.nopad-top { padding-top: 0 !important;}
+
 .pad-top { padding-top: 1em; }
 .pad-bottom { padding-bottom: 1em; }
 .pad-left { padding-left: 1em; }
@@ -47,15 +50,8 @@ body
 .margin-top { margin-top: .5em; }
 .margin-bottom { margin-bottom: .5em; }
 
-.nopad
-{
-  padding: 0 !important;
-}
 
-.inline
-{
-  display: inline;
-}
+.inline { display: inline;}
 
 .well h1, .well h2, .well h3, .well h4
 {
@@ -94,7 +90,7 @@ body
 }
 #prompt-editor
 {
-    height: 8em;
+    height: 200px;
 }
 /** Study screen */
 #study-editor-col
@@ -135,19 +131,8 @@ body
     position: relative;
     height: 300px;
     width: 100%;
-/*
-    border: 1px solid #e1e1e8;
-*/
-/*
-    border-top-style: none;
-*/
     margin-top: 0;
 }
-
-
-
-
-
 
 #user-code
 {

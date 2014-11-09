@@ -20,7 +20,8 @@ def correct_at_levels(student, last=20):
 
 def current_level(student, cutoff=.75):
     levels = correct_at_levels(student)
-    print(levels)
+    print("============= levels =============")
+    print(len(levels))
     if len(levels) < 5:
         print("not enough data yet")
         return 1

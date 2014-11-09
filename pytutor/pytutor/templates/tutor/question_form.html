@@ -13,7 +13,7 @@
             <input type="hidden" id="prompt" name="prompt">
             <input type="hidden" id="solution" name="solution">
 
-            <div class="well nopad">
+            <div class="well nopad-top">
                 <div id="question-tools" class="btn-group">
                     <div class="btn-group">
                         <button id="save-question"
@@ -42,10 +42,7 @@
                         </button>
                     </div>
                 </div><!-- /submit buttons -->
-                <div class="change-indicator pull-right label label-success"><span class="glyphicon glyphicon-flash"></span></div>
-
-            </div>
-            <div class="well">
+                <div class="change-indicator pull-right label label-success margin-top"><span class="glyphicon glyphicon-flash"></span></div>
             
 
                 <div class="form-group margin-top">
@@ -57,8 +54,8 @@
 
                  <div class="form-group row">
                     {{ question.level.errors }}
-                    <div class="col-md-2">{{ question.level.label_tag }}</div>
-                    <div class="col-md-10">{{ question.level }}</div>
+                    <div class="col-md-1">{{ question.level.label_tag }}</div>
+                    <div class="col-md-11">{{ question.level }}</div>
                 </div>
 
                 <div class="form-group">
