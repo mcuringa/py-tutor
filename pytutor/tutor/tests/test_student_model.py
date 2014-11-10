@@ -14,7 +14,7 @@ class StudentModelTestCase(TestCase):
         self.user = User.objects.create_user(username="tester", password="password")
         for i in range(1, len(Question.levels)+1):
             for j in range(1,11):
-                Question.objects.create(function_name="level{}-q{}".format(i,j),level=i, prompt="test function", creator=self.user, modifier=self.user, status=1)
+                Question.objects.create(function_name="level{}-q{}".format(i,j),level=i, prompt="test function", creator=self.user, modifier=self.user, status=Question.ACTIVE)
 
     def test_setup(self):
         t = Question.objects.all().order_by("id")
@@ -64,11 +64,48 @@ class StudentModelTestCase(TestCase):
         self.assertEqual(level,4)
         self.assertEqual(count,7)
 
-    def test_current_level(self):
+    def test_current_levels(self):
         self.clear()
-        self.seed_level(1, 2) # 2 correct at level 1
-        self.seed_level(1, 20, False) # 20 wrong at level 1
         
-        self.assertEqual(sm.current_level(self.user),1)
+        self.seed_level(1, 2)
+        self.seed_level(2, 20, False)
+        self.assertEqual(sm.current_level(self.user), 2)
 
+        self.clear()
+        self.seed_level(1, 6)
+        self.seed_level(2, 5)
+        self.assertEqual(sm.current_level(self.user), 2)
+
+        self.clear()
+        self.seed_level(3, 5)
+        self.seed_level(4, 5)
+        self.assertEqual(sm.current_level(self.user), 4)
+
+
+        self.clear()
+        self.seed_level(4, 50)
+        self.seed_level(5, 20)
+        self.assertEqual(sm.current_level(self.user), 5)
+
+
+        self.clear()
+        self.seed_level(1, 5)
+        self.seed_level(2, 5)
+        self.seed_level(3, 7)
+
+        self.assertEqual(sm.current_level(self.user), 3)
+
+    def test_next_question(self):
+
+        self.clear()
+        q = sm.next_question(self.user)
+        assert q.level in [1,2]
+        
+        self.seed_level(1, 5)
+        self.seed_level(2, 5)
+        self.seed_level(3, 7)
+        self.assertEqual(sm.current_level(self.user), 3)
+        for i in range(100):
+            q = sm.next_question(self.user)
+            self.assertTrue(q.level in [2,3,4])
 
