@@ -29,8 +29,8 @@ def study(request, try_again_id=0, study_tag=None):
 
     response_form = ResponseForm()
 
-    attempts = Response.objects.filter(user=request.user, question=question)[:Response.MAX_ATTEMPTS].count()
-    attempt = attempts + 1
+    attempts = Response.objects.filter(user=request.user)[:Response.MAX_ATTEMPTS]
+    attempts = len([r for r in attempts if r.question == question])
     attempts_left = Response.MAX_ATTEMPTS - attempts
     
     os_ctrl = "ctrl"
@@ -39,7 +39,6 @@ def study(request, try_again_id=0, study_tag=None):
     context = {
         "question": question,
         "response_form" : response_form, 
-        "attempt" : attempt,
         "attempts_left" : attempts_left,
         "tag" : study_tag,
         "os_ctrl": os_ctrl
@@ -54,32 +53,28 @@ def respond(request):
     pk = int(request.POST["qpk"])
     user_code = request.POST.get('user_code', False)
     action = request.POST.get('action', 'foo')
-    print("study code action:", action)
+
     study_tag = request.POST.get('study_tag', False)
     question = Question.objects.get(pk=pk)  
 
     passed, test_results = question.run_tests(user_code)    
+
+    attempts = Response.objects.filter(user=request.user)[:Response.MAX_ATTEMPTS]
+    attempts = len([r for r in attempts if r.question == question])
+    attempt = attempts + 1
+    attempts_left = Response.MAX_ATTEMPTS - attempt
     
-    try:
-        attempts = Response.objects.all().filter(user=request.user, question=question)
-    except: 
-        attempts = []
-    
-    response = Response(attempt=len(attempts) + 1, user=request.user, question=question)
+    response = Response(attempt=attempt, user=request.user, question=question)
     response.code = user_code
-    #evaluate user's code
     response.is_correct = passed
     response.save()
 
     context = {"question" : question, 
                "response" : response, 
-               "user_code": syn(user_code),
-               "previous_attempt" : response.attempt - 1,
+               "attempts_left" : attempts_left,
                "tests" : test_results,
                "passed" : passed,
                "study_tag": study_tag }
-
-    
     
     return render(request, 'tutor/response_result.html', context)
 

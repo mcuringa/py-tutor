@@ -65,9 +65,6 @@
                         Question {{question.id}}: {{question.function_name}}
                         <a href="/question/{{question.id}}/edit" class="btn btn-xs" title="edit this question">
                             <span class="glyphicon glyphicon-pencil"></span></a>
-                        <span class="label">
-                            {{ attempts_left }} attempt{{ attempts_left|pluralize }} left
-                        </span>
                     </h2>
                     {% if tag %}<h4 class="panel-title">Study Tag: {{tag}}</h4>{% endif %}
                 </div>
@@ -79,18 +76,11 @@
                         <input type="hidden" id="user_code" name="user_code">
                         {% if tag %}
                         <input type="hidden" id="study_tag" value="{{tag}}" name="study_tag">
-                        {% endif %} 
-
-<!--                         <div class="form-group">
-                            <label for="id_args">Args:</label> 
-                            <input class="form-control" id="id_args" name="args" type="text">
-                            <p class="help-text">
-                                Python arguments for you to test your function, 
-                                e.g. <var>'hi'</var>, <var>2,8</var>, or <var>[10,-6,15]</var>
-                            </p>
-                        </div> -->
+                        {% endif %}
                     </form>
-                    <div id="test-results"></div>
+                    <div id="test-results">
+                        {% include "tutor/response_result.html" %}                        
+                    </div>
                 </div><!-- / panel body -->
             </div> <!-- / panel -->
         </div> <!-- / col 2 -->
@@ -101,6 +91,3 @@
 
 {% endblock %}
 
-
-
-                <div class="panel-footer">Attempt #{{ attempt }}</div>

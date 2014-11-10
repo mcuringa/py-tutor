@@ -33,19 +33,6 @@ body
 /* helper classes */
 
 
-.carousel-content 
-{ 
-    display: table-cell;
-    font-size: 130%;
-    height: 300px;
-    vertical-align: bottom;
-}
-
-.carousel-content p, .carousel-content h2, .carousel-content h3
-{
-    display: block;
-}
-
 .wrap, .btn.wrap
 {
   white-space: normal;
@@ -54,11 +41,14 @@ body
 .nopad { padding: 0 !important;}
 .nopad-top { padding-top: 0 !important;}
 
+.pad { padding: .5em; }
+
 .pad-top { padding-top: 1em; }
 .pad-bottom { padding-bottom: 1em; }
 .pad-left { padding-left: 1em; }
 .pad-right { padding-right: 1em; }
 
+.nomargint { margin: 0 !important; }
 .margin-left { margin-left: .5em; }
 .margin-right { margin-right: .5em; }
 .margin-top { margin-top: .5em; }
