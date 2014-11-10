@@ -17,29 +17,21 @@ import tutor.study as sm
 
 @login_required
 def study(request, try_again_id=0, study_tag=None):
-    """Randomly choose the next question for the user to study.
-       If no questions exist, prompt the user to create one."""
+    """Choose the next question for the user to study."""
 
-
-    questions = Question.objects.all()
-    if not questions:
-        messages.info(request, 'There are currently no questions to study.')
-        return home(request)
 
     if try_again_id:
         question = Question.objects.get(pk=try_again_id)
     elif study_tag is not None:
-        questions = Question.objects.filter(tags__icontains=study_tag) 
-        question = random.choice(questions)
+        question = sm.next_question(request.user, study_tag)
     else:
         question = sm.next_question(request.user)
 
     response_form = ResponseForm()
-    try:
-        response = Response.objects.get(user=request.user, question=question)
-        attempt = response.attempt + 1
-    except: 
-        attempt = 1
+
+    attempts = Response.objects.filter(user=request.user, question=question)[:Response.MAX_ATTEMPTS].count()
+    attempt = attempts + 1
+    attempts_left = Response.MAX_ATTEMPTS - attempts
     
     os_ctrl = "ctrl"
     if "Macintosh" in request.META["HTTP_USER_AGENT"]:
@@ -47,8 +39,8 @@ def study(request, try_again_id=0, study_tag=None):
     context = {
         "question": question,
         "response_form" : response_form, 
-        "questions" : True,
         "attempt" : attempt,
+        "attempts_left" : attempts_left,
         "tag" : study_tag,
         "os_ctrl": os_ctrl
     }

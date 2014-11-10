@@ -3,123 +3,31 @@
 {% block title %}PyTutor Home{% endblock %}
 
 {% block body %}
+{% load markdown_deux_tags %}
 
-<section id="home" class="container-fluid">
-    <h1>Welcome to the PyTutor!</h1>
-<br>
+<header><h2 class="page-header text-center">Welcome to PyTutor!</h2></header>
+<section id="home" class="pad-top margin-top">
 
-<div class = "row">
-	<div class="col-md-7 wrap">
-		<center>
-			<h4>PyTutor is an online tutoring program to help you learn the basics of programming in Python. By networking with peers, you will work together to create and solve problems, giving and receiving targeted help in real time. </h4>
-		</center>
-	<br>
-	</div>
-	<!-- <div class="col-md-6"
-	img src=<"http://blogs.umass.edu/gwis/files/2014/09/python1.png">
- -->
-<div class="row">
-  
 
-  <div class="col-md-6 container-fluid">
-  	<div class="panel panel-primary">
-	  	<div class="panel-heading">
-		  	<h2 class="panel-title text-center">Study</h2>
-	  	</div>
-	  	 <div class="panel-body row">
-	      	<div class="col-md-6">
-	      		<a href="/tutor"><button class="btn btn-primary btn-block wrap">
-	        		<h3 class="text-center">Get Started</h3>
-	        		Click here to start practicing Python problems!
-	       		</button>
-	      	</div>
-	      	<div id="study-tags" class="col-md-6">	
-        		<h3 class="text-center">Pick a Tag </h3>
-				{% for tag in tags %}
-					<a href="/tutor/tag/{{tag}}" title="study this tag" class="btn btn-default btn-primary btn-xs tag-{{tag}} ">{{tag}}</a>
-				{% endfor %}
-            </div>
-	   	</div><!-- /row -->
-	</div><!-- end panel -->
-  </div> <!-- /col 1 -->
-
-  <div class="col-md-6 container-fluid">
-  	<div class="panel panel-primary">
-	  	<div class="panel-heading">
-		  	<h2 class="panel-title text-center">Question Master</h2>
-	  	</div>
-	  	 
-	  	 <div class="panel-body row">
-	      	
-	      	<div class="col-md-6">
-	      		<a href="/question/new"><button class="btn btn-primary btn-block wrap">
-	        		<h3 class="text-center">Create a Question </h3>
-	        		<center>
-	        		Create questions and test examples for others to study.
-	        		</center>
-	       		</button>
-	      	</div>
-	      	
-	      	<div class="col-md-6">
-	      		<a href="/question/list"><button class="btn btn-primary btn-block wrap">
-	        		<h3 class="text-center">Edit a Question </h3>
-	   					Review practice problems to make suggestions and changes.
-				</button>
-	    	</div>
-
-	   	</div><!-- /row -->
-	</div><!-- end panel -->
-  </div> <!-- /col 1 -->
-
-<!-- <div class="row">
-<center>
-  <div class="col-sm-5">
-  <h1>
-    Level 1: Study
-  </h1>
-
-    <div class="row">
-      <div class="col-xs-8 col-sm-5">
-        Level 2: Choose your Level
-      </div>
-      <div class="col-xs-4 col-sm-5">
-        Level 2: Pick a Tag
-      </div>
+    <div class="margin-top jumbotron col-md-8 col-md-offset-2">
+        <p>
+            <strong>PyTutor</strong> is <code>social tutoring software</code> to help you learn the basics 
+            of programming in Python.
+        </p>
+       <p> 
+            We believe in community-supported learning and collaboration when learning to code. 
+            We bring in features from <code>social networks</code> to make it easy to ask your friends for a little help if you get stuck.
+        </p>
+        <p>
+            Our <code>wiki-like question editor</code> makes it quick and easy to write many high-quality questions.
+            After you answer some questions and get a sense for PyTutor, just click "new question"
+            and help us grow.
+        </p>
+        <a href="/tutor" class="btn btn-primary btn-block">Click here to get started!</a>
     </div>
-  </div>
-</center>
-</div>
-
-<div class="row">
-<center>
-  <div class="col-sm-5 .col-sm-push-5">
-  <h1>
-    Level 1: Question Master
-  </h1>
-    <div class="row">
-      <div class="col-xs-8 col-sm-5 .col-sm-push-5">
-        Level 2: Make Questions
-      </div>
-      <div class="col-xs-4 col-sm-5 .col-sm-push-5">
-        Level 2: Edit Questions
-      </div>
-    </div>
-  </div>
-</center>
-</div> -->
-
-
-<!-- 	<div 
-    <div class="row">
-    <h1>
-    <center>
-    	<div class="col-md-6".col-md-6>Study</div>
-    		
-  		<div class="col-md-6".col-md-6>Question Master</div>
-  		
-  		<div class=".col-md-3".col-md-3></div>
-  	</h1>
-	</div> -->
 </section>
 
 {% endblock %}
+
+
+

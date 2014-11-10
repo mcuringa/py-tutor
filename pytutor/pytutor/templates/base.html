@@ -28,6 +28,22 @@
 
 {% include "tutor/delete_confirm.html" %}
 
+<div id="{% block modal_id %}{% endblock %}" tabindex="-1" class="modal fade" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title">{% block modal_title %}Modal Title{% endblock %}</h4>
+      </div>
+      <div class="modal-body">{% block modal_body %}Modal body{% endblock %}</div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
     <header id="top-header" class="navbar navbar-default navbar-fixed-top" role="navigation">
       <div class="container-fluid">
         <div class="navbar-header">

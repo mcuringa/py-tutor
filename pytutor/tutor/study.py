@@ -68,6 +68,10 @@ def next_question(student, tag=""):
 
     level_choice = random_level(level)
     questions = pool.filter(level=level_choice)
+    try:
+        q = random.choice(questions)
+    except IndexError:
+        raise IndexError('No question at {} for user {}'.format(level_choice, student.username))
 
-    return random.choice(questions)
+    return q
 

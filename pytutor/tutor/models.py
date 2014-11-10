@@ -239,6 +239,8 @@ class Response(models.Model):
     If all tests are correctly passed, the Response
     is marked correct"""
 
+    MAX_ATTEMPTS = 10
+
     code = models.TextField(blank=True, help_text="Your solution to this question.")
     is_correct = models.BooleanField(default=False)
     attempt = models.IntegerField(default=1)

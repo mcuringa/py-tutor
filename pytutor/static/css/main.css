@@ -32,6 +32,20 @@ body
 
 /* helper classes */
 
+
+.carousel-content 
+{ 
+    display: table-cell;
+    font-size: 130%;
+    height: 300px;
+    vertical-align: bottom;
+}
+
+.carousel-content p, .carousel-content h2, .carousel-content h3
+{
+    display: block;
+}
+
 .wrap, .btn.wrap
 {
   white-space: normal;
@@ -92,11 +106,16 @@ body
 {
     height: 200px;
 }
+
+
+
 /** Study screen */
 #study-editor-col
 {
 
 }
+
+
 
 #editor-tools
 {

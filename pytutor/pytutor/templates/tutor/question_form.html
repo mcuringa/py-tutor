@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% load humanize %}
+{% load markdown_deux_tags %}
 
 {% block title %}PyTutor::Question Editor{% endblock %}
 
@@ -62,7 +63,10 @@
                     {{ question.prompt.errors }}
                     {{ question.prompt.label_tag }}
                     <div id="prompt-editor" class="code-editor" data-code-field="prompt">{{question.instance.prompt}}</div>
-                    <p class="help-block">Provide clear instructions and sample ouput where appropriate. This field accepts <tt>markdown</tt>.</p>
+                    <p class="help-block">Provide clear instructions and sample ouput where appropriate. This field accepts
+                        <a href="#mdhelp" class="tip"  data-keyboard="true"
+                           title="showmarkdown cheatsheet" data-toggle="modal" 
+                           data-target="#mdcheat">markdown</a></p>
                 </div>
                 <div class="form-group">
                     {{ question.solution.errors }}
@@ -86,6 +90,8 @@
     <div class="col-md-6">{% include "tutor/question_editor_tests.html" %}</div>
 </div> <!--/row -->
 
-
-
 {% endblock %}
+
+{%block modal_id %}mdcheat{% endblock %}
+{%block modal_title %}Markdown Cheatsheet{% endblock %}
+{%block modal_body %}{% include "md_cheat.html" %}{% endblock %}
