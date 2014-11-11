@@ -12,40 +12,39 @@ from pytutor.views import home
 from tutor.templatetags.tutor_extras import syn
 from tutor.models import *
 
+import tutor.study as sm
+
+
 @login_required
 def study(request, try_again_id=0, study_tag=None):
-    """Randomly choose the next question for the user to study.
-       If no questions exist, prompt the user to create one."""
+    """Choose the next question for the user to study."""
 
-    questions = Question.objects.all()
-    if not questions:
-        messages.info(request, 'There are currently no questions to study.')
-        return home(request)
 
     if try_again_id:
         question = Question.objects.get(pk=try_again_id)
     elif study_tag is not None:
-        questions = Question.objects.filter(tags__icontains=study_tag) 
-        question = random.choice(questions)
+        question = sm.next_question(request.user, study_tag)
     else:
-        question = serve_question(request.user)
+        question = sm.next_question(request.user)
 
     response_form = ResponseForm()
-    try:
-        response = Response.objects.get(user=request.user, question=question)
-        attempt = response.attempt + 1
-    except: 
-        attempt = 1
+
+    attempts = Response.objects.filter(user=request.user)[:Response.MAX_ATTEMPTS]
+    attempts = len([r for r in attempts if r.question == question])
+    attempts_left = Response.MAX_ATTEMPTS - attempts
     
+    os_ctrl = "ctrl"
+    if "Macintosh" in request.META["HTTP_USER_AGENT"]:
+        os_ctrl = "cmd"
     context = {
         "question": question,
         "response_form" : response_form, 
-        "questions" : True,
-        "attempt" : attempt,
-        "tag" : study_tag
+        "attempts_left" : attempts_left,
+        "tag" : study_tag,
+        "os_ctrl": os_ctrl
     }
     
-    return render(request, 'tutor/respond.html', context)
+    return render(request, 'tutor/study.html', context)
 
 @login_required
 def respond(request):
@@ -53,38 +52,29 @@ def respond(request):
 
     pk = int(request.POST["qpk"])
     user_code = request.POST.get('user_code', False)
+    action = request.POST.get('action', 'foo')
+
     study_tag = request.POST.get('study_tag', False)
     question = Question.objects.get(pk=pk)  
+
+    passed, test_results = question.run_tests(user_code)    
+
+    attempts = Response.objects.filter(user=request.user)[:Response.MAX_ATTEMPTS]
+    attempts = len([r for r in attempts if r.question == question])
+    attempt = attempts + 1
+    attempts_left = Response.MAX_ATTEMPTS - attempt
     
-    try:
-        attempts = Response.objects.all().filter(user=request.user, question=question)
-    except: 
-        attempts = []
-    
-    response = Response(attempt=len(attempts) + 1, user=request.user, question=question)
+    response = Response(attempt=attempt, user=request.user, question=question)
     response.code = user_code
-
-    #evaluate user's code
-    
-    testResults = []
-    passed_tests = True
-    for t in Test.objects.all().filter(question=pk):
-        (test, ex, result) = t.evaluate(user_code)
-        testResults.append((test, ex, result))
-        if ex is not None and passed_tests:
-            passed_tests = False
-
-    response.is_correct = passed_tests
+    response.is_correct = passed
+    response.save()
 
     context = {"question" : question, 
                "response" : response, 
-               "user_code": syn(user_code),
-               "previous_attempt" : response.attempt - 1,
-               "tests" : testResults,
-               "passed_tests" : passed_tests,
+               "attempts_left" : attempts_left,
+               "tests" : test_results,
+               "passed" : passed,
                "study_tag": study_tag }
-
-    response.save()
     
     return render(request, 'tutor/response_result.html', context)
 

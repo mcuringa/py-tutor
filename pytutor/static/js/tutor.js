@@ -5,10 +5,13 @@ _.templateSettings = {
   interpolate: /\{\{(.+?)\}\}/g
 };
 
-var editors = Array();
+var editors = {};
 
 function configureEditor(id) 
 {
+
+    console.log('configuring editor: ' + id);
+
     // configure ace editor
     var editor = ace.edit(id);
     editor.setTheme("ace/theme/monokai");
@@ -16,123 +19,17 @@ function configureEditor(id)
     editor.getSession().setUseWrapMode(true);
     editor.getSession().setUseSoftTabs(true);
     editor.getSession().setNewLineMode("unix");
+    editor.renderer.setShowGutter(true); 
 
     editors[id] = editor;
+
     return editor;
 }
 
 
-TableSorter = {}
-
-TableSorter.init = function()
-{
-
-    var tables = $('.table-sortable');
-    var sortableBtnTmpl = _.template($('#th-sort-tmpl').html());
-
-    //go through each header and add a click event
-    _.each(tables, function(t) 
-    {
-        var headers = $(t).find('th');
-        _.each(headers, function(header, col) 
-        {
-            var data = {
-                'col': col,
-                'header': $(header).html()
-            };
-
-            $(header).data("sort", "desc");            
-            $(header).html(sortableBtnTmpl(data));
-            $(header).click(function(e) {
-                TableSorter.sortTable(t, col); 
-            });
-        });
-    });
-}
-
-TableSorter.sortTable = function(table, col)
-{
-    
-    //$(header).data("sortDirection", "desc");
-    var headers = $(table).find('th');
-    var rows = $(table).find('tbody tr');
-    var header = headers[col];
-    var sortDirection = $(header).data("sort");
-
-    $(headers).removeClass('active');
-    $(header).addClass('active');
-    $(headers).find('.desc').hide();
-    $(headers).find('.asc').hide();
-
-
-    var sorted = _.sortBy(rows, function(row) 
-    {
-        var cols = $(row).find('td');
-        var html = $(cols[col]).html()
-        var sortVal = $(cols[col]).data("sortVal");
-
-        if(_.isUndefined(sortVal) || _.isNull(sortVal) || '' == sortVal)
-            sortVal = html;
-        
-        var sortNum = parseFloat(sortVal);
-        if(_.isNaN(sortNum))
-        {
-            return sortVal;
-        }
-        return sortNum;
-    });
-
-    if("desc" == sortDirection)
-    {
-        $(header).data("sort", "asc");
-        $(header).find('.asc').show();
-        $(header).find('.desc').hide();
-    }
-    else
-    {
-        sorted.reverse();
-        $(header).data("sort", "desc");
-        
-        $(header).find('.desc').show();
-        $(header).find('.asc').hide();
-    }
-    $(table).find('tbody').html(sorted);    
-
-}
-
-
-/**
- * Copy the from ace editor into a hidden filed to 
- * submit user-generated code
- */
-function copyEditorCode(id)
-{
-    var codeField = $("#" + id).data("codeField");
-    var editor = editors[id];
-    var code = editor.getValue();
-    $("input[name=" + codeField + "]").val(code);
-}
 
 function initEditors()
 {
-
-    $('.code-editor.lang-bash').each(function(i, editor) {
-        var ace = configureEditor(editor);
-        ace.renderer.setShowGutter(false); 
-        ace.getSession().setMode("ace/mode/sh");
-        ace.setTheme("ace/theme/chrome");
-        
-        ace.setOptions({
-            readOnly: true,
-            highlightActiveLine: false,
-            highlightGutterLine: false
-        });
-
-        var code = $(editor).html()
-        var linesOfCode = code.split("\n");
-        $(editor).height((linesOfCode.length * 1.5 + 2) + "em");
-
-    });
 
     if($("#user-code").length)
     {
@@ -142,27 +39,55 @@ function initEditors()
     if($("#response-editor").length)
     {
         configureEditor("response-editor");
-        $("#submit-user-code").click(function (event) 
-        {
-            copyEditorCode("response-editor");
-            $("#response-form").submit();
-        });
+        var mainHeight = $(window).height();
+        mainHeight -= $('#top-header').height();
+        mainHeight -= $('#bottom-footer').height();
+        mainHeight -= 80;
+
+        $('#response-editor').height(mainHeight);
     }
 
     if($("#prompt-editor").length)
     {
         var prompt = configureEditor("prompt-editor");
-        prompt.getSession().setMode("ace/mode/markdown");        
-        
+        prompt.getSession().setMode("ace/mode/markdown");   
+
         configureEditor("solution-editor");
 
         $("#save-question").click(function (event) 
         {
-            copyEditorCode("prompt-editor");
-            copyEditorCode("solution-editor");
-            $("#question-form").submit();
+            submitQuestion();
         });
     }
+}
+
+/**
+ * Copy the from ace editor into a hidden filed to 
+ * submit user-generated code
+ */
+function copyEditorCode(id)
+{
+    console.log("copying code for: " + id);
+    var codeField = $("#" + id).data("codeField");
+    console.log("copying into: " + codeField);
+    var editor = editors[id];
+    console.log("got ace editor: " + editor);
+    // if(!editor)
+
+    var code = editor.getValue();
+    console.log("code: " + code);
+    $("input[name=" + codeField + "]").val(code);
+}
+
+
+function submitQuestion(e)
+{
+    if(e)
+        e.preventDefault();
+
+    copyEditorCode("prompt-editor");
+    copyEditorCode("solution-editor");
+    $("#question-form").submit();
 }
 
 msg = function(msg, level)
@@ -176,16 +101,14 @@ msg = function(msg, level)
 
 function submitTestForm(e)
 {
-        //
+
+    e.preventDefault();
     if ($( '#version' ).html() == '0')
     {
-        e.preventDefault();
-        msg("You must create a function name and prompt before adding unit tests.", danger);
+        msg("You must save your function name and prompt before adding tests.", danger);
     }
     else
     {
-        // Stop form from submitting normally
-        e.preventDefault();
 
         var $form = $( this );
         var data = $form.serialize();   
@@ -202,6 +125,11 @@ function submitTestForm(e)
                     $('#question-panel').removeClass('panel-success').addClass('panel-danger');
                     $('#question-status-label').html('Failed')
                 }
+                else
+                {
+                    $('#question-panel').removeClass('panel-danger').addClass('panel-success');
+                    $('#question-status-label').html('Passed')
+                }
             }
             else
             {
@@ -209,13 +137,34 @@ function submitTestForm(e)
             }
         });
     }
-
 }
 
 
 
+function submitStudyCode(action)
+{
+
+    // Stop form from submitting normally
+    //e.preventDefault();
+
+    var $form = $("#response-form");
+    copyEditorCode("response-editor");
+    var data = $form.serialize() + "&action=" + action;   
+    var url = $form.attr( "action" );
+
+    $.post( url, data ).success(function( response ) 
+    {
+        $( "#test-results" ).html( response );
+        editors["response-editor"].focus();
+    });
+
+}
 
 
+/**
+ * A client-side post-fix for the ugly diff
+ * table that python provides
+ */
 function fixDiff()
 {
     var tables = $("table.diff");
@@ -240,36 +189,102 @@ function showQuestionDetails(e)
 
 }
 
+function initForms()
+{
+    $("form").each(function()
+    {
+        var f = this;
+        if($(f).find(".change-indicator").length > 0)
+        {
+            var formState = $(f).find(".change-indicator");
+            var showChange = function() 
+            { 
+                $(formState).removeClass("label-success").addClass("label-warning");
+            }
+            $(f).find("select, checkbox, radio").on("change", showChange);
+            $(f).find("input, select, checkbox, radio, textarea").on("input", showChange);
+        }
+
+    });
+
+}
+
 $( document ).ready(function() {
 
     var tips = $("*[data-toggle='tooltip']");
-    console.log(tips.length);
-    $(tips).popover({html:false, trigger: 'hover'});
+    $(tips).popover({ container: 'body', trigger: 'hover', delay: { "show": 500, "hide": 100 } });
 
 
     fixDiff();
-    
-    //question form stuff
-    $( "#test-form" ).submit(submitTestForm);
-
     initEditors();
+    initForms();
+
+   //question form stuff
+    $( "#test-form" ).submit(submitTestForm);
+    
+    if($( "#question-form" ).length)
+    {
+
+        var prompt = editors["prompt-editor"];
+        var solution = editors["solution-editor"];
+
+
+        _.each([prompt, solution], function(editor)
+        {
+            editor.commands.addCommand({
+                name: "save",
+                bindKey: 
+                {
+                    win: 'Ctrl-S',
+                    mac: 'Command-S',
+                    sender: 'editor|cli'
+                },                
+                exec: function(env, args, request) { submitQuestion(); }
+            });
+        });
+    }
+
+
+    var runUserFunction = function() {submitStudyCode("run"); return false;}
+    $( "#run-code" ).click(runUserFunction);
+    
+    // var testUserFunction = function(e) {submitStudyCode(e, "test");}
+    // $( "#test-code" ).click(testUserFunction);
+    if($( "#run-code" ).length > 0)
+    {
+        var editor = editors["response-editor"];
+        editor.focus();
+        editor.gotoLine(3);
+
+        editor.commands.addCommand({
+            name: "build",
+            bindKey: {win: "Ctrl-B", mac: "Command-B"},
+            exec: function(editor) { runUserFunction(); }
+        });
+
+        editor.commands.addCommand({
+            name: "skip",
+            bindKey: {win: "Ctrl-K", mac: "Command-K"},
+            exec: function(editor) { window.location = "/tutor"; }
+        });
+
+    }
 
 
     $("#question-edit-tabs a").click(function (e) {
-        e.preventDefault();
         $(this).tab('show');
     });
 
-    $("input, select").each(function(){
-        $( this ).addClass("form-control");
-    });
+    $(".form-group select, .form-group input").addClass("form-control");
 
     $( "#id_comment").val("");
 
 
     TableSorter.init();
 
+
     $(".question_detail").click(showQuestionDetails)
+
 
 
 

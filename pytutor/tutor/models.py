@@ -46,6 +46,28 @@ class AbstractQuestion(models.Model):
     creator = models.ForeignKey(User, related_name="%(app_label)s_%(class)s_creator")
     modifier = models.ForeignKey(User, related_name="%(app_label)s_%(class)s_modifer")
 
+    def run_tests(self, code=""):
+        tests = Test.objects.all().filter(question=self)
+        if len(tests) == 0:
+            return (False, [])
+
+        if code == "":
+            code = self.solution
+
+        results = []
+        passed = True
+
+
+        for test, fail, result in [t.evaluate(code) for t in tests]:
+            passed = passed and fail is None
+            results.append((test, fail, result))
+        
+        return (passed, results)
+
+    def level_label(self):
+        return AbstractQuestion.levels[self.level - 1]
+
+
     class Meta:
         abstract = True
         ordering = ['-modified']
@@ -70,19 +92,30 @@ class Question(AbstractQuestion):
     status = models.IntegerField(default=FAILED)
     objects = QuestionManager()
 
-    def update_status(self):
-        tests = Test.objects.all().filter(question=self)
-        self.status = Question.ACTIVE
-        if len(tests) == 0: 
-            self.status = Question.FAILED
+    def test_and_update(self, t=None):
+        print("test and update")
+        if self.status == Question.DELETED:
+            return False
         
-        for test, fail, result in [t.evaluate(self.solution) for t in tests]:
-            if fail is not None:
-                self.status = Question.FAILED
-                return
+        if t is not None:
+            test, ex, result = test.evaluate(user_function)
+            passed = ex == None
 
-    def latest_response_for(self, user):
-        return Response.objects.all().filter(question=self, user=user).order_by("-submitted").first()
+        else:
+            passed, results = self.run_tests()
+        
+        print("passed:", passed)
+        print("current status:", self.status)
+        if self.status == Question.ACTIVE and not passed:
+            self.status = Question.FAILED
+            self.save()
+            return True
+        elif self.status == Question.FAILED and passed:
+            self.status = Question.ACTIVE
+            self.save()
+            return True
+
+        return False
 
     class Meta:
         unique_together = (('id', 'version'),)
@@ -202,7 +235,7 @@ Actual result: {}""".format(self.question.function_name, self.args, self.result,
 
 class TestForm(ModelForm):
     args = forms.CharField(required = False, widget=forms.TextInput(attrs={'class': 'form-control'}))
-    result = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    result = forms.CharField(widget=forms.Textarea)
     class Meta:
         model = Test
         fields = ["args", "result"]
@@ -215,12 +248,14 @@ class Response(models.Model):
     If all tests are correctly passed, the Response
     is marked correct"""
 
+    MAX_ATTEMPTS = 10
+
     code = models.TextField(blank=True, help_text="Your solution to this question.")
     is_correct = models.BooleanField(default=False)
     attempt = models.IntegerField(default=1)
     submitted = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User)
-    question = models.ForeignKey(Question) # Question, not AQ
+    question = models.ForeignKey(Question)
 
     def highlighted_code(self):
         return syn(self.code)

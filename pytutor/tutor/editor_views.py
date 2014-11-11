@@ -12,6 +12,7 @@ from django.db.models import Q
 
 from tutor.models import *
 
+
 def list(request, editor_name=""):
     """List the questions in the database"""
     print ("editor:", editor_name)
@@ -54,12 +55,10 @@ def question_form(request, pk=0):
         test_results = []
         qstate = "default"
     else:
-
         question = Question.objects.get(pk=pk)        
         form = QuestionForm(instance=question)
         history = ArchiveQuestion.objects.all().filter(parent_id=pk).order_by('-version')
-        tests = Test.objects.all().filter(question=question)
-        test_results = [t.evaluate() for t in tests]
+        passed, test_results = question.run_tests()
 
         if question.status == Question.FAILED:
             qstate = "danger"
@@ -68,25 +67,24 @@ def question_form(request, pk=0):
         else:
             qstate = "warning"
 
-
-        if tests.count() == 0:
+        if len(test_results) == 0:
             msg = """This question has no unit tests. 
-            Without unit tests, a response to this 
-            question won't be properly evaluated. Create a unit test below!"""
+            Without tests, this question can't be studied!"""
 
             messages.warning(request, msg)
 
-
-
     test_form = TestForm()
-
+    os_ctrl = "ctrl"
+    if "Macintosh" in request.META["HTTP_USER_AGENT"]:
+        os_ctrl = "cmd"
 
     context = { "question": form,
                 "pk": pk,
                 "history": history,
                 "test_form": test_form,
                 "tests": test_results,
-                "qstate": qstate
+                "qstate": qstate,
+                "os_ctrl": os_ctrl
               }
 
     return render(request, 'tutor/question_form.html', context)
@@ -109,17 +107,14 @@ def add_test(request):
 
         user_function = q.solution
         test, ex, result = test.evaluate(user_function)
-        passed = ex == None
-
-        if q.status == Question.ACTIVE and not passed:
-            print("failed test, update question")
-            q.status = Question.FAILED
-            q.save()
+        passed = (ex == None)
+        updated = q.test_and_update()
 
         c = Context({
             'test': test,
             'ex': ex,
-            'result': result
+            'result': result,
+            'status_updated': updated
         })
 
         t = loader.get_template('tutor/test-results.html')
@@ -154,12 +149,16 @@ def add_test(request):
 def del_test(request, pk):
     test = Test.objects.get(pk=pk)
     question = test.question
+    if question.status == Question.DELETED:
+        raise ValueError("Cannot delete tests to DELETED Questions")
+
     test.delete()
-    oldStatus = question.status
-    active = question.update_status()
     msg = "Test deleted."
-    if question.status != oldStatus:
+    updated = question.test_and_update()
+    
+    if updated:
         msg += " Status changed to {}.".format(question.status_label())
+
     messages.success(request, msg)
     url = "/question/{}/edit".format(question.id)
     return HttpResponseRedirect(url)
@@ -179,14 +178,17 @@ def save_question(request):
 
     form.instance.modifier = request.user
     try:
-      question = form.save()
-      pk = question.id
-      print("question id:", pk)
+        question = form.save()
 
-      archive(question)
-      messages.success(request, "Question saved.")
-    except:
-        messages.warning(request, 'Please fill out all required fields.')
+        if pk > 0:
+            updated = question.test_and_update()
+
+        pk = question.id
+
+        archive(question)
+        messages.success(request, "Question saved.")
+    except ValueError as vex:
+        messages.error(request, form.errors )
 
     url = "/question/{}/edit".format(pk)
 
@@ -264,15 +266,11 @@ def diff(request, pk, v1, v2):
 
 @login_required
 def revert(request, pk, versionNum):
-    print("pk:", pk)
-    print("versionNum:", versionNum)
 
     version = ArchiveQuestion.objects.get(parent__id=pk, version=versionNum)
-    print("version:", version.function_name)
 
     # question = Question.objects.get(pk=pk)
     question = version.parent
-    print("question:", question)
 
     question.function_name = version.function_name
     question.prompt = version.prompt
@@ -284,7 +282,7 @@ def revert(request, pk, versionNum):
     question.modifier = request.user
 
     question.comment = "Reverted to revision {} by {}".format(versionNum, request.user.username)
-    question.save()
+    question.test_and_update()
     archive(question)
 
     messages.success(request, "Question successfully reverted to revision {}.".format(versionNum))

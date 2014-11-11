@@ -11,22 +11,16 @@
     <title>{% block title %}PyTutor{% endblock %}</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Bootstrap theme -->
-<!--
-    <link href="/static/css/bootstrap-theme.min.css" rel="stylesheet">
--->
-    
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet"> 
     <link href="/static/css/pygments.css" rel="stylesheet">
-    
- 
     <link href="/static/css/main.css" type="text/css" rel="stylesheet">
 
     <script src="/static/js/jquery.js"></script>
     <script src="/static/js/underscore-min.js"></script>
-    <script src="/static/js/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="/static/js/ace/ace.js" charset="utf-8"></script>
     <script src="/static/js/bootstrap.min.js"></script>
     
+    <script src="/static/js/tablesorter.js"></script>    
     <script src="/static/js/tutor.js"></script>    
 </head>
 
@@ -34,7 +28,23 @@
 
 {% include "tutor/delete_confirm.html" %}
 
-    <header class="navbar navbar-default navbar-fixed-top" role="navigation">
+<div id="{% block modal_id %}{% endblock %}" tabindex="-1" class="modal fade" role="dialog" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title">{% block modal_title %}Modal Title{% endblock %}</h4>
+      </div>
+      <div class="modal-body">{% block modal_body %}Modal body{% endblock %}</div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+    <header id="top-header" class="navbar navbar-default navbar-fixed-top" role="navigation">
       <div class="container-fluid">
         <div class="navbar-header">
           <a class="navbar-brand" href="/">PyTutor</a>
@@ -78,7 +88,7 @@
     </header>
 
 
-    <section class="container-fluid">
+    <section id="main" class="container-fluid">
         <div class="row clearfix">
             <ul id="messages" class="list-unstyled list-group col-md-6 col-md-offset-3">
                 {% for msg in messages %}
@@ -95,14 +105,19 @@
         {% block body %}Every child template should put something here...{% endblock %}
     </section>
 
-    <footer class="footer text-muted clearfix">
-        <img src="/static/img/agplv3.png" alt="gnu agpl licence logo" class="pull-left pad-right">
-        
+    <footer id="bottom-footer" class="footer text-muted clearfix bg-default">
+        <div class="pull-left pad-right">
+            <img src="/static/img/agplv3.png" alt="gnu agpl licence logo"><br>
+            <img src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" alt="Creative Commons cc-by-sa logo">
+        </div>
         <strong>PyTutor is Free Software</strong> released under the 
-        <a href="http://www.gnu.org/licenses/agpl.html" title="see the license online">GNU Affero General Public License v. 3</a>.<br>
-        
-        <a href="https://github.com/mcuringa/py-tutor" title="get the source">Source code is available on github</a>.
-        
+        <a href="http://www.gnu.org/licenses/agpl.html" title="see the license online">GNU AGPL v3</a>.
+        <a href="https://github.com/mcuringa/py-tutor" title="get the source">Source code is available on github</a>.<br>
+
+
+
+        <strong>User contributions to PyTutor</strong>, (question prompts, solution/test code, etc) are licensed under the
+        <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/" title="read the license">Creative Commons BY-SA License</a>.<br>
         Created for the <a href="http://www.auedtech.org">Graduate Program in Educational Technology</a>
         at <a href="http://education.adelphi.edu">Adelphi University</a>.
     </footer>
