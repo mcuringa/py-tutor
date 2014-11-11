@@ -132,5 +132,11 @@ td.diff_header
 .diff_chg {background-color:#fcf8e3}
 .diff_sub {background-color:#f2dede}
 
+}
 
-
+#qdtail-modal.scroll
+{
+  overflow: auto;
+  max-height: 200px;
+}
+}

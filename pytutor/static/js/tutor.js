@@ -228,6 +228,17 @@ function fixDiff()
     $("td.diff_next").remove();
 }
 
+function showQuestionDetails(e)
+{
+    questionId = $(e.target).data("quid");
+    url = "/study/question_detail/" + questionId
+    $.get(url, function( data ) {
+        $("#question-modal .modal-body").html( data );
+        console.log(data);
+        $("#question-modal").modal('show');
+    });
+
+}
 
 $( document ).ready(function() {
 
@@ -257,6 +268,8 @@ $( document ).ready(function() {
 
 
     TableSorter.init();
+
+    $(".question_detail").click(showQuestionDetails)
 
 
 

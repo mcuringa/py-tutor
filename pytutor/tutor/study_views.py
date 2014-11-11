@@ -65,7 +65,7 @@ def respond(request):
     response.code = user_code
 
     #evaluate user's code
-    response.is_correct = True
+    
     testResults = []
     passed_tests = True
     for t in Test.objects.all().filter(question=pk):
@@ -74,6 +74,7 @@ def respond(request):
         if ex is not None and passed_tests:
             passed_tests = False
 
+    response.is_correct = passed_tests
 
     context = {"question" : question, 
                "response" : response, 
@@ -109,8 +110,6 @@ def serve_question(user):
     #get history of user's correct and incorrect responses
     # correct_responses = Response.objects.all().filter(user=user, is_correct=True)
     # incorrect_responses = Response.objects.all().filter(user=user, is_correct=False)
-
-
 
     questions = Question.objects.all().filter()
     next_q = random.choice(questions)
