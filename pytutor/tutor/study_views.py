@@ -104,8 +104,6 @@ def serve_question(user):
     # correct_responses = Response.objects.all().filter(user=user, is_correct=True)
     # incorrect_responses = Response.objects.all().filter(user=user, is_correct=False)
 
-
-
     questions = Question.objects.all().filter()
     next_q = random.choice(questions)
     return next_q
