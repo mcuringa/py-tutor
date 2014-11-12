@@ -15,10 +15,13 @@ from tutor.models import *
 import tutor.study as sm
 
 
-@login_required
+
 def study(request, try_again_id=0, study_tag=None):
     """Choose the next question for the user to study."""
 
+    if not request.user.is_authenticated():
+        messages.info(request, "You must sign-up or log-in to study.")
+        return HttpResponseRedirect("/register")
 
     if try_again_id:
         question = Question.objects.get(pk=try_again_id)

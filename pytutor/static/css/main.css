@@ -48,7 +48,7 @@ body
 .pad-left { padding-left: 1em; }
 .pad-right { padding-right: 1em; }
 
-.nomargint { margin: 0 !important; }
+.nomargin { margin: 0 !important; }
 .margin-left { margin-left: .5em; }
 .margin-right { margin-right: .5em; }
 .margin-top { margin-top: .5em; }
