@@ -28,6 +28,7 @@
                   <th class="text-center">Correct Response</th>
                   <th class="text-center">Incorrect Response</th>
                   <th class="text-center">Number of Attempts</th>
+                  <th class="text-center">Question Time</th>
                 
                 </tr>
             </thead>
@@ -40,6 +41,7 @@
                 <td> {{r.num_right}} </td>
                 <td> {{r.num_wrong}} </td>
                 <td> - </td>
+                <td> {{r.question.submitted}} </td>
               </tr>
             {% endfor %}
 

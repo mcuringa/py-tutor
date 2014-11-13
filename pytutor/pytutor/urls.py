@@ -9,7 +9,7 @@ urlpatterns = patterns('',
 
     # User URL MAPPINGS
     url(r'^study/report$', 'tutor.student_views.report'),
-    url(r'^study/report/(?P<user_name>.*)[/]$', 'tutor.student_views.question_summary'),
+    url(r'^study/report/(?P<user_name>.*)[/]$', 'tutor.student_views.report'),
     url(r'^study/question_detail/([0-9]+?)[/]$', 'tutor.student_views.question_detail'),
     #no idea ^
 

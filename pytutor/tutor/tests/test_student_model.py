@@ -58,6 +58,7 @@ class StudentModelTestCase(TestCase):
         for level, count in levels:
             self.assertEqual(count,2, "Got wrong count at level: {}".format(level))
 
+
         self.seed_level(4, 5)
         levels = sm.correct_at_levels(self.user)
         level, count = levels[0]
@@ -94,6 +95,32 @@ class StudentModelTestCase(TestCase):
         self.seed_level(3, 7)
 
         self.assertEqual(sm.current_level(self.user), 3)
+
+
+    def test_active_only(self):
+        # add some failed questions and make sure they don't get served
+        # get the user
+        self.clear()
+        user = User.objects.get(pk=1)
+        for i in range(30):
+            Question.objects.create(function_name="failed",level=1, prompt="failed function", creator=self.user, modifier=self.user, status=Question.FAILED)
+            Question.objects.create(function_name="failed",level=1, prompt="failed function", creator=self.user, modifier=self.user, status=Question.DELETED)
+            Question.objects.create(function_name="failed",level=2, prompt="failed function", creator=self.user, modifier=self.user, status=Question.FAILED)
+            Question.objects.create(function_name="failed",level=2, prompt="failed function", creator=self.user, modifier=self.user, status=Question.DELETED)
+
+        
+        for i in range(100):
+            q = sm.next_question(self.user)
+            self.assertEqual(q.status, Question.DELETED)
+
+        self.seed_level(1, 20)
+
+        for i in range(100):
+            q = sm.next_question(self.user)
+            self.assertEqual(q.status, Question.ACTIVE)
+
+        print("============== NO FAILED QUESTONS SERVED!!!! =================")
+
 
     def test_next_question(self):
 

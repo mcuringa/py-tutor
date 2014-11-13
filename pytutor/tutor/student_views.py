@@ -17,113 +17,115 @@ from django.db.models import Count
 def report(request):
 # """List the correct and incorrect answers of the user"""
 #     print ("student:", user_name)
-	# student_responses=Question
-	# user=request.user
-	# level_questions = Question.objects.by_level()
-	# print (level_questions)
-	# for level, questions in level_questions.items():
-	# 	for q in questions:
-	# 		response = q.latest_response_for(user)
-	# 		result = 'not answered'
-	# 		if response is not None:
-	# 			result = str(response.is_correct)
-	# 		setattr(q, 'user_responded_correctly', result)
+    # student_responses=Question
+    # user=request.user
+    # level_questions = Question.objects.by_level()
+    # print (level_questions)
+    # for level, questions in level_questions.items():
+    #     for q in questions:
+    #         response = q.latest_response_for(user)
+    #         result = 'not answered'
+    #         if response is not None:
+    #             result = str(response.is_correct)
+    #         setattr(q, 'user_responded_correctly', result)
 
-	user=request.user
+    user=request.user
 
 # get all of the responses students have made.
 # organize them by their level and list their question name.
-	student_responses = Response.objects.all().filter(user=user).order_by("question__id")
-	
-	cur_id = -1 # the current question we're counting up
-	rows = []
-	data = {}
-	right_count = 0
-	wrong_count = 0
+    student_responses = Response.objects.all().filter(user=user).order_by("question__id")
+    
+    cur_id = -1 # the current question we're counting up
+    rows = []
+    data = {}
+    right_count = 0
+    wrong_count = 0
 
-	for r in student_responses:
-		q = r.question
-		if q.id != cur_id: #start a new row
-			# add the data as a row
-			data["num_right"] = right_count
-			data["num_wrong"] = wrong_count
-			rows.append(data)
-			cur_id = q.id
+    for r in student_responses:
+        q = r.question
+        if q.id != cur_id: #start a new row
+            # add the data as a row
+            data["num_right"] = right_count
+            data["num_wrong"] = wrong_count
+            rows.append(data)
+            cur_id = q.id
 
-			# reset the data
-			data = {}
-			data["question"] = q
-			right_count = 0
-			wrong_count = 0
-		if r.is_correct:
-			right_count += 1
-		else:
-			wrong_count += 1
+            # reset the data
+            data = {}
+            data["question"] = q
+            right_count = 0
+            wrong_count = 0
+        if r.is_correct:
+            right_count += 1
+        else:
+            wrong_count += 1
 
 
 # # group the questions that have been answer correctly
-# 	correct_responses= [r for r in user_responses if r.is_correct]
-# 	incorrect_responses = [r for r in user_responses if not r.is_correct]
-# 	for response in user_responses:
-# 		if response.is_correct== True:
-# 			correct_responses.append(response)
-# 		else:
-# 			incorrect_responses.append(response)
+#     correct_responses= [r for r in user_responses if r.is_correct]
+#     incorrect_responses = [r for r in user_responses if not r.is_correct]
+#     for response in user_responses:
+#         if response.is_correct== True:
+#             correct_responses.append(response)
+#         else:
+#             incorrect_responses.append(response)
 
 # single table w all questions and whether you got it right or wrong.
 # group by queries (django) don't do.
 
 # map.. python, functools library.  take a list and apply function to every item and return one thing
-	# # List questions that student has passed
-	# questions_passed=Response.objects.all().filter(user=user, is_correct=True)
-	# questions_failed=HttpResponse.objects.all().filter(user=user, is_correct=False)
+    # # List questions that student has passed
+    # questions_passed=Response.objects.all().filter(user=user, is_correct=True)
+    # questions_failed=HttpResponse.objects.all().filter(user=user, is_correct=False)
 
-	# context = {"questions_passed": questions_passed,
-	# 	"questions_failed": questions_failed}
+    # context = {"questions_passed": questions_passed,
+    #     "questions_failed": questions_failed}
 
-	context = {"student_responses": rows[1:],
-			  
-			   }
-	# List questions that student has failed
-	return render(request, 'student/report.html', context)
+    context = {"student_responses": rows[1:],
+              
+               }
+    # List questions that student has failed
+    return render(request, 'student/report.html', context)
 
 
 def question_detail(request, question_id):
-	user=request.user 
-	question= Question.objects.get(pk=question_id)
-	responses= Response.objects.all().filter(question=question, user=user)
-	attempts= len(responses)
-	unique = unique_responses(responses)
+    user=request.user 
+    question= Question.objects.get(pk=question_id)
+    responses= Response.objects.all().filter(question=question, user=user)
+    attempts= len(responses)
+    unique = unique_responses(responses)
 
-	context = { "question": question, "responses": unique, "attempts": attempts}
+    context = { "question": question, "responses": unique, "attempts": attempts}
 
-	return render ( request, 'student/question_detail.html', context)
+    return render ( request, 'student/question_detail.html', context)
 
 def unique_responses(responses):
-	unique_responses=[]
-	for r in responses:
-		if r.code not in unique_responses:
-			unique_responses.append(r.highlighted_code())
-	return unique_responses
+    unique_responses=[]
+    for r in responses:
+        if r.code not in unique_responses:
+            unique_responses.append(r.highlighted_code())
+    return unique_responses
 
-# def get_attempts(request):
-# 	user=request.user
-# 	student_responses=Response.objects.all().filter(user=user).order_by("-submitted")
-# 		# student_responses = Response.objects.all()
-# 	for r in student_responses:
-# 		attempts = r.attempt	
-# 	setattr(r, 'no_student_attempts', attempts)
+def user_log(question):
 
-# 	context = {"attempts": attempts
-# 			   }
-# 	# List questions that student has failed
-# 	return render(request, 'student/report.html', context)
+    user = request.user
+    responses = Response.objects.filter(user=user).order_by("question__id, -submitted")
+    study_sessions = []
+    qid = -1
+    for r in responses:
+        
+        if r.question.id != qid:
+            attempts = []
+            quid = r.question.id
+            study_sessions.append(attempts)
+        attempts.append(r)
+    return [s for s in study_sessions if s[0].question == question]
 
-	# student report:
-	# check progress,
-	# show level
-	# show questions studied number
-	# show times they study
-	# show times they get the highest rates
-	#
-	#questionlist function / list.html views  # table sortable / data-sort val to tell what to sort on(if differnt from whats in cell)
+    # session = total responses for single question in a continuous block of time
+    # WE ARE returning the single session for the latest question
+
+
+
+
+
+
