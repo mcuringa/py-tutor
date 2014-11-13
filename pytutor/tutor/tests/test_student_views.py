@@ -1,7 +1,10 @@
 import random
 from random import choice as r
+import datetime 
 
 from django.test import TestCase
+from django.test import Client
+
 
 from tutor.models import *
 import tutor.study as sm
@@ -16,29 +19,59 @@ class StudentViewTestCase(TestCase):
             for j in range(1,11):
                 Question.objects.create(function_name="level{}-q{}".format(i,j),level=i, prompt="test function", creator=self.user, modifier=self.user, status=Question.ACTIVE)
 
-    def test_user_log(self):
+    def test_study_sessions(self):
         #start with 2 different questions and many responses to each.
         # create 2 sessions for each question (responses in a row)
         # 
-        questions = Question.objects.all()[:1]
+        self.assertGreater(Question.objects.count(),2)
+        q = Question.objects.all()[:2]
+
         self.create_session(q[0])
         self.create_session(q[1])
         self.create_session(q[0])
         self.create_session(q[1])
 
-        c = Client()
-        c.login(username='tester', password='password')
 
-        study_sessions = user_log(questions[0])
-        self.assertEqual(len(study_sessions), 2)
+        t = study_sessions(self.user)
+        self.assertEqual(len(t), 4)
 
+        first_session = t[0]
+        self.assertEqual(first_session.num_correct, 1)
+
+        s_start = t[0].session_start
+        # self.assertGreater(t[0].session_end, t[0].session_start)
+        
+        print ("------------------------")
+        print (s_start)
+        print ("------------------------")
 
         
     def create_session(self,q,n=5):
-        Response.objects.create(question=questions[0], user=self.user, is_correct=True)
+        Response.objects.create(question=q, user=self.user, is_correct=True)
             
         for i in range(n):
             Response.objects.create(question=q, user=self.user, is_correct=False)
+
+
+    def test_elapsed_time(self):
+        Response.objects.all().delete()
+        q = Question.objects.all()[0]
+        # self.create_session(q)
+
+        # add a response at the beginning with a known submitted
+        start = datetime.datetime.now()
+        end = start + datetime.timedelta(minutes=20)
+        Response.objects.create(question=q, user=self.user, is_correct=False, submitted=start)
+        Response.objects.create(question=q, user=self.user, is_correct=False, submitted=end)
+
+        responses = Response.objects.all()
+
+        # add a response at the end with a known submitted
+        s = StudySession(responses)
+        # check the elapsed time is what we expect
+        self.assertEqual(s.time_elapsed, 30)
+
+
 
 
 

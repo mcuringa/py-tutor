@@ -106,25 +106,45 @@ def unique_responses(responses):
             unique_responses.append(r.highlighted_code())
     return unique_responses
 
-def user_log(question):
+def study_sessions(user):
 
-    user = request.user
-    responses = Response.objects.filter(user=user).order_by("question__id, -submitted")
+    responses = Response.objects.filter(user=user).order_by("-submitted")
     study_sessions = []
-    qid = -1
+    qid = responses[0].question.id
+    attempts = []
     for r in responses:
-        
+        # print("question id: {}".format(r.question.id))
+
         if r.question.id != qid:
+            print("*** creating new session --------------")
+            study_sessions.append(StudySession(attempts))
             attempts = []
-            quid = r.question.id
-            study_sessions.append(attempts)
+            qid = r.question.id
+        
         attempts.append(r)
-    return [s for s in study_sessions if s[0].question == question]
+    
+    study_sessions.append(StudySession(attempts))
+
+    return study_sessions
 
     # session = total responses for single question in a continuous block of time
     # WE ARE returning the single session for the latest question
 
+class StudySession(object):
 
+    def __init__(self, responses):
+
+        assert len(responses) > 0
+
+        self.question = responses[0].question
+        self.session_start = responses[0].submitted
+        self.session_end = responses[-1].submitted
+        self.time_elapsed = self.session_end - self.session_start
+        self.num_correct = len([r for r in responses if r.is_correct==True])
+        self.num_wrong = len(responses) - self.num_correct
+        self.responses = responses
+
+        
 
 
 
