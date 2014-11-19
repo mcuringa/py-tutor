@@ -11,7 +11,7 @@
     <title>{% block title %}PyTutor{% endblock %}</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="/static/css/bootstrap.min.css" rel="stylesheet"> 
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
     <link href="/static/css/pygments.css" rel="stylesheet">
     <link href="/static/css/main.css" type="text/css" rel="stylesheet">
 
@@ -19,9 +19,9 @@
     <script src="/static/js/underscore-min.js"></script>
     <script src="/static/js/ace/ace.js" charset="utf-8"></script>
     <script src="/static/js/bootstrap.min.js"></script>
-    
-    <script src="/static/js/tablesorter.js"></script>    
-    <script src="/static/js/tutor.js"></script>    
+
+    <script src="/static/js/tablesorter.js"></script>
+    <script src="/static/js/tutor.js"></script>
 </head>
 
 <body>
@@ -51,12 +51,23 @@
         </div>
         <!--main nav-->
         <nav class="collapse navbar-collapse">
-          <ul class="nav navbar-nav nav-pills">        
+        {% if user.is_authenticated %}
+          <ul class="nav navbar-nav nav-pills">
             <li><a href="/tutor">study</a></li>
             <li><a href="/question/new">new question</a></li>
             <li><a href="/question/list/{{user.username}}">list questions</a></li>
             <li><a href="/tutor/tags">study tags</a></li>
           </ul>
+        {% else %}
+          <ul class="nav navbar-nav nav-pills"
+          data-toggle="tooltip" data-placement="bottom" data-content="Please register with a username and password to continue."title="Regiser or Log In">
+            <li><a class="btn btn-default disabled" href="/tutor">study</a></li>
+            <li><a class="btn btn-default disabled"  href="/question/new">new question</a></li>
+            <li><a class="btn btn-default disabled"  href="/question/list/{{user.username}}">list questions</a></li>
+            <li><a class="btn btn-default disabled"  href="/tutor/tags">study tags</a></li>
+          </ul>
+
+       {% endif %}
 
           <ul class="nav navbar-nav navbar-right vc">
           {% if user.is_authenticated %}
@@ -75,10 +86,14 @@
                   {% csrf_token %}
                   <input type="text" placeholder="Username" class="form-control" name="username">
                   <input type="password" placeholder="Password" class="form-control" name="password">
-                  
+
                   <button title="log in with your username and password" type="submit" class="btn btn-info">Log in</button>
                   <button type="submit" name="register" value="True"
-                          title="create a new account with this username and password" class="btn btn-warning">Sign up</button>
+                          data-toggle="tooltip" data-placement="bottom"
+                          data-viewport="body"
+                          data-delay="0"
+                          data-content="Enter a new username and password word above and click 'signup'!"
+                          title="Sign-Up" class="btn btn-warning">Sign up</button>
               </form>
             </li>
           {% endif %}
@@ -93,7 +108,7 @@
             <ul id="messages" class="list-unstyled list-group col-md-6 col-md-offset-3">
                 {% for msg in messages %}
                     <li class="alert alert-info alert-dismissible list-group-item list-group-item-{{msg.tags}}" role="alert">
-                      <button type="button" class="close margin-right" 
+                      <button type="button" class="close margin-right"
                               data-dismiss="alert">
                         <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
                       </button>
@@ -110,7 +125,7 @@
             <img src="/static/img/agplv3.png" alt="gnu agpl licence logo"><br>
             <img src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" alt="Creative Commons cc-by-sa logo">
         </div>
-        <strong>PyTutor is Free Software</strong> released under the 
+        <strong>PyTutor is Free Software</strong> released under the
         <a href="http://www.gnu.org/licenses/agpl.html" title="see the license online">GNU AGPL v3</a>.
         <a href="https://github.com/mcuringa/py-tutor" title="get the source">Source code is available on github</a>.<br>
 
