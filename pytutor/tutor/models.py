@@ -10,6 +10,8 @@ from django.db import models
 from django import forms
 from django.forms import ModelForm
 from django.contrib.auth.models import User
+from tutor.templatetags.tutor_extras import syn
+
 
 
 class AbstractQuestion(models.Model):
@@ -65,23 +67,30 @@ class AbstractQuestion(models.Model):
     def level_label(self):
         return AbstractQuestion.levels[self.level - 1]
 
+
     class Meta:
         abstract = True
         ordering = ['-modified']
 
 # enumerate(["sent","pending","friend"],start=1)]
 
+class QuestionManager(models.Manager):
+    def by_level(self):
+        questions = Question.objects.all()
+        level_questions= {}
+        for q in questions:
+            level = level_questions.get(q.level, [])
+            level.append(q)
+        return level_questions
+
 class Question(AbstractQuestion):
 
     FAILED = 1
     ACTIVE = 2
     DELETED = 3
-    status_labels = ["failed", "active", "deleted"]
 
     status = models.IntegerField(default=FAILED)
-
-    def status_label(self):
-        return Question.status_labels[self.status - 1]
+    objects = QuestionManager()
 
     def test_and_update(self, t=None):
         print("test and update")
@@ -232,6 +241,7 @@ class TestForm(ModelForm):
         fields = ["args", "result"]
 
 
+
 class Response(models.Model):
     """A User's attempt to answer a Question
     is captured in the Response. The Response
@@ -248,6 +258,9 @@ class Response(models.Model):
     user = models.ForeignKey(User)
     question = models.ForeignKey(Question)
 
+    def highlighted_code(self):
+        return syn(self.code)
+# user and question ^ tie this to the appropriate question
 
 class ResponseForm(ModelForm):
     class Meta:
@@ -266,6 +279,14 @@ class QuestionFlag(models.Model):
     question = models.ForeignKey(ArchiveQuestion)
     creator = models.ForeignKey(User)
     created = models.DateTimeField(auto_now_add=True)
+
+
+# class StudentResponse(models.Model):
+#     """finds information about student progress
+#     """
+#     student_response= Response.objects.all().filter(question=self, user=user).order_by("-submitted").first()
+#     attempts = Response.attempt
+
 
 
 

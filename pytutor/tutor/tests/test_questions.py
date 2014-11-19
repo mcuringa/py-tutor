@@ -3,6 +3,11 @@ from tutor.models import *
 
 class QuestionTestCase(TestCase):
 
+    def setUp(self):
+        self.user = User.objects.create_user(username="tester", password="password")
+        question = Question.objects.create(function_name="f", prompt="test function", creator=self.user, modifier=self.user)
+        Test.objects.create(args="1", result="1", question=question)
+
     def expect_fail(self, code):
         question = Question.objects.get(id=1)
         question.solution = code
@@ -29,10 +34,7 @@ class QuestionTestCase(TestCase):
         self.assertIsNone(ex)
 
 
-    def setUp(self):
-        self.user = User.objects.create_user(username="tester", password="password")
-        question = Question.objects.create(function_name="f", prompt="test function", creator=self.user, modifier=self.user)
-        Test.objects.create(args="1", result="1", question=question)
+
 
     def clear_tests(self):
         tests = Test.objects.all()
