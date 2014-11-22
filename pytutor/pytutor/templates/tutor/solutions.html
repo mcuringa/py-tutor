@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% load markdown_deux_tags %}
+{% load humanize %}
+
+{% block title %}Solutions{% endblock %}
+
+{% block body %}
+
+<section id="code-solutions" class="container-fluid">
+
+    <div class="fixed-left">
+        <h3>Solutions for: <var>{{question.function_name}}</var></h3>
+        <div class="well inverse">{{question.prompt|markdown}}</div>
+        <a href="/tutor" class="btn btn-primary btn-block">Next Question</a>
+        {% if passed  %}
+            <h3><div class="label label-success">
+                Congratulations! Your code passed all tests.
+            </div></h3>
+        {% else %}
+            <h3><div class="label label-danger">Your code didn't pass.</div></h3>
+            <a href="/tutor/{{question.id}}" class="btn btn-warning btn-block margin-bottom">Try again</a>
+        {% endif %}
+
+        {{response.code_pp|safe}}
+        <ul id="test-list" class="list-group margin-top">
+        {% for test, ex, result in test_results %}
+            {% include "tutor/test-results.html" %}
+        {% endfor %}
+        </ul>
+
+    </div>
+    <div class="row">
+        <div class="col col-md-8 col-md-offset-4">
+            <h3><div class="label label-primary">
+                question author solutions (passing and failing)
+            </div></h3>
+            <ul class="list-unstyled">
+            {% autoescape off %}
+                {% for q in expert_solutions %}
+                    <li class="bg-default pad margin-top">
+                    {% if q.passed  %}
+                        <span class="label label-success">passed</span>
+                    {% else %}
+                        <span class="label label-danger">failed</span>
+                    {% endif %}
+                        <strong>version:</strong> {{q.version}}, 
+                        <strong>editor:</strong> {{q.modifier.username}}, 
+                        <strong>modified:</strong> {{q.modified}}
+                    </li>
+                    <li>{{q.solution_pp}}</li>
+                {% endfor %}
+            </ul>
+            
+            <h3><div class="label label-primary">
+                user submitted solutions (passing only)
+            </div></h3>
+            <ul class="list-unstyled">
+                {% for code in user_code %}
+                    <li class="margin-top">{{code}}</li>
+                {% endfor %}
+            </ul>
+            {% endautoescape %}
+        </div>
+    </div>
+</section>
+
+{% endblock %}

@@ -17,10 +17,11 @@ urlpatterns = patterns('',
     # TUTOR URL MAPPINGS
     # --------------------------------- STUDYING
     url(r'^tutor$', 'tutor.study_views.study'),
-    url(r'^tutor/(?P<try_again_id>[0-9]+?)[/]$', 'tutor.study_views.study'),
+    url(r'^tutor/(?P<sticky_id>[0-9]+?)[/]$', 'tutor.study_views.study'),
     url(r'^tutor/tag/(?P<study_tag>.*)[/]$', 'tutor.study_views.study'),
-    url(r'^tutor/(?P<try_again_id>[0-9]+?)/tag/(?P<study_tag>.*)[/]$', 'tutor.study_views.study'),
+    url(r'^tutor/(?P<sticky_id>[0-9]+?)/tag/(?P<study_tag>.*)[/]$', 'tutor.study_views.study'),
     url(r'^tutor/(?P<pk>[0-9]+?)/respond[/]$', 'tutor.study_views.study'),
+    url(r'^tutor/([0-9]+?)/solutions[/]$', 'tutor.study_views.solutions'),
     url(r'^tutor/tags', 'tutor.study_views.tags'),
     # url(r'^tutor/no_questions$', 'tutor.study_views.no_questions'),
     url(r'^tutor/response/submit', 'tutor.study_views.respond'),

@@ -10,7 +10,7 @@ var editors = {};
 function configureEditor(id) 
 {
 
-    console.log('configuring editor: ' + id);
+
 
     // configure ace editor
     var editor = ace.edit(id);
@@ -67,15 +67,9 @@ function initEditors()
  */
 function copyEditorCode(id)
 {
-    console.log("copying code for: " + id);
     var codeField = $("#" + id).data("codeField");
-    console.log("copying into: " + codeField);
     var editor = editors[id];
-    console.log("got ace editor: " + editor);
-    // if(!editor)
-
     var code = editor.getValue();
-    console.log("code: " + code);
     $("input[name=" + codeField + "]").val(code);
 }
 
@@ -147,16 +141,28 @@ function submitStudyCode(action)
     // Stop form from submitting normally
     //e.preventDefault();
 
-    var $form = $("#response-form");
-    copyEditorCode("response-editor");
-    var data = $form.serialize() + "&action=" + action;   
-    var url = $form.attr( "action" );
 
-    $.post( url, data ).success(function( response ) 
+    copyEditorCode("response-editor");
+
+    if(attemptsLeft == 0 && stickyQuestionId == 0)
     {
-        $( "#test-results" ).html( response );
-        editors["response-editor"].focus();
-    });
+        console.log("submitting response, time's up");
+        $("#response-form").submit();
+        return;
+    }
+    else
+    {
+
+        var $form = $("#response-form");
+        var data = $form.serialize() + "&action=" + action;   
+        var url = $form.attr( "action" );
+
+        $.post( url, data ).success(function( response ) 
+        {
+            $( "#test-results" ).html( response );
+            editors["response-editor"].focus();
+        });
+    }
 
 }
 
@@ -183,7 +189,6 @@ function showQuestionDetails(e)
     url = "/study/question_detail/" + questionId
     $.get(url, function( data ) {
         $("#question-modal .modal-body").html( data );
-        console.log(data);
         $("#question-modal").modal('show');
     });
 

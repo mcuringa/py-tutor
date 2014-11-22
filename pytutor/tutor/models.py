@@ -46,6 +46,10 @@ class AbstractQuestion(models.Model):
     creator = models.ForeignKey(User, related_name="%(app_label)s_%(class)s_creator")
     modifier = models.ForeignKey(User, related_name="%(app_label)s_%(class)s_modifer")
 
+
+    def solution_pp(self):
+        return syn(self.solution)
+
     def run_tests(self, code=""):
         tests = Test.objects.all().filter(question=self)
         if len(tests) == 0:
@@ -155,6 +159,34 @@ class ArchiveQuestion(AbstractQuestion):
     class Meta:
         unique_together = (('parent', 'version'),)
 
+
+class Solution(ArchiveQuestion):
+    """Solution objects provide custom comparators for ArchiveQuestions
+which allows them to be hashed and ordered based on the code and version"""
+
+    class Meta:
+        proxy = True
+
+    
+
+    def test(self, tests):
+        code = self.solution
+        self.passed = True
+
+        for test, fail, result in [t.evaluate(code) for t in tests]:
+            self.passed = self.passed and fail is None
+
+    def __ne__(self, other):
+        return self.solution != other.solution
+
+    def __eq__(self, other):
+        return self.solution == other.solution
+
+    def __hash__(self):
+        return self.solution.__hash__()
+    
+
+
 class FriendConnect(models.Model):
     """Messages are sent between users"""
     status_choices = ["sent", "pending", "friend"]
@@ -258,9 +290,8 @@ class Response(models.Model):
     user = models.ForeignKey(User)
     question = models.ForeignKey(Question)
 
-    def highlighted_code(self):
+    def code_pp(self):
         return syn(self.code)
-# user and question ^ tie this to the appropriate question
 
 class ResponseForm(ModelForm):
     class Meta:

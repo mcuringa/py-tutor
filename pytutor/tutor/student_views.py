@@ -103,7 +103,7 @@ def unique_responses(responses):
     unique_responses=[]
     for r in responses:
         if r.code not in unique_responses:
-            unique_responses.append(r.highlighted_code())
+            unique_responses.append(r.code_pp())
     return unique_responses
 
 def study_sessions(user):
