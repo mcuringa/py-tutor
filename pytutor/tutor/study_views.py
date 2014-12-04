@@ -19,8 +19,8 @@ import tutor.study as sm
 
 def get_attempts(user, question):
     attempts = Response.objects.filter(user=user).order_by("-submitted")[:Response.MAX_ATTEMPTS]
-    attempts = len([r for r in attempts if r.question == question])
-    attempts_left = Response.MAX_ATTEMPTS - attempts
+    attempts = [r for r in attempts if r.question == question]
+    attempts_left = Response.MAX_ATTEMPTS - len(attempts)
     return attempts, attempts_left
 
 
@@ -39,7 +39,8 @@ def study(request, sticky_id=0, study_tag=None):
 
     attempts, attempts_left = get_attempts(request.user, question)
 
-    if sticky_id > 0:
+
+    if sticky_id > 0 and len(attempts) > 0:
         user_code = attempts[0].code
     else:
         user_code = "# write a function called {}{}".format(question.function_name, "\n"*3)
@@ -51,6 +52,7 @@ def study(request, sticky_id=0, study_tag=None):
         os_ctrl = "cmd"
     context = {
         "user_code": user_code,
+        "passed": False,
         "question": question,
         "sticky_id": sticky_id,
         "response_form" : response_form, 
@@ -61,31 +63,25 @@ def study(request, sticky_id=0, study_tag=None):
     
     return render(request, 'tutor/study.html', context)
 
-def solutions(request, questionId, context={}):
+def solutions(question):
 
-    if len(context) == 0:
-        question = Question.objects.get(pk=questionId)
-        tests = Test.objects.filter(question=question)
-        response = Response.objects.filter(question=question, user=request.user).order_by("-submitted")[0]
-        passed, test_results = question.run_tests(response.code)
-    else:
-        question = context["question"]
-
+    # if len(context) == 0:
+    #     question = Question.objects.get(pk=questionId)
+    #     tests = Test.objects.filter(question=question)
+    #     response = Response.objects.filter(question=question, user=request.user).order_by("-submitted")[0]
+    #     passed, test_results = question.run_tests(response.code)
+    # else:
+    #     question = context["question"]
+    
+    tests = Test.objects.filter(question=question)
     user_solutions = Response.objects.filter(question=question, is_correct=True).values_list("code").distinct()
     expert_solutions = sorted(list(set(Solution.objects.filter(parent=question))), key=attrgetter('version'), reverse=True)
     for sol in expert_solutions:
         sol.test(tests)
 
     user_solutions = [syn(c[0]) for c in user_solutions]
-    context = {
-       "question": question,
-       "response": response,
-       "test_results": test_results,
-       "passed": passed,
-       "expert_solutions": expert_solutions,
-       "user_code": user_solutions
-    }
-    return render(request, 'tutor/solutions.html', context)
+
+    return expert_solutions, user_solutions
 
 
 @login_required
@@ -102,7 +98,7 @@ def respond(request):
     passed, test_results = question.run_tests(user_code)
 
     attempts, attempts_left = get_attempts(request.user, question)
-    attempt = attempts + 1
+    attempt = len(attempts) + 1
     attempts_left -= 1
     
     response = Response(attempt=attempt, user=request.user, question=question)
@@ -117,9 +113,10 @@ def respond(request):
                "passed" : passed,
                "sticky_id": sticky_id,
                "study_tag": study_tag }
-    
-    if attempts_left == 0 and sticky_id == 0:
-        return solutions(request, question, response, context)
+    if passed:
+        expert_solutions, user_solutions = solutions(question)
+        context["expert_solutions"] = expert_solutions
+        context["user_solutions"] = user_solutions
 
     return render(request, 'tutor/response_result.html', context)
 

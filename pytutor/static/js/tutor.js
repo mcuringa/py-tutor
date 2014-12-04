@@ -159,6 +159,7 @@ function submitStudyCode(action)
 
         $.post( url, data ).success(function( response ) 
         {
+
             $( "#test-results" ).html( response );
             editors["response-editor"].focus();
         });
@@ -193,6 +194,17 @@ function showQuestionDetails(e)
     });
 
 }
+
+function makeButton(link, text, type)
+{
+    var btn = $("a");
+    a.addClass("btn");
+    a.addClass("btn-"+type);
+    a.html(text);
+    a.attr("href", "link");
+
+}
+
 
 function initForms()
 {
@@ -275,6 +287,15 @@ $( document ).ready(function() {
 
     }
 
+    $("#passed-modal").keypress(function( event ) {
+        if ( event.which == 13 && $(".modal a.enter")) 
+        {
+            event.preventDefault();
+            var target = $(".modal a.enter").attr('href');
+            window.location = target;
+            return;
+        }
+    });
 
     $("#question-edit-tabs a").click(function (e) {
         $(this).tab('show');
