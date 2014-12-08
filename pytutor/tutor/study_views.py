@@ -23,7 +23,6 @@ def get_attempts(user, question):
     attempts_left = Response.MAX_ATTEMPTS - len(attempts)
     return attempts, attempts_left
 
-
 @login_required
 def study(request, sticky_id=0, study_tag=None):
     """Choose the next question for the user to study."""
@@ -64,14 +63,6 @@ def study(request, sticky_id=0, study_tag=None):
     return render(request, 'tutor/study.html', context)
 
 def solutions(question):
-
-    # if len(context) == 0:
-    #     question = Question.objects.get(pk=questionId)
-    #     tests = Test.objects.filter(question=question)
-    #     response = Response.objects.filter(question=question, user=request.user).order_by("-submitted")[0]
-    #     passed, test_results = question.run_tests(response.code)
-    # else:
-    #     question = context["question"]
     
     tests = Test.objects.filter(question=question)
     user_solutions = Response.objects.filter(question=question, is_correct=True).values_list("code").distinct()
@@ -113,7 +104,7 @@ def respond(request):
                "passed" : passed,
                "sticky_id": sticky_id,
                "study_tag": study_tag }
-    if passed:
+    if passed or attempts_left % 10 == 0:
         expert_solutions, user_solutions = solutions(question)
         context["expert_solutions"] = expert_solutions
         context["user_solutions"] = user_solutions

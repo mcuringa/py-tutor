@@ -144,26 +144,27 @@ function submitStudyCode(action)
 
     copyEditorCode("response-editor");
 
-    if(attemptsLeft == 0 && stickyQuestionId == 0)
+    // if(attemptsLeft == 0 && stickyQuestionId == 0)
+    // {
+    //     console.log("submitting response, time's up");
+    //     $("#response-form").submit();
+    //     return;
+    // }                                                                
+    // else
+    // {
+
+    var $form = $("#response-form");
+    var data = $form.serialize() + "&action=" + action;   
+    var url = $form.attr( "action" );
+
+    $.post( url, data ).success(function( response ) 
     {
-        console.log("submitting response, time's up");
-        $("#response-form").submit();
-        return;
-    }
-    else
-    {
 
-        var $form = $("#response-form");
-        var data = $form.serialize() + "&action=" + action;   
-        var url = $form.attr( "action" );
-
-        $.post( url, data ).success(function( response ) 
-        {
-
-            $( "#test-results" ).html( response );
-            editors["response-editor"].focus();
-        });
-    }
+        $( "#test-results" ).html( response );
+        editors["response-editor"].focus();
+    });
+    
+    // }
 
 }
 
