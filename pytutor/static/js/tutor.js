@@ -81,16 +81,29 @@ function submitQuestion(e)
 
     copyEditorCode("prompt-editor");
     copyEditorCode("solution-editor");
-    $("#question-form").submit();
+
+    var $form = $("#question-form");
+    var data = $form.serialize();   
+    var url = $form.attr( "action" );
+
+    $.post( url, data ).success(function( response ) 
+    {
+
+        $( "#test-results" ).html( response );
+
+        editors["response-editor"].focus();
+    });
+
 }
 
 msg = function(msg, level)
 {
     var html = $('#msg-li-tmpl').html();
     var tmpl = _.template(html);
-    var li = tmpl({msg: msg, level: level});
-    $( '#messages' ).append(li);
-    $( '#messages' ).show();
+    var alert = tmpl({msg: msg, level: level});
+    $( '#messages' ).append(alert);
+    var clear = function() { $( '#messages' ).html(''); }
+    _.delay(clear, 3000);
 }
 
 function submitTestForm(e)
@@ -144,15 +157,6 @@ function submitStudyCode(action)
 
     copyEditorCode("response-editor");
 
-    // if(attemptsLeft == 0 && stickyQuestionId == 0)
-    // {
-    //     console.log("submitting response, time's up");
-    //     $("#response-form").submit();
-    //     return;
-    // }                                                                
-    // else
-    // {
-
     var $form = $("#response-form");
     var data = $form.serialize() + "&action=" + action;   
     var url = $form.attr( "action" );
@@ -163,8 +167,6 @@ function submitStudyCode(action)
         $( "#test-results" ).html( response );
         editors["response-editor"].focus();
     });
-    
-    // }
 
 }
 

@@ -24,7 +24,7 @@
     <script src="/static/js/tutor.js"></script>
 </head>
 
-<body>
+<body class="{% block body_class %}{% endblock %}">
 
     {% include "tutor/delete_confirm.html" %}
 
@@ -70,7 +70,7 @@
        {% endif %}
 
           <ul class="nav navbar-nav navbar-right vc">
-          {% if user.is_authenticated %}
+       {% if user.is_authenticated %}
             <!--We'll want this to link to the user's profile, when it exists -->
             <li><a class="btn" href="#profile-coming-soon" title="see my profile">{{ user.username }}</a></li>
             <li>
@@ -80,7 +80,7 @@
               </button>
             </li>
             <li><a class="btn" href="/logout" title="click to logout">logout</a></li>
-          {% else %}
+        {% else %}
             <li>
               <form class="navbar-form navbar-right form-inline margin-right" role="form" action="/login" method="post">
                   {% csrf_token %}
@@ -101,7 +101,6 @@
         </nav><!--/.navbar-collapse -->
       </div>
     </header>
-
 
     <section id="main" class="container-fluid">
         <div class="row clearfix">
@@ -128,8 +127,6 @@
         <strong>PyTutor is Free Software</strong> released under the
         <a href="http://www.gnu.org/licenses/agpl.html" title="see the license online">GNU AGPL v3</a>.
         <a href="https://github.com/mcuringa/py-tutor" title="get the source">Source code is available on github</a>.<br>
-
-
 
         <strong>User contributions to PyTutor</strong>, (question prompts, solution/test code, etc) are licensed under the
         <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/" title="read the license">Creative Commons BY-SA License</a>.<br>

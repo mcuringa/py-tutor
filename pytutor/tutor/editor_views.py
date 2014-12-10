@@ -126,7 +126,6 @@ def add_test(request):
         passed = False
         list_append = ""
 
-
     if passed:
         message = "Test added and passed."
         msg_level = "success"
@@ -177,6 +176,7 @@ def save_question(request):
         form.instance.creator = request.user
 
     form.instance.modifier = request.user
+    data = {}
     try:
         question = form.save()
 
@@ -190,9 +190,11 @@ def save_question(request):
     except ValueError as vex:
         messages.error(request, form.errors )
 
-    url = "/question/{}/edit".format(pk)
+    return HttpResponse(json.dumps(data), content_type="application/json")
 
-    return HttpResponseRedirect(url)
+    # url = "/question/{}/edit".format(pk)
+
+    # return HttpResponseRedirect(url)
 
 @login_required
 def delete_question(request, pk):
