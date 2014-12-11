@@ -7,7 +7,7 @@ from pygments.formatters import HtmlFormatter
 
 register = template.Library()
 
-# @register.filter
+@register.filter
 def syn(code, lang="python", linenos=True):
     lexer = get_lexer_by_name(lang)
     formatter = HtmlFormatter(linenos=linenos, cssclass="syntax")

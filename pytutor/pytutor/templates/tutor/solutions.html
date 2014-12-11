@@ -1,0 +1,34 @@
+{% load markdown_deux_tags %}
+{% load humanize %}
+
+<h3><div class="label label-primary">
+    question author solutions (passing and failing)
+</div></h3>
+<ul class="list-unstyled">
+{% autoescape off %}
+    {% for q in expert_solutions %}
+        <li class="bg-default pad margin-top">
+        {% if q.passed  %}
+            <span class="label label-success">passed</span>
+        {% else %}
+            <span class="label label-danger">failed</span>
+        {% endif %}
+            <strong>version:</strong> {{q.version}}, 
+            <strong>editor:</strong> {{q.modifier.username}}, 
+            <strong>modified:</strong> {{q.modified}}
+        </li>
+        <li>{{q.solution_pp}}</li>
+    {% endfor %}
+</ul>
+
+<h3><div class="label label-primary">
+    user submitted solutions (passing only)
+</div></h3>
+<ul class="list-unstyled">
+    {% for code in user_solutions %}
+        <li class="margin-top">{{code}}</li>
+    {% endfor %}
+</ul>
+{% endautoescape %}
+
+

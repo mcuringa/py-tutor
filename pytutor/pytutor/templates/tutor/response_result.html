@@ -1,4 +1,43 @@
-{%if passed%} <a href="/tutor" class="btn btn-success btn-block">Next Question</a>{% endif %}
+{% if passed %}
+    <div id="passed-modal" tabindex="-1" class="modal fade" role="dialog">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header bg-success">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <h4 class="modal-title">Congratulations, your code passed all tests!</h4>
+          </div>
+          <div class="modal-body">
+            <a id="btn-next" href="/tutor" class="btn btn-success btn-block enter active" tabindex="1">Next Question <kbd>&lt;enter&gt;</kbd></a>
+            {% include "tutor/solutions.html" %}
+          </div>
+          <div class="modal-footer">
+            <a id="btn-next" href="/tutor" class="btn btn-success">Next Question</a>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+{% else %}
+    <div id="failed-modal" tabindex="-1" class="modal fade" role="dialog">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header bg-danger">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <h4 class="modal-title">You seem to be stuck...why don't you move on or ask for help?</h4>
+            <a id="btn-next" href="/tutor" class="btn btn-success">Next Question</a>
+            <a id="btn-next" href="/help" class="btn btn-warning">Help Request</a>
+            <a id="btn-next" href="/panic" class="btn btn-danger">Panic Request</a>
+            <a id="btn-next" href="/study/{{question_id}}" class="btn btn-primary">Keep trying</a>
+          </div>
+          <div class="modal-body">
+            {% include "tutor/solutions.html" %}
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+{% endif %}
+
+
 <h4 class="bg-primary pad">
     Test Results
     <span class="label label-warning pull-right">
@@ -11,3 +50,23 @@
     {% include "tutor/test-results.html" %}
 {% endfor %}
 </ul>
+
+
+<script>
+var attemptsLeft = {{attempts_left}};
+var stickyQuestionId = {{sticky_id}};
+var passed = '{{passed|lower}}';
+console.log(passed);
+console.log(attemptsLeft);
+console.log(attemptsLeft % 10 == 0);
+if(passed)
+{
+    $("#passed-modal").modal('show');
+}
+if(attemptsLeft % 10 == 0 && attemptsLeft <=0)
+{
+    console.log("move along now");
+    $("#failed-modal").modal('show');
+}
+
+</script>

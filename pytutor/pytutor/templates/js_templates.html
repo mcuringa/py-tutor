@@ -9,15 +9,7 @@ if they are specific to a single template, just define them there.
 </script>
 
 <script id="msg-li-tmpl" type="text/template">
-
-    <li class="alert alert-info alert-dismissible list-group-item list-group-item-{{level}}" role="alert">
-      <button type="button" class="close margin-right" 
-              data-dismiss="alert">
-        <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
-      </button>
-      {{ msg }}
-    </li>
-
+    <span class="label label-{{level}}">{{ msg }}</span>
 </script>
 
 {% endverbatim %}

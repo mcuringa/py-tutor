@@ -1,7 +1,10 @@
 {% load humanize %}
 
 <div class="well">
-	<h4>Question Editor <small>(id. {{pk}}, v. {{question.instance.version}})</small></h4>
+	<h4>
+        Question Editor <small>(id. {{pk}}, v. {{question.instance.version}})</small>
+        <span id="save-msg"></span>
+    </h4>
     <dl id="question-info" class="dl-horizontal">
         <dt>Created by:</dt>
         <dd>{{question.instance.creator}} on {{question.instance.created}}</dd>

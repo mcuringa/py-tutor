@@ -10,7 +10,7 @@ var editors = {};
 function configureEditor(id) 
 {
 
-    console.log('configuring editor: ' + id);
+
 
     // configure ace editor
     var editor = ace.edit(id);
@@ -67,15 +67,9 @@ function initEditors()
  */
 function copyEditorCode(id)
 {
-    console.log("copying code for: " + id);
     var codeField = $("#" + id).data("codeField");
-    console.log("copying into: " + codeField);
     var editor = editors[id];
-    console.log("got ace editor: " + editor);
-    // if(!editor)
-
     var code = editor.getValue();
-    console.log("code: " + code);
     $("input[name=" + codeField + "]").val(code);
 }
 
@@ -87,16 +81,29 @@ function submitQuestion(e)
 
     copyEditorCode("prompt-editor");
     copyEditorCode("solution-editor");
-    $("#question-form").submit();
+
+    var $form = $("#question-form");
+    var data = $form.serialize();   
+    var url = $form.attr( "action" );
+
+    $.post( url, data ).success(function( response ) 
+    {
+
+        $( "#test-results" ).html( response );
+
+        editors["response-editor"].focus();
+    });
+
 }
 
 msg = function(msg, level)
 {
     var html = $('#msg-li-tmpl').html();
     var tmpl = _.template(html);
-    var li = tmpl({msg: msg, level: level});
-    $( '#messages' ).append(li);
-    $( '#messages' ).show();
+    var alert = tmpl({msg: msg, level: level});
+    $( '#messages' ).append(alert);
+    var clear = function() { $( '#messages' ).html(''); }
+    _.delay(clear, 3000);
 }
 
 function submitTestForm(e)
@@ -147,13 +154,16 @@ function submitStudyCode(action)
     // Stop form from submitting normally
     //e.preventDefault();
 
-    var $form = $("#response-form");
+
     copyEditorCode("response-editor");
+
+    var $form = $("#response-form");
     var data = $form.serialize() + "&action=" + action;   
     var url = $form.attr( "action" );
 
     $.post( url, data ).success(function( response ) 
     {
+
         $( "#test-results" ).html( response );
         editors["response-editor"].focus();
     });
@@ -183,11 +193,21 @@ function showQuestionDetails(e)
     url = "/study/question_detail/" + questionId
     $.get(url, function( data ) {
         $("#question-modal .modal-body").html( data );
-        console.log(data);
         $("#question-modal").modal('show');
     });
 
 }
+
+function makeButton(link, text, type)
+{
+    var btn = $("a");
+    a.addClass("btn");
+    a.addClass("btn-"+type);
+    a.html(text);
+    a.attr("href", "link");
+
+}
+
 
 function initForms()
 {
@@ -270,6 +290,15 @@ $( document ).ready(function() {
 
     }
 
+    $("#passed-modal").keypress(function( event ) {
+        if ( event.which == 13 && $(".modal a.enter")) 
+        {
+            event.preventDefault();
+            var target = $(".modal a.enter").attr('href');
+            window.location = target;
+            return;
+        }
+    });
 
     $("#question-edit-tabs a").click(function (e) {
         $(this).tab('show');

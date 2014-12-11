@@ -8,86 +8,11 @@
 {% block body %}
 <div class="row">
     <section id="question-editor" class="col-md-6">
-        <form id="question-form" class="" action="/question/save" method="post" role="form">
-            {% csrf_token %}
-            <input type="hidden" name="pk" value="{{pk}}">
-            <input type="hidden" id="prompt" name="prompt">
-            <input type="hidden" id="solution" name="solution">
-
-            <div class="well nopad-top">
-                <div id="question-tools" class="btn-group">
-                    <div class="btn-group">
-                        <button id="save-question"
-                            data-html="true"
-                            data-toggle="tooltip" data-placement="bottom"
-                            data-content="<kbd>{{os_ctrl}}-s</kbd> saves from the prompt and solution editors."
-                            title="Save question"
-                            class="btn btn-success btn-sm">
-                            Save <span class="glyphicon glyphicon-record"></span>
-                        </button>
-                    </div>
-                    <div class="btn-group">
-                        <button id="run-tests" 
-                            data-html="true"
-                            data-toggle="tooltip" data-placement="bottom"
-                            class="disabled btn btn-default btn-sm clearfix btn-primary" 
-                            title="Run tests"
-                            data-content="<kbd>{{os_ctrl}}-t</kbd> to run test cases without saving changes to your solution">
-                            Test <span class="glyphicon glyphicon-play-circle"></span>
-                        </button>
-                    </div>
-                    <div class="btn-group">
-                        <!-- Button trigger modal -->
-                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#del-confirm">
-                            Delete <span class="glyphicon glyphicon-remove-circle"></span>
-                        </button>
-                    </div>
-                </div><!-- /submit buttons -->
-                <div class="change-indicator pull-right label label-success margin-top"><span class="glyphicon glyphicon-flash"></span></div>
-            
-
-                <div class="form-group margin-top">
-                    {{ question.function_name.errors }}
-                    <input id="id_function_name" 
-                       placeholder="Enter the name of the function the studier <em>must</em> create." 
-                       class="form-control" type="text" value="{{question.instance.function_name}}" name="function_name" maxlength="300">
-                </div>
-
-                 <div class="form-group row">
-                    {{ question.level.errors }}
-                    <div class="col-md-1">{{ question.level.label_tag }}</div>
-                    <div class="col-md-11">{{ question.level }}</div>
-                </div>
-
-                <div class="form-group">
-                    {{ question.prompt.errors }}
-                    {{ question.prompt.label_tag }}
-                    <div id="prompt-editor" class="code-editor" data-code-field="prompt">{{question.instance.prompt}}</div>
-                    <p class="help-block">Provide clear instructions and sample ouput where appropriate. This field accepts
-                        <a href="#mdhelp" class="tip"  data-keyboard="true"
-                           title="showmarkdown cheatsheet" data-toggle="modal" 
-                           data-target="#mdcheat">markdown</a></p>
-                </div>
-                <div class="form-group">
-                    {{ question.solution.errors }}
-                    {{ question.solution.label_tag }}
-                    <div id="solution-editor" class="code-editor" data-code-field="solution">{{question.instance.solution}}</div>
-                    <p class="help-block">Write your solution Python code here. It <em>must</em> pass all of the tetsts.</p>
-                </div>
-                <div class="form-group">
-                    {{ question.tags.errors }}
-                    <label for="id_tags">Tags:</label>
-                    <input id="id_tags" class="form-control" type="text" value="{{question.instance.tags}}" name="tags" maxlength="500">
-                </div>
-                <div class="form-group">
-                    {{ question.comment.errors }}
-                    {{ question.comment.label_tag }} 
-                    {{ question.comment }} 
-                </div>
-            </div>
-        </form>
+        {% include "tutor/question_form_part.html" %}
     </section>
-    <div class="col-md-6">{% include "tutor/question_editor_tests.html" %}</div>
+    <div class="col-md-6">
+        {% include "tutor/question_editor_tests.html" %}
+    </div>
 </div> <!--/row -->
 
 {% endblock %}

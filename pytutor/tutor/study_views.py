@@ -1,5 +1,7 @@
 import random
 import json
+from operator import itemgetter, attrgetter
+
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseRedirect
@@ -15,32 +17,43 @@ from tutor.models import *
 import tutor.study as sm
 
 
+def get_attempts(user, question):
+    attempts = Response.objects.filter(user=user).order_by("-submitted")[:Response.MAX_ATTEMPTS]
+    attempts = [r for r in attempts if r.question == question]
+    attempts_left = Response.MAX_ATTEMPTS - len(attempts)
+    return attempts, attempts_left
 
-def study(request, try_again_id=0, study_tag=None):
+@login_required
+def study(request, sticky_id=0, study_tag=None):
     """Choose the next question for the user to study."""
 
-    if not request.user.is_authenticated():
-        messages.info(request, "You must sign-up or log-in to study.")
-        return HttpResponseRedirect("/register")
+    sticky_id = int(sticky_id)
 
-    if try_again_id:
-        question = Question.objects.get(pk=try_again_id)
+    if sticky_id > 0:
+        question = Question.objects.get(pk=sticky_id)
     elif study_tag is not None:
         question = sm.next_question(request.user, study_tag)
     else:
         question = sm.next_question(request.user)
 
-    response_form = ResponseForm()
+    attempts, attempts_left = get_attempts(request.user, question)
 
-    attempts = Response.objects.filter(user=request.user)[:Response.MAX_ATTEMPTS]
-    attempts = len([r for r in attempts if r.question == question])
-    attempts_left = Response.MAX_ATTEMPTS - attempts
+
+    if sticky_id > 0 and len(attempts) > 0:
+        user_code = attempts[0].code
+    else:
+        user_code = "# write a function called {}{}".format(question.function_name, "\n"*3)
+
+    response_form = ResponseForm()
     
     os_ctrl = "ctrl"
     if "Macintosh" in request.META["HTTP_USER_AGENT"]:
         os_ctrl = "cmd"
     context = {
+        "user_code": user_code,
+        "passed": False,
         "question": question,
+        "sticky_id": sticky_id,
         "response_form" : response_form, 
         "attempts_left" : attempts_left,
         "tag" : study_tag,
@@ -49,23 +62,35 @@ def study(request, try_again_id=0, study_tag=None):
     
     return render(request, 'tutor/study.html', context)
 
+def solutions(question):
+    
+    tests = Test.objects.filter(question=question)
+    user_solutions = Response.objects.filter(question=question, is_correct=True).values_list("code").distinct()
+    expert_solutions = sorted(list(set(Solution.objects.filter(parent=question))), key=attrgetter('version'), reverse=True)
+    for sol in expert_solutions:
+        sol.test(tests)
+
+    user_solutions = [syn(c[0]) for c in user_solutions]
+
+    return expert_solutions, user_solutions
+
+
 @login_required
 def respond(request):
     """Allow user to write a response to a question."""
 
     pk = int(request.POST["qpk"])
     user_code = request.POST.get('user_code', False)
-    action = request.POST.get('action', 'foo')
+    sticky_id = int(request.POST.get('sticky_id,', 0))
 
     study_tag = request.POST.get('study_tag', False)
     question = Question.objects.get(pk=pk)  
 
-    passed, test_results = question.run_tests(user_code)    
+    passed, test_results = question.run_tests(user_code)
 
-    attempts = Response.objects.filter(user=request.user)[:Response.MAX_ATTEMPTS]
-    attempts = len([r for r in attempts if r.question == question])
-    attempt = attempts + 1
-    attempts_left = Response.MAX_ATTEMPTS - attempt
+    attempts, attempts_left = get_attempts(request.user, question)
+    attempt = len(attempts) + 1
+    attempts_left -= 1
     
     response = Response(attempt=attempt, user=request.user, question=question)
     response.code = user_code
@@ -77,8 +102,13 @@ def respond(request):
                "attempts_left" : attempts_left,
                "tests" : test_results,
                "passed" : passed,
+               "sticky_id": sticky_id,
                "study_tag": study_tag }
-    
+    if passed or attempts_left % 10 == 0:
+        expert_solutions, user_solutions = solutions(question)
+        context["expert_solutions"] = expert_solutions
+        context["user_solutions"] = user_solutions
+
     return render(request, 'tutor/response_result.html', context)
 
 def tags(request):
