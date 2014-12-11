@@ -1,18 +1,21 @@
 {% extends "base.html" %}
 
-{% block title %}PyTutor Home{% endblock %}
+{% block title %} PyTutor Home {% endblock %}
 
 {% block body %}
 
 
 <section id="question-list"class="panel panel-primary">
-    <div class="panel-heading"><h2 class="panel-title">User Report: {{user}}</h2></div>
+    <div class="panel-heading"><h2 class="panel-title">User Report: {{user}}</h2>
+      <h2 class="panel-title"> Current Level: ??? {{question.function_name}} </h2>
+    
+    </div>
     <div class="panel-body">
 
-  
- 
+  <section id = "correct questions" class="col-md-4"> 
         <a href="/study/report/{{user.username}}" class="btn btn-warning btn-sm" title="My questions">Question Report</a>
-        <a href="/question/list" class="btn btn-warning btn-sm" title="All Questions">User Log</a>
+
+<!--         <a href="/question/list" class="btn btn-warning btn-sm" title="All Questions">User Log</a> -->
 
       
 <!--       Response.objects.annotate(num_attempts=Count("question"))
@@ -33,20 +36,23 @@
                 </tr>
             </thead>
             <tbody>
-            {% for r in student_responses %}}
+            {% for r in student_responses %}
               <tr>
                 <td> {{r.question.id}} </td>
-                <td> {{r.question.level}} </td>
+                 <td> {{r.question.level}} </td>
                 <td> <a href="#" class="question_detail" data-quid="{{r.question.id}}" data-target="#modal">{{r.question.function_name}}</a> </td>
                 <td> {{r.num_right}} </td>
                 <td> {{r.num_wrong}} </td>
                 <td> - </td>
-                <td> {{r.question.submitted}} </td>
+                <td> {{r.question.session_start}} </td>
               </tr>
+
             {% endfor %}
 
             </tbody>
         </table>
+        
+</section>
 <!-- Button trigger modal ... repurpose for text links -->
 <!-- <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
   Launch demo modal
@@ -98,3 +104,9 @@ and the not answered ones yet last (in orange) -->
      </div>
 </section> 
      {% endblock %}
+
+
+
+
+         # level_questions = Question.objects.by_level()
+      <li> {{ question.function_name }} {{ question.user_responded_correctly }} {{response_number}}</li>

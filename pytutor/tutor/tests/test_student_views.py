@@ -39,10 +39,14 @@ class StudentViewTestCase(TestCase):
         self.assertEqual(first_session.num_correct, 1)
 
         s_start = t[0].session_start
+        s_end = t[0].session_end
+        elapsed_time = (s_end - s_start)
         # self.assertGreater(t[0].session_end, t[0].session_start)
         
         print ("------------------------")
-        print (s_start)
+        print (s_start )
+        print (s_end)
+        print (elapsed_time)
         print ("------------------------")
 
         
