@@ -41,8 +41,8 @@ def report(request):
     data = {}
     right_count = 0
     wrong_count = 0
-    correct_list = []
-    incorrect_list = []
+    # correct_list = []
+    # incorrect_list = []
 
     for r in student_responses:
         q = r.question
@@ -50,6 +50,7 @@ def report(request):
             # add the data as a row
             data["num_right"] = right_count
             data["num_wrong"] = wrong_count
+            data["correct"] = r.is_correct
             rows.append(data)
             cur_id = q.id
 
@@ -62,6 +63,24 @@ def report(request):
             right_count += 1
         else:
             wrong_count += 1
+
+    # find most recently answered question and level
+    current_level_number = student_responses.order_by("-submitted")[0].question.level
+    current_level_description = AbstractQuestion.levels[current_level_number - 1]
+    current_level = { "number": current_level_number, "description": current_level_description }
+        # if r.submitted > time_submitted:
+        #     time_submitted = r.submitted
+        #     current_level = r.question.level
+
+    # get list of levels for sidebar
+    levels = []
+    for l in list(range(7)):
+        # l is a number from 0-6, so l + 1 represents the true level number
+        if len(student_responses.filter(question__level=(l+1))) > 0:
+            description = AbstractQuestion.levels[l+1]
+            levels.append({ "number": l+1, "description": description })
+
+
 
         # print ("This is data dict", data)
 
@@ -93,6 +112,8 @@ def report(request):
     #     "questions_failed": questions_failed}
 
     context = {"student_responses": rows[1:],
+                "current_level": current_level,
+                "levels": levels,
               
                }
     # List questions that student has failed

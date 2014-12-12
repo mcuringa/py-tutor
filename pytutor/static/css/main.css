@@ -228,4 +228,7 @@ td.diff_header
   overflow: auto;
   max-height: 200px;
 }
+
+.bottom-margin {
+  margin-bottom: 15px;
 }

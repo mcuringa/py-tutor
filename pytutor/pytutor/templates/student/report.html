@@ -7,13 +7,31 @@
 
 <section id="question-list"class="panel panel-primary">
     <div class="panel-heading"><h2 class="panel-title">User Report: {{user}}</h2>
-      <h2 class="panel-title"> Current Level: ??? {{question.function_name}} </h2>
+      <h2 class="panel-title"> Current Level: {{current_level.number}} - {{current_level.description}} </h2>
     
     </div>
     <div class="panel-body">
 
-  <section id = "correct questions" class="col-md-4"> 
-        <a href="/study/report/{{user.username}}" class="btn btn-warning btn-sm" title="My questions">Question Report</a>
+  <section id = "correct questions" class="row"> 
+      <div class="col-xs-2">
+        <div class="panel panel-warning">
+          <div class="panel-heading">
+            <h2 class="panel-title">
+              Level History
+            </h2>
+          </div>
+          <div class="panel-body">
+            <ul class="list-unstyled">
+            {% for level in levels %}
+              <li class="bottom-margin"> {{ level.number }}. {{ level.description }}</li>
+            {% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xs-5">
+        <a href="/study/report/{{user.username}}" class="btn btn-warning btn-sm" title="My questions">Solved Questions</a>
 
 <!--         <a href="/question/list" class="btn btn-warning btn-sm" title="All Questions">User Log</a> -->
 
@@ -21,37 +39,81 @@
 <!--       Response.objects.annotate(num_attempts=Count("question"))
  -->
 
-        <table id="question-list" class="table table-striped table-bordered table-condensed table-sortable">
+        <table id="question-list" class="table table-striped table-bordered table-condensed table-sortable table-responsive">
 
             <thead>
                 <tr>
-                  <th class="text-center">Question ID</th>
-                  <th class="text-center">Question Level</th>
-                  <th class="text-center">Question Name</th>
-                  <th class="text-center">Correct Response</th>
-                  <th class="text-center">Incorrect Response</th>
-                  <th class="text-center">Number of Attempts</th>
-                  <th class="text-center">Question Time</th>
+                  <th class="text-center">ID</th>
+                  <th class="text-center">Level</th>
+                  <th class="text-center">Name</th>
+                  <th class="text-center">Correct<br>Response</th>
+                  <th class="text-center">Incorrect<br>Response</th>
+                  <th class="text-center">Attempts</th>
+<!--                   <th class="text-center">Time</th> -->
                 
                 </tr>
             </thead>
             <tbody>
             {% for r in student_responses %}
+              {% if r.num_right > 0 %}
               <tr>
                 <td> {{r.question.id}} </td>
                  <td> {{r.question.level}} </td>
                 <td> <a href="#" class="question_detail" data-quid="{{r.question.id}}" data-target="#modal">{{r.question.function_name}}</a> </td>
                 <td> {{r.num_right}} </td>
                 <td> {{r.num_wrong}} </td>
-                <td> - </td>
-                <td> {{r.question.session_start}} </td>
+                <td> {{r.num_right|add:r.num_wrong}} </td>
+<!--                 <td> {{r.question.session_start}} </td> -->
               </tr>
-
+              {% endif %}
             {% endfor %}
 
             </tbody>
         </table>
-        
+      </div>
+
+      <div class="col-xs-5">
+        <a href="/study/report/{{user.username}}" class="btn btn-warning btn-sm" title="My questions">Attempted Questions</a>
+
+<!--         <a href="/question/list" class="btn btn-warning btn-sm" title="All Questions">User Log</a> -->
+
+      
+<!--       Response.objects.annotate(num_attempts=Count("question"))
+ -->
+
+        <table id="question-list" class="table table-striped table-bordered table-condensed table-sortable table-responsive">
+
+            <thead>
+                <tr>
+                  <th class="text-center">ID</th>
+                  <th class="text-center">Level</th>
+                  <th class="text-center">Name</th>
+                  <th class="text-center">Correct<br>Response</th>
+                  <th class="text-center">Incorrect<br>Response</th>
+                  <th class="text-center">Attempts</th>
+<!--                   <th class="text-center">Time</th> -->
+                
+                </tr>
+            </thead>
+            <tbody>
+            {% for r in student_responses %}
+              {% if r.num_right == 0 %}
+              <tr>
+                <td> {{r.question.id}} </td>
+                 <td> {{r.question.level}} </td>
+                <td> <a href="#" class="question_detail" data-quid="{{r.question.id}}" data-target="#modal">{{r.question.function_name}}</a> </td>
+                <td> {{r.num_right}} </td>
+                <td> {{r.num_wrong}} </td>
+                <td> {{r.num_right|add:r.num_wrong}} </td>
+            
+<!--                 <td> {{r.question.session_start}} </td> -->
+              </tr>
+              {% endif %}
+            {% endfor %}
+
+            </tbody>
+        </table>
+      </div>
 </section>
 <!-- Button trigger modal ... repurpose for text links -->
 <!-- <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
