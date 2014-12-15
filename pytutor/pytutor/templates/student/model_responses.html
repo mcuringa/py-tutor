@@ -1,0 +1,41 @@
+{% load markdown_deux_tags %}
+{% load humanize %}
+<section id = "response_show" class="col-xs-6"> 
+    <div  class="scroll md-default">
+        <h3 class="bg-primary extra-padding">
+            question author solutions (passing and failing)
+        </h3>
+
+    <div class="model-responses">
+        <ul id="messages" class="alert alert-info alert-dismissible list-group-item list-group-item-{{msg.tags}} list-unstyled" role="alert">
+            {% autoescape off %}
+                {% for q in expert_solutions %}
+                
+                <li class="bg-default pad margin-top">
+                {% if q.passed  %}
+                    <span class="label label-success">passed</span>
+                {% else %}
+                    <span class="label label-danger">failed</span>
+                {% endif %}
+                    <strong>version:</strong> {{q.version}}, 
+                    <strong>editor:</strong> {{q.modifier.username}}, 
+                    <strong>modified:</strong> {{q.modified}}
+                </li>
+                <li>{{q.solution_pp}}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <h3 class="bg-primary extra-padding">
+        user submitted solutions (passing only)
+    </h3>
+    <!-- <ul class="list-unstyled list-group"> -->
+    <div class="model-responses">
+        <ul id="messages" class="alert alert-info alert-dismissible list-group-item list-group-item-{{msg.tags}} list-unstyled" role="alert">
+        {% for code in user_solutions %}
+            <li class="margin-top">{{code}}</li>
+        {% endfor %}
+        </ul>
+    </div>
+</section>
+{% endautoescape %}

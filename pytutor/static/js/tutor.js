@@ -191,10 +191,36 @@ function showQuestionDetails(e)
 {
     questionId = $(e.target).data("quid");
     url = "/study/question_detail/" + questionId
+    // this actually goes to the /study/question_detail/___ function
+    // in student_views.py.
+    // that function returns the question_detail.html template
     $.get(url, function( data ) {
-        $("#question-modal .modal-body").html( data );
-        $("#question-modal").modal('show');
+        // instead of redirecting to the question_detail page,
+        // take that page's HTML and put it inside the
+        // #question-details row.
+        $("#question-details").html( data );
+        $("#question-details").removeClass('hidden');
     });
+
+}
+
+function changeLevel(level, description)
+{
+
+  $("#question-details").addClass("hidden");
+  $("#current-level").html(" Current Level: " + level + " - " + description);
+  $(".question-row").each(function()
+  {
+    if (level != $(this).data("level"))
+    {
+      // hide this level
+      $(this).addClass("hidden");
+    }
+    else {
+      $(this).removeClass("hidden");
+    }
+  });
+  return;
 
 }
 
@@ -314,7 +340,18 @@ $( document ).ready(function() {
 
     $(".question_detail").click(showQuestionDetails)
 
+    $('.change-level').click(function (e) {
+        var level = $(this).data("level");
+        var description = $(this).data("description");
+        changeLevel(level, description);
+    });
 
-
+    if ($("#current-level").length > 0)
+    {
+        current_info = $("#current-level")[0];
+        var level = $(current_info).data("level");
+        var description = $(current_info).data("description");
+        changeLevel(level, description);
+    }
 
 });
