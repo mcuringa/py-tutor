@@ -6,12 +6,14 @@ PyTutor application. Defines
 key objects: Question.
 """
 
+import json
+
 from django.db import models
 from django import forms
 from django.forms import ModelForm
 from django.contrib.auth.models import User
 from tutor.templatetags.tutor_extras import syn
-
+from django.contrib.humanize.templatetags import humanize
 
 
 class AbstractQuestion(models.Model):
@@ -46,7 +48,6 @@ class AbstractQuestion(models.Model):
     creator = models.ForeignKey(User, related_name="%(app_label)s_%(class)s_creator")
     modifier = models.ForeignKey(User, related_name="%(app_label)s_%(class)s_modifer")
 
-
     def solution_pp(self):
         return syn(self.solution)
 
@@ -76,8 +77,6 @@ class AbstractQuestion(models.Model):
         abstract = True
         ordering = ['-modified']
 
-# enumerate(["sent","pending","friend"],start=1)]
-
 class QuestionManager(models.Manager):
     def by_level(self):
         questions = Question.objects.all()
@@ -92,12 +91,30 @@ class Question(AbstractQuestion):
     FAILED = 1
     ACTIVE = 2
     DELETED = 3
-
+    status_labels = ["","Failed", "Active", "Deleted"]
+    status_css_classes = ["","danger", "success", "default"]
     status = models.IntegerField(default=FAILED)
     objects = QuestionManager()
 
+    def as_json(self, wrap="", extra={}):
+        q_data = {k: self.__dict__[k] for k in ('version', 'id')}
+        q_data["creator"] = self.creator.username
+        q_data["modifier"] = self.modifier.username
+        q_data["created"] = humanize.naturaltime(self.created)
+        q_data["modified"] = humanize.naturaltime(self.modified)
+        q_data["status"] = self.status
+        q_data["status_label"] = self.status_labels[self.status]
+        q_data["status_css"] = self.status_css_classes[self.status]
+
+        for k,v in extra.items():
+            q_data[k] = v
+
+        if(len(wrap) > 0):
+            return json.dumps({wrap: q_data})
+        return json.dumps(q_data)
+
+
     def test_and_update(self, t=None):
-        print("test and update")
         if self.status == Question.DELETED:
             return False
         
@@ -108,8 +125,6 @@ class Question(AbstractQuestion):
         else:
             passed, results = self.run_tests()
         
-        print("passed:", passed)
-        print("current status:", self.status)
         if self.status == Question.ACTIVE and not passed:
             self.status = Question.FAILED
             self.save()
@@ -264,6 +279,7 @@ Actual result: {}""".format(self.question.function_name, self.args, self.result,
     def to_code(self):
         str = 'assert {}({}) == {}'.format(self.question.function_name, self.args, self.result)
         return str
+
 
 class TestForm(ModelForm):
     args = forms.CharField(required = False, widget=forms.TextInput(attrs={'class': 'form-control'}))

@@ -9,9 +9,11 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.core import serializers
 from django.contrib import messages
 from django.db.models import Q
+import django.contrib.humanize.templatetags.humanize as humanize
 
+
+from tutor.templatetags import tutor_extras
 from tutor.models import *
-
 
 def list(request, editor_name=""):
     """List the questions in the database"""
@@ -40,11 +42,30 @@ def tags(request):
         qtags = [q.strip() for q in qtags if len(q.strip() > 0)]
         tags.extend(qtags)
 
-    tags = set(tags)
-    tags = sorted(list(tags))
+    tags = sorted(list(set(tags)))
     context = {"tags": tags}
     
     return render(request, 'tutor/tags.html', context)
+
+def tests_to_json(test_results, admin_mode=False):
+    tests = []
+    for test, fail, result in test_results:
+        data = {"id": test.id, "code": test.to_code(), "admin_mode": admin_mode}
+        if fail is None:
+            data["passed"] = True
+            data["css_status"] = "success"
+            data["status"] = "Pass"
+            data["error_msg"] = ''
+        else:
+            data["passed"] = False
+            data["status"] = "Fail"
+            data["css_status"] = "danger"
+            data["error_msg"] = tutor_extras.error_msg(fail)
+        tests.append(data)
+
+    return json.dumps(tests)
+
+
 
 @login_required
 def question_form(request, pk=0):
@@ -78,13 +99,16 @@ def question_form(request, pk=0):
     if "Macintosh" in request.META["HTTP_USER_AGENT"]:
         os_ctrl = "cmd"
 
+ 
     context = { "question": form,
                 "pk": pk,
                 "history": history,
                 "test_form": test_form,
-                "tests": test_results,
+                # "tests": test_results,
                 "qstate": qstate,
-                "os_ctrl": os_ctrl
+                "os_ctrl": os_ctrl,
+                "question_json": form.instance.as_json(),
+                "tests_json": tests_to_json(test_results,admin_mode=True)
               }
 
     return render(request, 'tutor/question_form.html', context)
@@ -101,6 +125,9 @@ def add_test(request):
 
     form = TestForm(request.POST)
     form.instance.question = q
+
+    data = {}
+
     try:
         test = form.save()
         success = True
@@ -108,39 +135,32 @@ def add_test(request):
         user_function = q.solution
         test, ex, result = test.evaluate(user_function)
         passed = (ex == None)
-        updated = q.test_and_update()
 
-        c = Context({
-            'test': test,
-            'ex': ex,
-            'result': result,
-            'status_updated': updated
-        })
+        #update the question if the new test changed its status
+        if q.status == Question.ACTIVE and not passed:
+            q.status = Question.FAILED
+            q.save()
+        elif q.status == Question.ACTIVE and passed:
+            q.status = Question.FAILED
+            q.save()
 
-        t = loader.get_template('tutor/test-results.html')
-        list_append = t.render(c)
+        data['tests_json'] = tests_to_json([(test, ex, result)], admin_mode=True)
+        data['question_json'] = q.as_json()
 
-    except:
-        message = "Tests require expected results."
-        success = False
-        passed = False
-        list_append = ""
-
-    if passed:
-        message = "Test added and passed."
-        msg_level = "success"
-    else:
-        message = "Test added successfully, but code failed."
-        msg_level = "warning"
+        if passed:
+            data["message"] = "Test added, code passed."
+        else:
+            data["message"] = "Test added, code failed."
+        
+        data["success"] = True
 
 
-    data = {
-        "success": success,
-        "msg": message,
-        "list_append": list_append,
-        "passed": passed,
-        "msg_level": msg_level
-    }
+    except Exception as ex:
+        raise ex
+        # data["message"] = "Tests require expected results."
+        # data["success"] = False
+
+
 
     return HttpResponse(json.dumps(data), content_type="application/json")
 
@@ -154,13 +174,9 @@ def del_test(request, pk):
     test.delete()
     msg = "Test deleted."
     updated = question.test_and_update()
-    
-    if updated:
-        msg += " Status changed to {}.".format(question.status_label())
 
-    messages.success(request, msg)
-    url = "/question/{}/edit".format(question.id)
-    return HttpResponseRedirect(url)
+    data = {msg: msg}
+    return HttpResponse(json.dumps(data), content_type="application/json")
 
 @login_required
 def save_question(request):
@@ -180,21 +196,29 @@ def save_question(request):
     try:
         question = form.save()
 
+        results = []
         if pk > 0:
-            updated = question.test_and_update()
+            passed, results = question.run_tests()
+            if passed:
+                question.status = Question.ACTIVE
+            else:
+                question.status = Question.FAILED
 
         pk = question.id
-
+        question.save()
         archive(question)
-        messages.success(request, "Question saved.")
+        
+        question_json = form.instance.as_json(extra={"save_msg": "question saved", "save_msg_css":"success"})
+        data["question"] = question_json
+        
+        # data["tests"] = json.dumps(results)
+
     except ValueError as vex:
-        messages.error(request, form.errors )
+        question_json = form.instance.as_json(extra={"save_msg": "question saved failed", "save_msg_css":"danger"})
+        data["question"] = question_json
+        data["form_erros"] = form.errors
 
     return HttpResponse(json.dumps(data), content_type="application/json")
-
-    # url = "/question/{}/edit".format(pk)
-
-    # return HttpResponseRedirect(url)
 
 @login_required
 def delete_question(request, pk):

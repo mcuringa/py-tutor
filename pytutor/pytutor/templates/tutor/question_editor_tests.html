@@ -1,19 +1,6 @@
 {% load humanize %}
 
-<div class="well">
-	<h4>
-        Question Editor <small>(id. {{pk}}, v. {{question.instance.version}})</small>
-        <span id="save-msg"></span>
-    </h4>
-    <dl id="question-info" class="dl-horizontal">
-        <dt>Created by:</dt>
-        <dd>{{question.instance.creator}} on {{question.instance.created}}</dd>
-        <dt>Last modified by:</dt>
-        <dd>{{question.instance.modifier}} on {{question.instance.modified}}</dd>
-        <dt>Status:</dt>
-        <dd id="question-status-label">{{question.instance.status_label}}</dd>
-    </dl>
-</div>
+<div id="question-info" class="well"></div>
 
 <ul id="question-edit-tabs" class="nav nav-tabs" role="tablist">
   <li class="active"><a href="#tests" role="tab" data-toggle="tab">Test Cases</a></li>
@@ -48,9 +35,7 @@
             </form>
             <h4>Test Results</h4>
             <ul id="test-list" class="list-group">
-            {% for test, ex, result in tests %}
-                {% include "tutor/test-results.html" %}
-            {% endfor %}
+                <li>foo</li>
             </ul>
         </div> <!-- /panel body -->
     </div> <!-- /panel & tab-pane -->
@@ -88,3 +73,128 @@
         </div> <!-- /panel body -->
     </div> <!-- /panel -->
 </div> <!-- /tab content -->
+
+
+{% verbatim %}
+<script id="test-result-tmpl" type="text/template">
+    <li class="list-group-item list-group-item-{{css_status}} clearfix">
+        <button alt="Delete this test"  class="delete-test btn pull-right btn-xs btn-{{css_status}}"><span class="glyphicon glyphicon-minus-sign"></span></button>
+
+        <h4 class="inline"><span class="label label-{{css_status}}">{{status}}</span></h4>
+        <tt>{{code}}</tt>
+        {% if(!passed){ %}
+            <pre>{{ error_msg }}</pre>
+        {% } %}
+    </li>
+</script>
+
+<script id="question-info-tmpl" type="text/template">
+    <span id="save-msg" class="pull-right label label-{{save_msg_css}}">{{save_msg}}</span>
+    <h4>
+        Question Editor <small>(id. {{id}}, v. {{version}})</small>
+        <span id="question-status-label" class="label label-{{status_css}}">{{status_label}}</span>
+    </h4>
+    <dl id="question-info" class="dl-horizontal">
+        <dt>Created by:</dt>
+        <dd>{{creator}} on {{created}}</dd>
+        <dt>Last modified by:</dt>
+        <dd>{{modifier}} on {{modified}}</dd>
+    </dl>
+
+</script>
+{% endverbatim %}
+
+<script>
+var Question = Backbone.Model.extend();
+var TestResult = Backbone.Model.extend();
+var TestResults = Backbone.Collection.extend({
+    model: TestResult,
+});
+
+var TestResultView = Backbone.View.extend({
+    
+    template: _.template($('#test-result-tmpl').html()),
+    events: {
+        "click .delete-test": "clear",
+    },
+
+    initialize: function() {
+        this.listenTo(this.model, 'change', this.render);
+        this.listenTo(this.model, 'destroy', this.remove);
+    },
+    
+    render: function() {
+      this.$el.html(this.template(this.model.attributes));
+      return this;
+    },
+
+
+    clear: function() {
+        console.log("clearing");
+        var url = '/question/test/' + this.model.id + '/del';
+        var _view = this;
+        $.get( url ).success( function( response ) {
+            _view.remove();
+        });
+
+    },
+
+});
+
+var TestListView = Backbone.View.extend({
+    
+    initialize: function() {
+        this.listenTo(TestResults, 'add', this.addTest);
+        this.$el.html('');
+    },
+
+    addTest: function(test) {
+        var trv = new TestResultView({model: test});
+        this.$el.append(trv.render().el);
+        return this;
+    },
+    
+    render: function() {
+        TestResults.each(this.addTest, this);
+        return this;
+    },
+
+});
+
+var QuestionInfoView = Backbone.View.extend({
+    
+    initialize: function() {
+        this.listenTo(this.model, "change", this.render);
+    },
+
+    template: _.template($('#question-info-tmpl').html()),
+    render: function() {
+        var cx = this.model.attributes; 
+        var html = this.template(cx);
+        this.$el.html(html);
+        return this;
+    }
+
+});
+
+var tests_data = {{tests_json|safe}};
+
+var question_data = {{question_json|safe}};
+question_data["save_msg"] = "";
+question_data["save_msg_css"] = "info";
+
+var question = new Question(question_data);
+var TestResults = new TestResults(tests_data);
+
+$("body").ready(function() {
+    var dv = new QuestionInfoView({el: "#question-info", model: question});
+    dv.render();
+
+    var tlv = new TestListView({el: "#test-list"});
+    // console.log(TestResults);
+    tlv.render();
+    
+});
+
+
+</script>

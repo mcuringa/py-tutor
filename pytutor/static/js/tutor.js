@@ -2,7 +2,10 @@
 
 //make underscore templates look like django templates
 _.templateSettings = {
-  interpolate: /\{\{(.+?)\}\}/g
+    interpolate: /\{\{(.+?)\}\}/g,
+    evaluate:    /\{\%(.+?)\%\}/g,          
+    // interpolate: /\{\{=(.+?)\}\}/g,
+    escape: /\{\{-(.+?)\}\}/g
 };
 
 var editors = {};
@@ -88,10 +91,9 @@ function submitQuestion(e)
 
     $.post( url, data ).success(function( response ) 
     {
-
-        $( "#test-results" ).html( response );
-
-        editors["response-editor"].focus();
+        question.set(JSON.parse(response.question));
+        editors["solution-editor"].focus();
+        alert("need to update tests...todo");
     });
 
 }
@@ -110,7 +112,7 @@ function submitTestForm(e)
 {
 
     e.preventDefault();
-    if ($( '#version' ).html() == '0')
+    if (question.id == 0)
     {
         msg("You must save your function name and prompt before adding tests.", danger);
     }
@@ -123,20 +125,13 @@ function submitTestForm(e)
 
         $.post( url, data ).success(function( response ) 
         {
+
             if ( response.success )
             {
-                $( "#test-list" ).append( response.list_append );
-                msg(response.msg, response.msg_level);
-                if(!response.passed)
-                {
-                    $('#question-panel').removeClass('panel-success').addClass('panel-danger');
-                    $('#question-status-label').html('Failed')
-                }
-                else
-                {
-                    $('#question-panel').removeClass('panel-danger').addClass('panel-success');
-                    $('#question-status-label').html('Passed')
-                }
+                // msg(response.msg, 'success');
+                
+                TestResults.add(JSON.parse(response.tests_json));
+                question.set(JSON.parse(response.question_json));
             }
             else
             {
