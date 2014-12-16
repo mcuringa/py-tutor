@@ -22,32 +22,35 @@ class StudentViewTestCase(TestCase):
     def test_study_sessions(self):
         #start with 2 different questions and many responses to each.
         # create 2 sessions for each question (responses in a row)
-        # 
+        
         self.assertGreater(Question.objects.count(),2)
-        q = Question.objects.all()[:2]
+        # q = Question.objects.all()[:2]
 
-        self.create_session(q[0])
-        self.create_session(q[1])
-        self.create_session(q[0])
-        self.create_session(q[1])
+        # self.create_session(q[0])
+        # self.create_session(q[1])
+        # self.create_session(q[0])
+        # self.create_session(q[1])
 
 
-        t = study_sessions(self.user)
-        self.assertEqual(len(t), 4)
+        # t = study_sessions(self.user)
+        # self.assertEqual(len(t), 4)
 
-        first_session = t[0]
-        self.assertEqual(first_session.num_correct, 1)
+        # first_session = t[0]
+        # self.assertEqual(first_session.num_correct, 1)
 
-        s_start = t[0].session_start
-        s_end = t[0].session_end
-        elapsed_time = (s_end - s_start)
+        # s_start = t[0].session_start
+        # s_end = t[0].session_end
+        # elapsed_time = (s_end - s_start)
         # self.assertGreater(t[0].session_end, t[0].session_start)
         
-        print ("------------------------")
-        print (s_start )
-        print (s_end)
-        print (elapsed_time)
-        print ("------------------------")
+
+    # def test_study_view(self):
+    #     c = Client()
+    #     c.login(username='tester', password='password')
+    #     response = c.get("/study")  # this is giving us the html at report, and context
+    #     self.assertEqual(response.status_code, 200)
+
+
 
         
     def create_session(self,q,n=5):
@@ -106,3 +109,9 @@ class StudentViewTestCase(TestCase):
         for i in range(0,len(Question.levels)):
             self.seed_level(i+1, 2)
             self.seed_level(i+1, 5, False)
+
+
+
+
+
+
