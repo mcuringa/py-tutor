@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %} PyTutor Home {% endblock %}
+
+{% block body %}
+
+
+<section id="question-list"class="panel panel-primary">
+    <div class="panel-heading"><h2 class="panel-title">User Report: {{user}}</h2>
+    {% for r in student_responses %}
+
+      <h2 class="panel-title"> Current Level: {{r.question.level}}  </h2>
+    {% endfor %} 
+   
+
+ 
+      Level Name: {{q.level_name}} {{user}}
+   
+      </li>
+
+     </ul>
+    </div>
+    <div class="panel-body">
+    this is the panel body
+
+    <h4> solved questions: {{solved_qs}}
+    </h4>
+
+<!--   <section id = "correct questions" class="col-md-4"> 
+        <a href="/study/report/{{user.username}}" class="btn btn-warning btn-sm" title="My questions">Question Report</a> -->
+
+<!--         <a href="/question/list" class="btn btn-warning btn-sm" title="All Questions">User Log</a> -->
+
+      
+<!--       Response.objects.annotate(num_attempts=Count("question"))
+ -->
+
+
+<!-- Button trigger modal ... repurpose for text links
+<!-- <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
+  Launch demo modal
+</button> -->
+
+<!-- Modal -->
+<!-- <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-
+
+      <ul> -->
+
+<!-- #Now I want to call group by on this list ^ so all the questions by level show the passed ones first (in green)
+
+the failed ones second (in red)
+
+and the not answered ones yet last (in orange) -->
+
+<!-- Modal -->
+<div id="question-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body"></div>
+    </div>
+  </div>
+</div>
+ 
+     </div>
+</section> 
+     {% endblock %}
+
+

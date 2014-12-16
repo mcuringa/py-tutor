@@ -5,39 +5,40 @@
     <thead>
         <tr>
           <th  -->
+<dl class="dl-horizontal bg-default pad margin-top">
 
-        
+  <dt>Question tags:<dd>{{ question.tags}}</dd></dt> 
+  <dt>Function name:</dt> <dd> {{ question.function_name}}</dd>
+  <dt>Prompt:</dt> <dd>{{question.prompt}}</dd>
+  <dt>Number attempts:</dt> <dd>{{ attempts }}</dd>
 
-<div class="clearfix">
+</dl>
 
-	<dl class="dl-horizontal">
-		<dt>Question tags:<dd>{{ question.tags}}</dd></dt> 
-		<dt>Function name:</dt> <dd> {{ question.function_name}}</dd>
-		<dt>Prompt:</dt> <dd>{{question.prompt}}</dd>
-		<dt>Number attempts:</dt> <dd>{{ attempts }}</dd>
+<div class="row">
 
-	</dl>
+<section id="response_show" class="col-xs-6">
+  <h3 class="bg-primary extra-padding">
+    Your Response History:
+  </h3>
 
-Your Response History:
-<br>
-<br>
-	<div id="qdtail-modal" class="scroll">
+
+	<div class="user-responses">
 		<ul id="messages" class="list-unstyled list-group">
    			 {% for code in responses %}
         		<li class="alert alert-info alert-dismissible list-group-item list-group-item-{{msg.tags}}" role="alert">
-          		<button type="button" class="close margin-right" 
+        <!--   		<button type="button" class="close margin-right" 
                   data-dismiss="alert">
             	<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
-          		</button>
+
+          		</button> -->
           			{{ code | safe }}
         		</li>
     		{% endfor %}
 		</ul>
 	</div>
+</section>
+{% include "student/model_responses.html" %}
 </div>
-
-
-
 <!--   "tell set to use a comparator that only evaluates on code.  this has to compare the strings to see if they're the same."
 
  -->

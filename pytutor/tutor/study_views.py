@@ -74,6 +74,10 @@ def solutions(question):
 
     return expert_solutions, user_solutions
 
+#######################################################################################################
+ # key=attrgetter('version')
+ # sort them based on an attribute of the object model.
+ #######################################################################################################
 
 @login_required
 def respond(request):

@@ -228,4 +228,24 @@ td.diff_header
   overflow: auto;
   max-height: 200px;
 }
+
+.bottom-margin {
+  margin-bottom: 15px;
+}
+
+.extra-padding
+{
+  padding: 5px;
+}
+
+.user-responses
+{
+  height: 400px;
+  overflow-y: scroll;
+}
+
+.model-responses
+{
+  height: 150px;
+  overflow-y: scroll;
 }
