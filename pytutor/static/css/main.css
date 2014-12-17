@@ -118,6 +118,17 @@ div.label
     border-top-right-radius: 0 !important;
 }
 
+#question-info
+{
+    position: relative;
+}
+#status-msg
+{
+    position: absolute;
+    right: 0;
+    top: 0;
+    text-align: right;
+}
 
 .code-editor
 {

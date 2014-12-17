@@ -148,19 +148,15 @@ def add_test(request):
         data['question_json'] = q.as_json()
 
         if passed:
-            data["message"] = "Test added, code passed."
+            data["message"] = {"msg": "Test added, code passed.", "msg_level": "success"}
         else:
-            data["message"] = "Test added, code failed."
+            data["message"] = {"msg": "Test added, code failed.", "msg_level": "warning"}
         
         data["success"] = True
 
-
     except Exception as ex:
-        raise ex
-        # data["message"] = "Tests require expected results."
-        # data["success"] = False
-
-
+        data["message"] = {"msg": "Test code could not be added.", "msg_level": "danger"}
+        data["success"] = False
 
     return HttpResponse(json.dumps(data), content_type="application/json")
 
@@ -172,11 +168,13 @@ def del_test(request, pk):
         raise ValueError("Cannot delete tests to DELETED Questions")
 
     test.delete()
-    msg = "Test deleted."
+    msg = {"msg": "test deleted", "msg_level": "success"}
     updated = question.test_and_update()
 
-    data = {msg: msg}
+    data = {"message": msg, "question_json": question.as_json()}
     return HttpResponse(json.dumps(data), content_type="application/json")
+
+
 
 @login_required
 def save_question(request):
@@ -208,13 +206,14 @@ def save_question(request):
         question.save()
         archive(question)
         
-        question_json = form.instance.as_json(extra={"save_msg": "question saved", "save_msg_css":"success"})
+        question_json = form.instance.as_json();
         data["question"] = question_json
-        
+        data["msg"] = {"msg": "question saved", "msg_level": "success"}
         # data["tests"] = json.dumps(results)
 
     except ValueError as vex:
-        question_json = form.instance.as_json(extra={"save_msg": "question saved failed", "save_msg_css":"danger"})
+        question_json = form.instance.as_json()
+        data["msg"] = {"msg": "question saved", "msg_level": "success"}
         data["question"] = question_json
         data["form_erros"] = form.errors
 

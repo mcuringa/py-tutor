@@ -77,7 +77,7 @@
 
 {% verbatim %}
 <script id="test-result-tmpl" type="text/template">
-    <li class="list-group-item list-group-item-{{css_status}} clearfix">
+    <li class="list-group-item list-group-item-{{css_status}} msg_levelclearfix">
         <button alt="Delete this test"  class="delete-test btn pull-right btn-xs btn-{{css_status}}"><span class="glyphicon glyphicon-minus-sign"></span></button>
 
         <h4 class="inline"><span class="label label-{{css_status}}">{{status}}</span></h4>
@@ -88,28 +88,57 @@
     </li>
 </script>
 
+
+
+<script id="messages-tmpl" type="text/template">
+    <div class="label label-{{msg_level}}">{{msg}}</div>
+</script>
+
+
 <script id="question-info-tmpl" type="text/template">
-    <span id="save-msg" class="pull-right label label-{{save_msg_css}}">{{save_msg}}</span>
+    <div id="status-msg"></div>
     <h4>
         Question Editor <small>(id. {{id}}, v. {{version}})</small>
         <span id="question-status-label" class="label label-{{status_css}}">{{status_label}}</span>
     </h4>
     <dl id="question-info" class="dl-horizontal">
         <dt>Created by:</dt>
-        <dd>{{creator}} on {{created}}</dd>
+        <dd><tt>{{creator}}</tt>, {{created}}</dd>
         <dt>Last modified by:</dt>
-        <dd>{{modifier}} on {{modified}}</dd>
+        <dd><tt>{{modifier}}</tt>, {{modified}}</dd>
     </dl>
-
 </script>
 {% endverbatim %}
 
 <script>
 var Question = Backbone.Model.extend();
+var Message = Backbone.Model.extend();
 var TestResult = Backbone.Model.extend();
 var TestResults = Backbone.Collection.extend({
     model: TestResult,
 });
+
+var MessageView = Backbone.View.extend({
+    
+    template: _.template($('#messages-tmpl').html()),
+
+    initialize: function() {
+        this.listenTo(this.model, 'change', this.render);
+    },
+    
+    render: function() {
+        if(!this.model.get("msg").length)
+            return this;
+        
+        this.$el.html(this.template(this.model.attributes));
+        var _view = this;
+        var clear = function() { _view.$el.html(''); }
+        _.delay(clear, 5000);
+        return this;
+    }
+});
+
+
 
 var TestResultView = Backbone.View.extend({
     
@@ -124,19 +153,18 @@ var TestResultView = Backbone.View.extend({
     },
     
     render: function() {
-      this.$el.html(this.template(this.model.attributes));
+      this.$el.html($(this.template(this.model.attributes)));
       return this;
     },
 
-
     clear: function() {
-        console.log("clearing");
         var url = '/question/test/' + this.model.id + '/del';
         var _view = this;
         $.get( url ).success( function( response ) {
+            question.set(JSON.parse(response.question_json));
+            message.set(response.message);
             _view.remove();
         });
-
     },
 
 });
@@ -168,30 +196,33 @@ var QuestionInfoView = Backbone.View.extend({
     },
 
     template: _.template($('#question-info-tmpl').html()),
+    
     render: function() {
         var cx = this.model.attributes; 
         var html = this.template(cx);
         this.$el.html(html);
+        var msgv = new MessageView({model: message, el: "#status-msg"});
+        this.$el.append(msgv.render().el);
+
+        //this is outside of our view template, but we still want to update it the old fashioned way
+        $("#question-status-indicator").removeClass("label-warning").addClass("label-success");
+
         return this;
     }
 
 });
 
 var tests_data = {{tests_json|safe}};
-
 var question_data = {{question_json|safe}};
-question_data["save_msg"] = "";
-question_data["save_msg_css"] = "info";
-
 var question = new Question(question_data);
 var TestResults = new TestResults(tests_data);
+var message = new Message({msg: '', msg_level: ''});
 
 $("body").ready(function() {
     var dv = new QuestionInfoView({el: "#question-info", model: question});
     dv.render();
 
     var tlv = new TestListView({el: "#test-list"});
-    // console.log(TestResults);
     tlv.render();
     
 });

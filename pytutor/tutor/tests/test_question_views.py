@@ -37,7 +37,7 @@ class QuestionViewTestCase(TestCase):
     def test_update_question(self):
         self.clear_questions()
         self.clear_tests()
-     c = Client()
+        c = Client()
         c.login(username='tester', password='password')   
         c.post("/question/save/", self.q_data)
         

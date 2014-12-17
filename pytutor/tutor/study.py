@@ -43,7 +43,7 @@ def current_level(student):
     level = levels[0][0]
 
     #[(5,2),(6,2),(4,1),(3,1),(2,1),(1,0)...]
-    # how many correct answers do they have at or above the current leve?
+    # how many correct answers do they have at or above the current level?
     correct_at_or_above_current_level = sum([c for l, c in levels if l >= level])
     
     # if they got > 50% right at current level, bump them up

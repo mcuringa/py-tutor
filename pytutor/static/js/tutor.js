@@ -92,8 +92,9 @@ function submitQuestion(e)
     $.post( url, data ).success(function( response ) 
     {
         question.set(JSON.parse(response.question));
+        message.set(response.msg);
         editors["solution-editor"].focus();
-        alert("need to update tests...todo");
+        // alert("need to update tests...todo");
     });
 
 }
@@ -128,10 +129,9 @@ function submitTestForm(e)
 
             if ( response.success )
             {
-                // msg(response.msg, 'success');
-                
                 TestResults.add(JSON.parse(response.tests_json));
                 question.set(JSON.parse(response.question_json));
+                message.set(response.message);
             }
             else
             {
