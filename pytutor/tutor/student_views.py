@@ -56,7 +56,6 @@ def report(request):
     # find most recently answered question and level
     current_level_number = sm.current_level(user)
     current_level_description = AbstractQuestion.levels[current_level_number - 1]
-    current_level = { "number": current_level_number, "description": current_level_description }
       
 
     #get all the levels the student has tried
@@ -67,7 +66,8 @@ def report(request):
 
 
     context = {"student_responses": rows[1:],
-                "current_level": current_level,
+                "current_level": current_level_number,
+                "current_level_description": current_level_description,
                 "levels": levels,
               
                }

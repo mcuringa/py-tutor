@@ -24,14 +24,16 @@ def get_attempts(user, question):
     return attempts, attempts_left
 
 @login_required
-def study(request, sticky_id=0, study_tag=None):
+def study(request, study_tag=None, sticky_id=0):
     """Choose the next question for the user to study."""
 
     sticky_id = int(sticky_id)
 
+
     if sticky_id > 0:
         question = Question.objects.get(pk=sticky_id)
     elif study_tag is not None:
+        print("studying within tag:", study_tag)
         question = sm.next_question(request.user, study_tag)
     else:
         question = sm.next_question(request.user)
@@ -89,6 +91,7 @@ def respond(request):
 
     study_tag = request.POST.get('study_tag', False)
     question = Question.objects.get(pk=pk)  
+
 
     passed, test_results = question.run_tests(user_code)
 

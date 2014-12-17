@@ -111,7 +111,7 @@ class StudentModelTestCase(TestCase):
         
         for i in range(100):
             q = sm.next_question(self.user)
-            self.assertEqual(q.status, Question.DELETED)
+            self.assertEqual(q.status, Question.ACTIVE)
 
         self.seed_level(1, 20)
 
@@ -125,14 +125,44 @@ class StudentModelTestCase(TestCase):
     def test_next_question(self):
 
         self.clear()
-        q = sm.next_question(self.user)
-        assert q.level in [1,2]
+        for i in range(20):
+            q = sm.next_question(self.user)
+            assert q.level in [1,2]
         
+        self.clear()
+
         self.seed_level(1, 5)
         self.seed_level(2, 5)
-        self.seed_level(3, 7)
+        self.seed_level(3, 2)
+
+        self.assertEqual(sm.current_level(self.user), 2)
+
+        self.seed_level(3, 11)
         self.assertEqual(sm.current_level(self.user), 3)
         for i in range(100):
             q = sm.next_question(self.user)
             self.assertTrue(q.level in [2,3,4])
+
+
+    def test_no_tag(self):
+        with self.assertRaises(ValueError):
+            sm.next_question(self.user, "foo")
+
+    def test_tagged_questions(self):
+
+        tags = "same_Tag,pi,primes,hard"
+        tag = "pi"
+        # create some tagged questions
+        for i in range(1, len(Question.levels)+1):
+            for j in range(1,5):
+                Question.objects.create(function_name="level{}-q{}".format(i,j),level=i, tags=tags, prompt="test function", creator=self.user, modifier=self.user, status=Question.ACTIVE)
+    
+        for i in range(100):
+            q = sm.next_question(self.user, tag)
+            self.assertTrue(tag in q.tags.split(","))
+
+
+
+
+
 

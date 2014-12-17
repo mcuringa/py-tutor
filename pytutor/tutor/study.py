@@ -55,18 +55,23 @@ def next_tag_question(level, pool, tag):
     pool = pool.filter(tags__icontains=tag)
     level_choice = random_level(level)
     
-    if pool.filter(level=level_choice) > 0:
+    if pool.filter(level=level_choice).count() > 0:
         return random.choice(pool.filter(level=level_choice))
     
-    if pool.filter(level=level) > 0:
+    if pool.filter(level=level).count() > 0:
         return random.choice(pool.filter(level=level))
 
-    if pool.filter(level=level-1) > 0:
-        return random.choice(pool.filter(level=level-1))
 
-    if pool.filter(level=level+1) > 0:
-        return random.choice(pool.filter(level=level+1))
+    if pool.filter(level=level-1).count() > 0:
+        return random.choice(pool.filter(level=max(level-1,1)))
 
+
+    if pool.filter(level=level+1).count() > 0:
+        return random.choice(pool.filter(level=min(level+1,len(Question.levels)+1)))
+
+    if pool.count() == 0:
+        raise ValueError("No questions in tagged pool");
+    
     return random.choice(pool)
 
 
@@ -75,10 +80,12 @@ def next_question(student, tag=""):
     last2 = Response.objects.filter(user=student).order_by("-submitted").values_list("question").distinct()[:2]
     pool = Question.objects.filter(status=Question.ACTIVE)
     lastids = [q[0] for q in last2]
-    pool = pool.exclude(id__in=lastids)
+    if pool.count() > 2:
+        pool = pool.exclude(id__in=lastids)
 
     if len(tag) > 0:
-        return next_tag_question(pool, tag)
+        nextq = next_tag_question(level, pool, tag)
+        return nextq
 
     level_choice = random_level(level)
     questions = pool.filter(level=level_choice)
