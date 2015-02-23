@@ -96,8 +96,8 @@ def question_form(request, pk=0):
 
     test_form = TestForm()
     os_ctrl = "ctrl"
-    if "Macintosh" in request.META["HTTP_USER_AGENT"]:
-        os_ctrl = "cmd"
+    # if "Macintosh" in request.META["HTTP_USER_AGENT"]:
+    #     os_ctrl = "cmd"
 
  
     context = { "question": form,

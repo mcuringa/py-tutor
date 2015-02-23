@@ -23,7 +23,17 @@ class QuestionViewTestCase(TestCase):
         tests = Test.objects.all()
         for t in tests: t.delete()
 
+    def test_new_question_form(self):
+
+        c = Client()
+        c.login(username='tester', password='password')
+        response = c.get("/question/new/")
+        question = response.context["question"]
+        self.assertIsNotNone(question)
+
+
     def test_post_new_question(self):
+        print("testing new question post")
         self.clear_questions()
 
         c = Client()
