@@ -262,6 +262,8 @@ $( document ).ready(function() {
 
    //question form stuff
     $( "#test-form" ).submit(submitTestForm);
+    $( "#save-question" ).submit(function(e) { console.log("foo");e.preventDefault(); });
+
     
     if($( "#question-form" ).length)
     {

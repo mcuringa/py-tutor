@@ -199,12 +199,13 @@ var QuestionInfoView = Backbone.View.extend({
     
     render: function() {
         var cx = this.model.attributes; 
+
         var html = this.template(cx);
         this.$el.html(html);
         var msgv = new MessageView({model: message, el: "#status-msg"});
         this.$el.append(msgv.render().el);
 
-        //this is outside of our view template, but we still want to update it the old fashioned way
+        // this is outside of our view template, but we still want to update it the old fashioned way
         $("#question-status-indicator").removeClass("label-warning").addClass("label-success");
 
         return this;

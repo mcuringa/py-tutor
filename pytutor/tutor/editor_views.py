@@ -72,6 +72,8 @@ def question_form(request, pk=0):
 
     if pk == 0:
         form = QuestionForm()
+        form.instance.creator = request.user
+        form.instance.modifier = request.user
         history = []
         test_results = []
         qstate = "default"

@@ -97,13 +97,11 @@ class Question(AbstractQuestion):
     objects = QuestionManager()
 
     def as_json(self, wrap="", extra={}):
-        q_data = {k: self.__dict__[k] for k in ('version', 'id')}
-        if self.id is not None:
-            q_data["creator"] = self.creator.username
-            q_data["modifier"] = self.modifier.username
+        q_data = {k: self.__dict__[k] for k in ('version', 'id', 'status')}
+        q_data["creator"] = self.creator.username
+        q_data["modifier"] = self.modifier.username
         q_data["created"] = humanize.naturaltime(self.created)
         q_data["modified"] = humanize.naturaltime(self.modified)
-        q_data["status"] = self.status
         q_data["status_label"] = self.status_labels[self.status]
         q_data["status_css"] = self.status_css_classes[self.status]
 
