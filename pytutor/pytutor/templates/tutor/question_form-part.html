@@ -1,4 +1,4 @@
-<form id="question-form" class="" action="#" method="post" role="form">
+<form id="question-form" class="" action="/question/save" method="post" role="form">
     {% csrf_token %}
     <input type="hidden" name="pk" value="{{pk}}">
     <input type="hidden" id="prompt" name="prompt">
@@ -7,30 +7,25 @@
     <div class="well nopad-top">
         <div id="question-tools" class="btn-group">
             <div class="btn-group">
-                <button id="save-question"
+                <a id="save-question" href="#save"
                     data-html="true"
                     data-toggle="tooltip" data-placement="bottom"
                     data-content="<kbd>{{os_ctrl}}-s</kbd> saves from the prompt and solution editors."
                     title="Save question"
                     class="btn btn-success btn-sm">
                     Save <span class="glyphicon glyphicon-record"></span>
-                </button>
+                </a>
             </div>
             <div class="btn-group">
-                <button id="run-tests" 
-                    data-html="true"
-                    data-toggle="tooltip" data-placement="bottom"
-                    class="disabled btn btn-default btn-sm clearfix btn-primary" 
-                    title="Run tests"
-                    data-content="<kbd>{{os_ctrl}}-t</kbd> to run test cases without saving changes to your solution">
+                <a id="run-tests" href="#test">
                     Test <span class="glyphicon glyphicon-play-circle"></span>
-                </button>
+                </a>
             </div>
             <div class="btn-group">
                 <!-- Button trigger modal -->
-                <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#del-confirm">
+                <a href="#del" type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#del-confirm">
                     Delete <span class="glyphicon glyphicon-remove-circle"></span>
-                </button>
+                </a>
             </div>
         </div><!-- /submit buttons -->
         <div id="question-status-indicator" class="change-indicator pull-right label label-success margin-top"><span class="glyphicon glyphicon-flash"></span></div>

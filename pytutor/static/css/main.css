@@ -111,6 +111,12 @@ div.label
   align-items: center;
 }
 
+#messages .alert
+{
+    z-index: 10000;
+    position: absolute;
+}
+
 
 .tab-pane.panel
 {

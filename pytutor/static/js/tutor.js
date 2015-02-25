@@ -91,6 +91,7 @@ function submitQuestion(e)
 
     $.post( url, data ).success(function( response ) 
     {
+        console.log("posting question");
         question.set(JSON.parse(response.question));
         message.set(response.msg);
         editors["solution-editor"].focus();
