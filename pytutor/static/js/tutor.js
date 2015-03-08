@@ -95,7 +95,9 @@ function submitQuestion(e)
         question.set(JSON.parse(response.question));
         message.set(response.msg);
         editors["solution-editor"].focus();
-        // alert("need to update tests...todo");
+        TestResults.set(JSON.parse(response.tests_json));
+
+
     });
 
 }
@@ -151,6 +153,7 @@ function submitStudyCode(action)
     //e.preventDefault();
 
 
+
     copyEditorCode("response-editor");
 
     var $form = $("#response-form");
@@ -159,7 +162,6 @@ function submitStudyCode(action)
 
     $.post( url, data ).success(function( response ) 
     {
-
         $( "#test-results" ).html( response );
         editors["response-editor"].focus();
     });

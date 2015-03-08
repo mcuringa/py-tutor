@@ -97,12 +97,16 @@ def respond(request):
 
     attempts, attempts_left = get_attempts(request.user, question)
     attempt = len(attempts) + 1
-    attempts_left -= 1
     
     response = Response(attempt=attempt, user=request.user, question=question)
     response.code = user_code
     response.is_correct = passed
     response.save()
+
+    # the first time we calculated attempts_left, the response wasn't saved
+    # to the database, so there was an off-by-one error
+    # there's probably a better way to fix this than hitting the db again
+    attempts, attempts_left = get_attempts(request.user, question)
 
     context = {"question" : question, 
                "response" : response, 
