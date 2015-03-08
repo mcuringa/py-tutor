@@ -203,24 +203,6 @@ which allows them to be hashed and ordered based on the code and version"""
 # def __ne__ not equal ---> set parameters for what you're looking for.
 # custom sorting
 
-class FriendConnect(models.Model):
-    """Messages are sent between users"""
-    status_choices = ["sent", "pending", "friend"]
-
-    status = models.CharField(max_length=20, blank=True)
-    friend = models.ForeignKey(User, related_name="friend")
-    sent = models.DateTimeField(auto_now=True)
-
-class Message(models.Model):
-    """Messages are sent between users"""
-
-    msg = models.TextField()
-    msg_from = models.ForeignKey(User, related_name="from_user")
-    msg_to = models.ForeignKey(User, related_name="to_user")
-    sent = models.DateTimeField(auto_now=True)
-    unread = models.BooleanField(default=True)
-
-
 
 class Test(models.Model):
     """
