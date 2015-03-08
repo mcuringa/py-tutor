@@ -211,6 +211,7 @@ def save_question(request):
         question_json = form.instance.as_json();
         data["question"] = question_json
         data["msg"] = {"msg": "question saved", "msg_level": "success"}
+        data["tests_json"] = tests_to_json(results,admin_mode=True)
         # data["tests"] = json.dumps(results)
 
     except ValueError as vex:
