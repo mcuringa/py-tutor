@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'django.contrib.humanize',
     'markdown_deux',
     'pytutor',
+    'social',
     'tutor'
 )
 

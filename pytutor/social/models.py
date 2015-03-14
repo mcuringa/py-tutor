@@ -4,8 +4,19 @@ from django.db import models
 
 class SocialProfile(models.Model):
     """The user's social profile"""
-    
-    status = models.CharField(max_length=20, blank=True)
+    # basics
+    first_name = models.CharField(max_length=120, blank=True)
+    last_name = models.CharField(max_length=120, blank=True)
+    bio = models.CharField(max_length=400, blank=True)
+    public = models.BooleanField(default=False)
+
+    # location
+    institution = models.CharField(max_length=120, blank=True)
+    city = models.CharField(max_length=120, blank=True)
+    state = models.CharField(max_length=120, blank=True)
+    country = models.CharField(max_length=120, blank=True)
+
+    user = models.ForeignKey(User, related_name="from_user")
 
 
 
@@ -19,6 +30,8 @@ class FriendConnection(models.Model):
     friend_b = models.ForeignKey(User, related_name="friendb")
     sent = models.DateTimeField(auto_now=True)
     accepted = models.DateTimeField(auto_now=True)
+
+
 
 class Message(models.Model):
     """Messages are sent between users"""
