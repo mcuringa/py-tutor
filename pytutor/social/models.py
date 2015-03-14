@@ -1,6 +1,12 @@
-from django.db import models
 
-# Create your models here.
+import json
+
+from django.db import models
+from django import forms
+from django.forms import ModelForm
+from django.contrib.auth.models import User
+from django.contrib.humanize.templatetags import humanize
+
 
 class SocialProfile(models.Model):
     """The user's social profile"""
@@ -16,7 +22,7 @@ class SocialProfile(models.Model):
     state = models.CharField(max_length=120, blank=True)
     country = models.CharField(max_length=120, blank=True)
 
-    user = models.ForeignKey(User, related_name="from_user")
+    user = models.OneToOneField(User, primary_key=True)
 
 
 
