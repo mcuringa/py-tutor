@@ -22,6 +22,8 @@ class SocialProfile(models.Model):
     state = models.CharField(max_length=120, blank=True)
     country = models.CharField(max_length=120, blank=True)
 
+    #todo: add the user profile image
+
     user = models.OneToOneField(User, primary_key=True)
 
 

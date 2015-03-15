@@ -78,7 +78,7 @@ def question_form(request, pk=0):
         test_results = []
         qstate = "default"
     else:
-        question = Question.objects.get(pk=pk)        
+        question = Question.objects.get(pk=pk)
         form = QuestionForm(instance=question)
         history = ArchiveQuestion.objects.all().filter(parent_id=pk).order_by('-version')
         passed, test_results = question.run_tests()

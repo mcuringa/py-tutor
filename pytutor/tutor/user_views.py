@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 
 from django.contrib import messages
-
+from social import SocialProfile
 
 
 
@@ -25,7 +25,7 @@ def register(request):
 
         try:        
             user = User.objects.create_user(username=username, password=password)
-            print("new user created:", user)
+            SocialProfile.objects.create(user=user)
             
             user = authenticate(username=username, password=password)
             messages.info(request, "Your account has been created and you are logged in. Welcome to PyTutor.")

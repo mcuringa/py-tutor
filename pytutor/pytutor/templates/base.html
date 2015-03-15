@@ -75,11 +75,11 @@
           <ul class="nav navbar-nav navbar-right vc">
        {% if user.is_authenticated %}
             <!--We'll want this to link to the user's profile, when it exists -->
-            <li><a class="btn" href="#profile-coming-soon" title="see my profile">{{ user.username }}</a></li>
+            <li><a class="btn" href="/profile" title="see my profile">{{ user.username }}</a></li>
             <li>
               <button id="friends" class="btn navbar-btn btn-default btn-xs">
                 <span class="glyphicon glyphicon-user"></span>
-                <span class="badge">3</span>
+                <span id="pending-friends" class="badge">3</span>
               </button>
             </li>
             <li><a class="btn" href="/logout" title="click to logout">logout</a></li>

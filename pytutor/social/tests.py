@@ -6,9 +6,6 @@ from social.models import *
 
 class TestSocialProfile(TestCase):
 
-    def setUp(self):
-        self.user = User.objects.create_user(username="tester", password="password")
-
     def test_create(self):
         first_name = "Antonio"
         last_name = "Gramsci"
@@ -20,6 +17,7 @@ class TestSocialProfile(TestCase):
         city = "Torino"
         state = "Piemonte"
         country = "Italia"
-        user = self.user
-        
-        SocialProfile.objects.create(user=user, first_name=first_name, city=city)
+
+        user = User.objects.create_user(username="tester", password="password")
+        SocialProfile.objects.create(user=user)
+        SocialProfile.objects.update(user=user, first_name=first_name, city=city)
