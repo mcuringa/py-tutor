@@ -18,13 +18,18 @@ from django.views.generic import View
 
 from models import *
 
+def profile(response):
+
+    return render(request, 'social/profile.html', context)
+
+
 class SocialView(View):
 
     @login_required
     def get(self, request):
         user=request.user
         profile = SocialProfile.objects.get(user=user)
-        
+
         
 
         return HttpResponse('result')
