@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% load humanize %}
+{% load markdown_deux_tags %}
+
+{% block title %}PyTutor::{{request.user.username}}{% endblock %}
+
+{% block body %}
+<div class="row">
+    <section id="profile" class="col-sm-12 col-md-8">
+
+    </section>
+    <div id="friends" class="col-md-4 col-sm-12 ">
+
+    </div>
+</div> <!--/row -->
+
+{% endblock %}
+
+{%block modal_id %}mdcheat{% endblock %}
+{%block modal_title %}Markdown Cheatsheet{% endblock %}
+{%block modal_body %}{% include "md_cheat.html" %}{% endblock %}
