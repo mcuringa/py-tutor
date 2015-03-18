@@ -4,28 +4,50 @@ import json
 from django.db import models
 from django import forms
 from django.forms import ModelForm
-from django.contrib.auth.models import User
 from django.contrib.humanize.templatetags import humanize
+from django.contrib.auth.models import User
+
 
 
 class SocialProfile(models.Model):
     """The user's social profile"""
     # basics
-    first_name = models.CharField(max_length=120, blank=True)
-    last_name = models.CharField(max_length=120, blank=True)
-    bio = models.CharField(max_length=400, blank=True)
-    public = models.BooleanField(default=False)
+    first_name = models.CharField(max_length=120, null=True, blank=True)
+    last_name = models.CharField(max_length=120, null=True, blank=True)
+    bio = models.CharField(max_length=200, null=True, blank=True)
+    public = models.BooleanField(default=False, blank=True)
 
     # location
-    institution = models.CharField(max_length=120, blank=True)
-    city = models.CharField(max_length=120, blank=True)
-    state = models.CharField(max_length=120, blank=True)
-    country = models.CharField(max_length=120, blank=True)
+    institution = models.CharField(max_length=120, null=True, blank=True)
+    city = models.CharField(max_length=120, null=True, blank=True)
+    state = models.CharField(max_length=120, null=True, blank=True)
+    country = models.CharField(max_length=120, null=True, blank=True)
 
     #todo: add the user profile image
 
     user = models.OneToOneField(User, primary_key=True)
 
+class RestProfile(SocialProfile):
+
+    json_fields = ("first_name", "last_name", "bio",
+        "public", "institution", "city", "state", "country")
+    
+    def as_json(self, msg=""):
+
+        data = {k: self.__dict__[k] for k in RestProfile.json_fields}
+        data["username"] = self.user.username
+        data["msg"] = msg
+
+        return json.dumps(data)
+
+    class Meta:
+        proxy = True
+        
+
+class SocialProfileForm(ModelForm):
+    class Meta:
+        model = RestProfile
+        exclude = ["user"]
 
 
 class FriendConnection(models.Model):

@@ -21,20 +21,44 @@ class TestSocialProfile(TestCase):
 
         up = SocialProfile.objects.get(user=t1)
 
-
-
-    def test_create(self):
-        first_name = "Antonio"
-        last_name = "Gramsci"
-        email = "tgramsci@cpi.org.it"
-        bio = "leading the fight against capitalist hegemony"
-        public = True
-
-        institution = "prison"
-        city = "Torino"
-        state = "Piemonte"
-        country = "Italia"
+    def mk_profile(self):
 
         user = User.objects.create_user(username="tester", password="password")
-        # SocialProfile.objects.create(user=user)
-        # SocialProfile.objects.update(user=user, first_name=first_name, city=city)
+        SocialProfile.objects.create(user=user)
+
+        profile = SocialProfile.objects.get(user__username=user.username)
+        
+        profile.first_name = "Antonio"
+        profile.last_name = "Gramsci"
+        profile.email = "tgramsci@cpi.org.it"
+        profile.bio = "leading the fight against capitalist hegemony"
+        profile.public = True
+        profile.institution = "prison"
+        profile.city = "Torino"
+        profile.state = "Piemonte"
+        profile.country = "Italia"
+
+        return profile
+
+
+    def test_save(self):
+
+        profile = self.mk_profile()
+        profile.save()
+        p2 = SocialProfile.objects.get(user__username="tester")
+        self.assertEqual(p2.city, "Torino")
+
+    def test_form(self):
+        data = {"city": "Brooklyn", "first_name": "Toni"}
+        form = SocialProfileForm(data)
+        user = User.objects.create_user(username="tester", password="password")
+        form.instance.user = user
+        self.assertTrue(form.is_valid())
+        form.save()
+        p2 = SocialProfile.objects.get(user__username="tester")
+        self.assertEqual(p2.city, "Brooklyn")
+
+
+        
+
+

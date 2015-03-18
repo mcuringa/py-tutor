@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 
 from django.contrib import messages
-from social import SocialProfile
+from social.models import SocialProfile
 
 
 
@@ -47,13 +47,18 @@ def user_login(request):
 
         username = request.POST['username']
         password = request.POST['password']
+        print(username)
+        print(password)
             
         user = authenticate(username=username, password=password)
+        print("logging user in")
+
         if user is not None:
             login(request, user)
             messages.add_message(request, messages.INFO, 'You are successfully logged in.')
             return HttpResponseRedirect('/')
 
+        
         return HttpResponseRedirect('/login-sorry')
 
     return render(request, 'login.html')

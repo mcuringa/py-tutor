@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, include, url
 
-# from tutor import urls as tutor_urls
+from social.views import SocialView
 
 
 urlpatterns = patterns('',
@@ -48,5 +48,9 @@ urlpatterns = patterns('',
     url(r'^logout$', 'tutor.user_views.user_logout'),
     url(r'^login-sorry$', 'tutor.user_views.login_error'),
     url(r'^register$', 'tutor.user_views.register'),
+
+    # --------------------------------- USER PROFILE
+    url(r'^profile[/]$', 'social.views.profile'),
+    url(r'^api/profile[/]$', SocialView.as_view()),
 
 )
