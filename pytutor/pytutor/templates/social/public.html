@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% load humanize %}
+
+{% block title %}PyTutor &middot; {{username}}{% endblock %}
+
+
+{% block body %}
+<header><h2 class="page-header">@{{username}}</h2></header>
+<section id="pub-profile" class="row">
+    <div class="col-sm-2 col-md-2">
+        <img src="" class="img-rounded img-responsive" alt="profile pic for {{username}}">
+    </div>
+    <div class="col-sm-10 col-md-8 col-lg-6">
+        <p><strong>{{profile.first_name}} {{profile.last_name}}</strong></p>
+        <p>{{profile.institution}}, {{profile.city}}</p>
+        <p>{{profile.bio}}</p>
+
+        <!-- if they are friends -->
+        <dl id="contact-info" class="dl-horizontal">
+            <dt>email:</dt>
+            <dd>{{profile.user.email}}</dd>
+        </dl>
+    </div>
+</section>
+{% endblock %}
