@@ -1,27 +1,34 @@
 {% extends "base.html" %}
 
 {% load humanize %}
-{% load markdown_deux_tags %}
 
 {% block title %}PyTutor &middot; User Profile{% endblock %}
+    
+{% block headerscripts %}
+<script src="/static/js/social.js"></script>
+{% endblock %}
+
+
 
 {% block body %}
+<header><h2 class="page-header">Profile &middot; <a href="/~{{user.username}}/" title="see public profile">@{{user.username}}</a></h2></header>
+
 <div class="row">
     <section id="profile" class="col-sm-12 col-md-8">
         loading...
     </section>
-    <div id="friends" class="col-md-4 col-sm-12 ">
+    <div id="friends" class="col-md-4 col-sm-12">
+        <h3>Friends</h3>
+        <div id="friend-search" class="row"></div>
 
     </div>
 </div> <!--/row -->
 
 
-
+{% verbatim %}
 <script id="profile-form-tmpl" type="text/template">
 <form id="profile-form" class="form-horizontal" method="post" role="form">
-    {% csrf_token %}
 
-{% verbatim %}
     <div class="form-group">
         <label for="username" class="col-sm-2 control-label">username</label>
         <div class="col-sm-10">
@@ -50,129 +57,32 @@
             <p class="help-block"><span id="bio_chars_left">200</span> chars left</p>
         </div>
     </div>
-{% endverbatim %}
 
 </form>
 </script>
 
 
-
-<script>
-var SocialProfile = Backbone.Model.extend({ 
-    url:"/api/profile/", 
-    csrfmiddlewaretoken:"", 
-    // save: function()
-    // {
-    //     console.log("saving");
-    // }
-});
-
-// var Message = Backbone.Model.extend();
-// var Friend = Backbone.Model.extend();
-// var Friends = Backbone.Collection.extend({
-//     model: Friend,
-//     urlRoot : '/api/friends',
-// });
-
-var ProfileFormView = Backbone.View.extend({
-    
-    template: _.template($('#profile-form-tmpl').html()),
-
-    initialize: function() 
-    {
-        this.updateBioChars();
-        this.listenTo(this.model, 'change', this.render);
-    },
-    
-    isDirty: false,
-    lastKey: -1,
-    lastSync: 0,
-    syncDelay: 2000,
-    syncLock: false,
-
-    events: 
-    {
-      "keyup #bio":  "updateBioChars",
-      "keyup #profile-form .form-control":  "dirty"
-    },
-
-    dirty: function(e)
-    {
-        this.lastKey = _.now();
-        this.isDirty = true;
-        if(!this.syncLock)
-            this.syncToServer()
-
-    },
-
-    updateModel: function()
-    {
-        var form = this.$el.children("form")[0];
-        var fields = $(form).find("input, select, textarea");
-        var data = {};
-        _.each(fields, function(f) {
-            data[$(f).attr('name')] = $(f).val(); 
-        });
-        // console.log(data);
-        this.model.set(data);
-    },
-
-    syncToServer: function()
-    {
-        var delta = _.now() - this.lastKey;
-        if(this.isDirty && delta > this.syncDelay)
-        {
-            console.log("synching");
-            this.updateModel();
-            console.log("bio: " + this.model.get("bio") );
-
-            this.model.save({ headers: {'X-CSRFToken': this.csrftoken} });
-            this.isDirty = false;
-            this.syncLock = false;
-
-        }
-        else
-        {
-            var self = this;
-            var syncAfterDelta = function(){ self.syncToServer(); };
-            window.setTimeout(syncAfterDelta, this.syncDelay);            
-        }
-
-    },
-
-    updateBioChars: function()
-    {
-        var bio = $("#bio").val();
-        if(bio)
-            $("#bio_chars_left").html(200 - bio.length );
-        
-        // var code = e.keyCode || e.which;
-
-    },
-
-    render: function() {
-
-        console.log("rendering");
-
-        this.$el.html(this.template(this.model.attributes));
-        this.updateBioChars();
-        return this;
-    }
-});
-
-
-$("body").ready(function() 
-{
-
-    var profile = new SocialProfile();
-    profile.fetch();
-    var csrftoken = $.cookie('csrftoken');
-    var pfv = new ProfileFormView({el: "#profile", model: profile, csrftoken: csrftoken});
-    // pfv.render();
-    
-});
-
-
+<script id="friend-search-tmpl" type="text/template">
+<form  class="form-inline" method="get">
+    <div class="form-group">
+        <input id="search-field" type="text" class="form-control" placeholder="Find friends">
+    </div>
+</form>
+    <div id="search-results" class="btn-group-vertical"></div>
 </script>
 
+<script id="friend-result-tmpl" type="text/template">
+    <a href="/~{{username}}" class="btn btn-default">@{{username}} {{name}}</a>
+</script>
+
+
+
+
+{% endverbatim %}
+
+
+
+
+
+{% csrf_token %}
 {% endblock %}

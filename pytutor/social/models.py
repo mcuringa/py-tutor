@@ -25,6 +25,9 @@ class SocialProfile(models.Model):
 
     #todo: add the user profile image
 
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
+
     user = models.OneToOneField(User, primary_key=True)
 
 class RestProfile(SocialProfile):
@@ -37,6 +40,7 @@ class RestProfile(SocialProfile):
         data = {k: self.__dict__[k] for k in RestProfile.json_fields}
         data["username"] = self.user.username
         data["msg"] = msg
+        data["name"] = "{} {}".format(self.first_name, self.last_name).strip()
 
         return json.dumps(data)
 
@@ -47,7 +51,7 @@ class RestProfile(SocialProfile):
 class SocialProfileForm(ModelForm):
     class Meta:
         model = RestProfile
-        exclude = ["user"]
+        exclude = ["user", "created", "modified"]
 
 
 class FriendConnection(models.Model):
@@ -59,7 +63,10 @@ class FriendConnection(models.Model):
     friend_a = models.ForeignKey(User, related_name="frienda")
     friend_b = models.ForeignKey(User, related_name="friendb")
     sent = models.DateTimeField(auto_now=True)
-    accepted = models.DateTimeField(auto_now=True)
+    muted = models.BooleanField(default=False)
+
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
 
 
 

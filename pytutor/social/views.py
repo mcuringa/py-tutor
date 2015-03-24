@@ -15,6 +15,42 @@ def profile(request):
 
     return render(request, 'social/profile.html')
 
+def public(request, username):
+    profile = SocialProfile.objects.get(user__username=username)
+    cx = {"username":username, "profile":profile}
+
+    return render(request, 'social/public.html', cx)
+
+def find_friends(request):
+    q = request.GET["q"]
+    results = RestProfile.objects.filter(user__username__startswith=q)
+
+    if len(results) == 0:
+        return HttpResponse("[]", content_type="application/json")
+
+    j_results = [r.as_json() for r in results]
+
+    data = ",".join(j_results)
+    data = "[" + data + "]"
+    print(data)
+
+    return HttpResponse(data, content_type="application/json")
+
+
+
+class ConnectionView(View):
+
+    def get(self, request):
+        
+        user = request.user
+        friends = FriendConnection.objects.all(friend_a=user.username)
+
+        return HttpResponse(profile.as_json(), content_type="application/json")
+
+
+
+
+
 
 class SocialView(View):
 
@@ -31,6 +67,7 @@ class SocialView(View):
 
         form = SocialProfileForm(json.loads(request.body.decode("utf-8")))
         form.instance = profile
+
         try:
 
             form.user = request.user

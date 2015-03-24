@@ -27,6 +27,7 @@
 
     <script src="/static/js/tablesorter.js"></script>
     <script src="/static/js/tutor.js"></script>
+    {% block headerscripts %}{% endblock %}
 </head>
 
 <body class="{% block body_class %}{% endblock %}">
@@ -127,7 +128,7 @@
     <footer id="bottom-footer" class="footer text-muted clearfix bg-default">
         <div class="pull-left pad-right">
             <img src="/static/img/agplv3.png" alt="gnu agpl licence logo"><br>
-            <img src="https://i.creativecommons.org/l/by-sa/4.0/80x15.png" alt="Creative Commons cc-by-sa logo">
+            <img src="/static/img/cc-sa-by.png" alt="Creative Commons cc-by-sa logo">
         </div>
         <strong>PyTutor is Free Software</strong> released under the
         <a href="http://www.gnu.org/licenses/agpl.html" title="see the license online">GNU AGPL v3</a>.

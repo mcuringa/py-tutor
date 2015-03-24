@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, include, url
 
-from social.views import SocialView
+from social.views import SocialView, ConnectionView
 
 
 urlpatterns = patterns('',
@@ -50,7 +50,9 @@ urlpatterns = patterns('',
     url(r'^register$', 'tutor.user_views.register'),
 
     # --------------------------------- USER PROFILE
+    url(r'^~(.*)[/]$', 'social.views.public'),
     url(r'^profile[/]$', 'social.views.profile'),
     url(r'^api/profile[/]$', SocialView.as_view()),
+    url(r'^api/friend/find[/]$', 'social.views.find_friends'),
 
 )
