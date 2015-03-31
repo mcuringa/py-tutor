@@ -9,6 +9,7 @@ _.templateSettings = {
 };
 
 var editors = {};
+var attempted = false;
 
 function configureEditor(id) 
 {
@@ -153,7 +154,7 @@ function submitStudyCode(action)
     //e.preventDefault();
 
 
-
+    attempted = true;
     copyEditorCode("response-editor");
 
     var $form = $("#response-form");

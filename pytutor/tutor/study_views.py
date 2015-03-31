@@ -18,9 +18,11 @@ import tutor.study as sm
 
 
 def get_attempts(user, question):
-    attempts = Response.objects.filter(user=user).order_by("-submitted")[:Response.MAX_ATTEMPTS]
+    attempts = Response.objects.filter(user=user).order_by("-submitted") # sorry Matt -- Hannah :)
     attempts = [r for r in attempts if r.question == question]
-    attempts_left = Response.MAX_ATTEMPTS - len(attempts)
+
+    attempts_left = Response.MAX_ATTEMPTS - (len(attempts) % Response.MAX_ATTEMPTS)
+
     return attempts, attempts_left
 
 @login_required
