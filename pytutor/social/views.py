@@ -7,7 +7,7 @@ from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
-
+from django.contrib.auth.forms import UserChangeForm
 
 from social.models import *
 
@@ -65,13 +65,19 @@ class SocialView(View):
         profile = RestProfile.objects.get(user__username=request.user.username)
         # print(request.body.decode("utf-8"))
 
-        form = SocialProfileForm(json.loads(request.body.decode("utf-8")))
-        form.instance = profile
+        form = SocialProfileForm(json.loads(request.body.decode("utf-8")), instance=profile)
+        user_form = CustomUserChangeForm(json.loads(request.body.decode("utf-8")))
 
         try:
+            user = request.user
+            form.user = user
 
-            form.user = request.user
-            if form.is_valid():
+            if form.is_valid() and user_form.is_valid():
+                user.first_name = user_form.cleaned_data["first_name"]
+                user.last_name = user_form.cleaned_data["last_name"]
+                user.email = user_form.cleaned_data["email"]
+
+                user.save()
                 form.save()
             else:
                 print("form was not valid")
@@ -80,7 +86,9 @@ class SocialView(View):
                 print(form.user)
                 print(form.errors.as_data())
         except Exception as ex:
+            print("exception while saving...")
             print(ex)
+            print(user_form.errors)
             print(form.errors)
 
         return HttpResponse(profile.as_json(), content_type="application/json")

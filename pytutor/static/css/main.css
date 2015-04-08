@@ -83,6 +83,8 @@ body, .fixed-left
 
 .inline { display: inline;}
 
+.input-group-addon img { height: 20px; max-height: 20px; }
+
 div.label
 {
     display: block;

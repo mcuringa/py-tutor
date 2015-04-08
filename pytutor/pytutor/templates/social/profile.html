@@ -29,34 +29,120 @@
 <script id="profile-form-tmpl" type="text/template">
 <form id="profile-form" class="form-horizontal" method="post" role="form">
 
-    <div class="form-group">
-        <label for="username" class="col-sm-2 control-label">username</label>
-        <div class="col-sm-10">
-            <p class="form-control-static">{{username}}</p>
+    <fieldset>
+        <legend>basics</legend>
+        <div class="form-group">
+            <label for="username" class="col-sm-2 control-label">username</label>
+            <div class="col-sm-10">
+                <p class="form-control-static">{{username}}</p>
+            </div>
         </div>
-    </div>
 
-    <div class="form-group">
-        <label for="first_name" class="col-sm-2 control-label">first name</label>
-        <div class="col-sm-10">
-            <input name="first_name" type="text" class="form-control" value="{{first_name}}" placeholder="your first name">
+        <div class="form-group">
+            <label for="first_name" class="col-sm-2 control-label">first name</label>
+            <div class="col-sm-10">
+                <input name="first_name" type="text" class="form-control" value="{{first_name}}" placeholder="your first name">
+            </div>
         </div>
-    </div>
 
-    <div class="form-group">
-        <label for="last_name" class="col-sm-2 control-label">last name</label>
-        <div class="col-sm-10">
-            <input name="last_name" type="text" class="form-control" value="{{last_name}}" placeholder="your last name">
+        <div class="form-group">
+            <label for="last_name" class="col-sm-2 control-label">last name</label>
+            <div class="col-sm-10">
+                <input name="last_name" type="text" class="form-control" value="{{last_name}}" placeholder="your last name">
+            </div>
         </div>
-    </div>
 
-    <div class="form-group">
-        <label for="bio" class="col-sm-2 control-label">bio</label>
-        <div class="col-sm-10">
-            <textarea id="bio" name="bio" class="form-control" rows="3"maxlength="200">{{bio}}</textarea>
-            <p class="help-block"><span id="bio_chars_left">200</span> chars left</p>
+        <div class="form-group">
+            <label for="email" class="col-sm-2 control-label">email</label>
+            <div class="col-sm-10">
+                <input name="email" type="email" class="form-control" value="{{email}}" placeholder="email">
+            </div>
         </div>
-    </div>
+
+
+        <div class="form-group">
+            <label for="bio" class="col-sm-2 control-label">bio</label>
+            <div class="col-sm-10">
+                <textarea id="bio" name="bio" class="form-control" rows="3" maxlength="200">{{bio}}</textarea>
+                <p class="help-block"><span id="bio_chars_left">200</span> chars left</p>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>where are you (usually)</legend>
+        <p class="help-block">These fields are optional, but they are used to let others find you, and show up in search results and on your public profile.</p>
+        <div class="form-group">
+            <label for="city" class="col-sm-2 control-label">home</label>
+            <div class="col-sm-7">
+                <input name="city" type="text" class="form-control" value="{{city}}" placeholder="city">
+            </div>
+            <div class="col-sm-3">
+                <input name="state" type="text" class="form-control" value="{{state}}" placeholder="state">
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="institution" class="col-sm-2 control-label">institution</label>
+            <div class="col-sm-10">
+                <input name="institution" type="text" class="form-control" value="{{institution}}" placeholder="college, employer, etc.">
+            </div>
+        </div>
+
+    </fieldset>
+
+
+    <fieldset>
+        <legend>how to contact you</legend>
+        <p class="help-block">This info is only shown to your friends</p>
+        <div class="form-group">
+            <label for="mobile" class="col-sm-2 control-label">mobile</label>
+            <div class="col-sm-5 input-group">
+                <div class="input-group-addon"><img src="/static/img/social/mobile.png"></div>
+                <input name="mobile" type="tel" class="form-control" value="{{mobile}}" placeholder="your cell number for calls or texts">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="twitter" class="col-sm-2 control-label">twitter</label>
+            <div class="col-sm-5 input-group">
+                <div class="input-group-addon"><img src="/static/img/social/twitter.png"></div>
+                <input name="twitter" type="text" class="form-control" value="{{twitter}}">
+            </div>
+        </div>        
+
+        <div class="form-group">
+            <label for="skype" class="col-sm-2 control-label">skype</label>
+            <div class="col-sm-5 input-group">
+                <div class="input-group-addon"><img src="/static/img/social/skype.png"></div>
+                <input name="skype" type="text" class="form-control" value="{{skype}}">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="google" class="col-sm-2 control-label">google</label>
+            <div class="col-sm-5 input-group">
+                <div class="input-group-addon"><img src="/static/img/social/google.png"></div>
+                <input name="google" placeholder="your google id for gtalk and hangouts" type="text" class="form-control" value="{{google}}">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="whatsapp" class="col-sm-2 control-label">whatsapp</label>
+            <div class="col-sm-5 input-group">
+                <div class="input-group-addon"><img src="/static/img/social/whatsapp.png"></div>
+                <input name="whatsapp" type="text" class="form-control" value="{{whatsapp}}">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="facebook" class="col-sm-2 control-label">facebook</label>
+            <div class="col-sm-5 input-group">
+                <div class="input-group-addon"><img src="/static/img/social/facebook.png"></div>
+                <input name="facebook" type="text" class="form-control" value="{{facebook}}">
+            </div>
+        </div>
+
+
+    </fieldset>
 
 </form>
 </script>

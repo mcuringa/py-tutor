@@ -98,7 +98,8 @@ var ProfileFormView = Backbone.View.extend({
     events: 
     {
       "keyup #bio":  "updateBioChars",
-      "keyup #profile-form .form-control":  "dirty"
+      "keyup #profile-form .form-control":  "dirty",
+
     },
 
     dirty: function(e)

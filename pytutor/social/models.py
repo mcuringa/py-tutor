@@ -1,6 +1,7 @@
 
 import json
 
+from django import forms
 from django.db import models
 from django import forms
 from django.forms import ModelForm
@@ -12,8 +13,6 @@ from django.contrib.auth.models import User
 class SocialProfile(models.Model):
     """The user's social profile"""
     # basics
-    first_name = models.CharField(max_length=120, null=True, blank=True)
-    last_name = models.CharField(max_length=120, null=True, blank=True)
     bio = models.CharField(max_length=200, null=True, blank=True)
     public = models.BooleanField(default=False, blank=True)
 
@@ -22,6 +21,15 @@ class SocialProfile(models.Model):
     city = models.CharField(max_length=120, null=True, blank=True)
     state = models.CharField(max_length=120, null=True, blank=True)
     country = models.CharField(max_length=120, null=True, blank=True)
+
+    # contact
+    mobile = models.CharField(max_length=120, null=True, blank=True)
+    facebook = models.CharField(max_length=120, null=True, blank=True)
+    twitter = models.CharField(max_length=120, null=True, blank=True)
+    whatsapp = models.CharField(max_length=120, null=True, blank=True)
+    skype = models.CharField(max_length=120, null=True, blank=True)
+    google = models.CharField(max_length=120, null=True, blank=True)
+    pyanywhere = models.CharField(max_length=120, null=True, blank=True)
 
     #todo: add the user profile image
 
@@ -32,15 +40,24 @@ class SocialProfile(models.Model):
 
 class RestProfile(SocialProfile):
 
-    json_fields = ("first_name", "last_name", "bio",
-        "public", "institution", "city", "state", "country")
-    
     def as_json(self, msg=""):
 
-        data = {k: self.__dict__[k] for k in RestProfile.json_fields}
+        json_fields = ("bio", "public", "institution", "city", "state", "country", "mobile", "facebook", "twitter", "whatsapp", "skype", "google", "pyanywhere", "created", "modified")
+        data = {}
+
+        for field in json_fields:
+            val = self.__dict__[field]
+            if val is None:
+                data[field] = ""
+            else:
+                data[field] = str(val)
+
         data["username"] = self.user.username
+        data["first_name"] = self.user.first_name
+        data["last_name"] = self.user.last_name
+        data["email"] = self.user.email
         data["msg"] = msg
-        data["name"] = "{} {}".format(self.first_name, self.last_name).strip()
+        data["name"] = "{} {}".format(self.user.first_name, self.user.last_name).strip()
 
         return json.dumps(data)
 
@@ -50,9 +67,14 @@ class RestProfile(SocialProfile):
 
 class SocialProfileForm(ModelForm):
     class Meta:
-        model = RestProfile
+        model = SocialProfile
         exclude = ["user", "created", "modified"]
 
+
+class CustomUserChangeForm(forms.Form):
+    first_name = forms.CharField(max_length=100, required=False)
+    last_name = forms.CharField(max_length=100, required=False)
+    email = forms.EmailField(required=False)
 
 class FriendConnection(models.Model):
     """Messages are sent between users"""
