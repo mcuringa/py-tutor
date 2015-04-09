@@ -19,30 +19,33 @@
 
         {% if is_friend or True %}<!-- if they are friends -->
         
-        {% if profile.user.email|length > 0 %}        
-            <p><a href="mailto://{{profile.user.email}}">{{profile.user.email}}</a></p>
-        {% endif %}
+            {% if profile.user.email|length > 0 %}        
+                <p><a href="mailto://{{profile.user.email}}">{{profile.user.email}}</a></p>
+            {% endif %}
 
-        {% if profile.mobile|length > 0 %}        
-            <p>{{profile.mobile}}</p>
-        {% endif %}
+            {% if profile.mobile|length > 0 %}        
+                <p>{{profile.mobile}}</p>
+            {% endif %}
 
-        {% if profile.twitter|length > 0 %}        
-            <p><a href="https://twitter.com/@{{profile.twitter}}">{{profile.twitter}}</a></p>
-        {% endif %}
-        {% if profile.facebook|length > 0 %}        
-            <p><a href="https://www.facebook.com/{{profile.facebook}}">{{profile.facebook}}</a></p>
-        {% endif %}
+            {% if profile.twitter|length > 0 %}        
+                <a href="https://twitter.com/@{{profile.twitter}}"><img src="/static/img/social/twitter.png"></a>
+            {% endif %}
 
-        {% if profile.email|length > 0 %}        
-            <p><a href="http://{{profile.email}}">{{profile.email}}</a></p>
-        {% endif %}
+            {% if profile.facebook|length > 0 %}        
+                <a href="https://www.facebook.com/{{profile.facebook}}"><img src="/static/img/social/facebook.png"></a>
+            {% endif %}
 
-        {% if profile.email|length > 0 %}        
-            <p><a href="http://{{profile.email}}">{{profile.email}}</a></p>
-        {% endif %}
+            {% if profile.google|length > 0 %}        
+                <a href="http://plus.google.com/{{profile.google}}"><img src="/static/img/social/google.png"></a>
+            {% endif %}
 
+            {% if profile.skype|length > 0 %}        
+                <a href="http://skype.com/{{profile.skype}}"><img src="/static/img/social/skype.png"></a>
+            {% endif %}
 
+            {% if profile.whatsapp|length > 0 %}        
+                <a href="http://whatsapp.com/{{profile.skype}}"><img src="/static/img/social/whatsapp.png"></a>
+            {% endif %}
 
         {% endif %}
     </div>

@@ -14,10 +14,10 @@
 <header><h2 class="page-header">Profile &middot; <a href="/~{{user.username}}/" title="see public profile">@{{user.username}}</a></h2></header>
 
 <div class="row">
-    <section id="profile" class="col-sm-12 col-md-8">
+    <section id="profile" class="col-sm-12 col-md-7">
         loading...
     </section>
-    <div id="friends" class="col-md-4 col-sm-12">
+    <div id="friends" class="col-md-5 col-sm-12">
         <h3>Friends</h3>
         <div id="friend-search" class="row"></div>
 
@@ -25,51 +25,78 @@
 </div> <!--/row -->
 
 
+
+
 {% verbatim %}
+<script id="input-group-tmpl" type="text/template">
+    <div class="form-group">
+        <label for="{{field}}" class="col-sm-3 control-label">{{field}}</label>
+        <div class="col-sm-9">
+            <p class="form-control-static">{{data}}</p>
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label for="{{field}}" class="col-sm-3 control-label">{{label}}</label>
+        <div class="col-sm-10">
+            <input name="{{field}}" type="{{type}}" class="form-control" value="{{data}}" placeholder="{{placeholder}}">
+        </div>
+    </div>
+
+</script>
+
 <script id="profile-form-tmpl" type="text/template">
+{% var inputTmpl = _.template($("#input-group-tmpl").html()); %}
+{% var foo = 'bar'; %}
+        
 <form id="profile-form" class="form-horizontal" method="post" role="form">
+
+
+{% print(inputTmpl({field: 'email', type: 'text', label:'email', data: email, placeholder: ''})); %}    
+
 
     <fieldset>
         <legend>basics</legend>
-        <div class="form-group">
-            <label for="username" class="col-sm-2 control-label">username</label>
-            <div class="col-sm-10">
-                <p class="form-control-static">{{username}}</p>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label for="first_name" class="col-sm-2 control-label">first name</label>
-            <div class="col-sm-10">
-                <input name="first_name" type="text" class="form-control" value="{{first_name}}" placeholder="your first name">
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label for="last_name" class="col-sm-2 control-label">last name</label>
-            <div class="col-sm-10">
-                <input name="last_name" type="text" class="form-control" value="{{last_name}}" placeholder="your last name">
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label for="email" class="col-sm-2 control-label">email</label>
-            <div class="col-sm-10">
-                <input name="email" type="email" class="form-control" value="{{email}}" placeholder="email">
-            </div>
-        </div>
 
 
-        <div class="form-group">
-            <label for="bio" class="col-sm-2 control-label">bio</label>
-            <div class="col-sm-10">
-                <textarea id="bio" name="bio" class="form-control" rows="3" maxlength="200">{{bio}}</textarea>
-                <p class="help-block"><span id="bio_chars_left">200</span> chars left</p>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label for="username" class="col-sm-3 control-label">username</label>
+                    <div class="col-sm-9">
+                        <p class="form-control-static">{{username}}</p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="first_name" class="col-sm-3 control-label">first name</label>
+                    <div class="col-sm-10">
+                        <input name="first_name" type="text" class="form-control" value="{{first_name}}" placeholder="your first name">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="last_name" class="col-sm-2 control-label">last name</label>
+                    <div class="col-sm-10">
+                        <input name="last_name" type="text" class="form-control" value="{{last_name}}" placeholder="your last name">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="col-sm-2 control-label">email</label>
+                    <div class="col-sm-10">
+                        <input name="email" type="email" class="form-control" value="{{email}}" placeholder="email">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <img src="/media/users/{{username}}.jpg" class="image-responsive">
+                </div>
             </div>
         </div>
     </fieldset>
+
     <fieldset>
-        <legend>where are you (usually)</legend>
+        <legend>where are you?</legend>
         <p class="help-block">These fields are optional, but they are used to let others find you, and show up in search results and on your public profile.</p>
         <div class="form-group">
             <label for="city" class="col-sm-2 control-label">home</label>
