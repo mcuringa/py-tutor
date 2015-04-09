@@ -15,6 +15,7 @@ class SocialProfile(models.Model):
     # basics
     bio = models.CharField(max_length=200, null=True, blank=True)
     public = models.BooleanField(default=False, blank=True)
+    profile_pic = models.ImageField([upload_to="profile_pics", height_field=None, width_field=None, max_length=100, **options])
 
     # location
     institution = models.CharField(max_length=120, null=True, blank=True)
@@ -37,6 +38,12 @@ class SocialProfile(models.Model):
     modified = models.DateTimeField(auto_now=True)
 
     user = models.OneToOneField(User, primary_key=True)
+    
+    def _get_full_name(self):
+        return "{} {}".format(self.user.first_name, self.user.last_name).strip()
+    full_name = property(_get_full_name)
+
+
 
 class RestProfile(SocialProfile):
 
@@ -57,7 +64,7 @@ class RestProfile(SocialProfile):
         data["last_name"] = self.user.last_name
         data["email"] = self.user.email
         data["msg"] = msg
-        data["name"] = "{} {}".format(self.user.first_name, self.user.last_name).strip()
+        data["name"] = self.full_name
 
         return json.dumps(data)
 
