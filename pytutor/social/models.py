@@ -15,7 +15,7 @@ class SocialProfile(models.Model):
     # basics
     bio = models.CharField(max_length=200, null=True, blank=True)
     public = models.BooleanField(default=False, blank=True)
-    profile_pic = models.ImageField([upload_to="profile_pics", height_field=None, width_field=None, max_length=100, **options])
+    profile_pic = models.ImageField(upload_to="profile_pics", null=True, blank=True)
 
     # location
     institution = models.CharField(max_length=120, null=True, blank=True)

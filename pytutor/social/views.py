@@ -37,6 +37,18 @@ def find_friends(request):
     return HttpResponse(data, content_type="application/json")
 
 
+def post_profile_pic(request):
+    if request.method == 'POST':
+        profile = RestProfile.objects.get(user__username=request.user.username)
+        form = SocialProfileForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            instance = ModelWithFileField(file_field=request.FILES['file'])
+            instance.save()
+            return HttpResponseRedirect('/success/url/')
+    else:
+        form = UploadFileForm()
+    return render(request, 'upload.html', {'form': form})
+
 
 class ConnectionView(View):
 

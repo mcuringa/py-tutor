@@ -154,6 +154,27 @@ var ProfileFormView = Backbone.View.extend({
         
     },
 
+    saveProfilePic: function() 
+    {
+        var picture = $('input[name="fileInput"]')[0].files[0]; 
+        var data = new FormData();
+        data.append('file', picture);
+        $.ajax( {
+            url: '/api/profile/pic/',
+            data: data,
+            cache: false,
+            contentType: false,
+            processData: false,
+            type: 'POST',
+            success: function(data) {
+                $('#loadingModal').modal('hide');
+            },
+            error: function(data) {
+                alert('no upload');
+            }
+        });
+    },
+
     render: function() {
         this.$el.html(this.template(this.model.attributes));
         this.updateBioChars();

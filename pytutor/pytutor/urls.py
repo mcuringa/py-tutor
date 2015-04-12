@@ -1,4 +1,8 @@
 from django.conf.urls import patterns, include, url
+from django.conf.urls.static import static
+from django.conf import settings
+from django.contrib.staticfiles import views
+
 
 from social.views import SocialView, ConnectionView
 
@@ -13,7 +17,6 @@ urlpatterns = patterns('',
     url(r'^study/question_detail/([0-9]+?)[/]$', 'tutor.student_views.question_detail'),
     #no idea ^
 
-
     # TUTOR URL MAPPINGS
     # --------------------------------- STUDYING
     url(r'^tutor$', 'tutor.study_views.study'),
@@ -25,8 +28,6 @@ urlpatterns = patterns('',
     url(r'^tutor/tags', 'tutor.study_views.tags'),
     # url(r'^tutor/no_questions$', 'tutor.study_views.no_questions'),
     url(r'^tutor/response/submit', 'tutor.study_views.respond'),
-
-
 
     # --------------------------------- EDITING
     url(r'^question/list/(?P<editor_name>.*)[/]$', 'tutor.editor_views.list'),
@@ -54,5 +55,6 @@ urlpatterns = patterns('',
     url(r'^profile[/]$', 'social.views.profile'),
     url(r'^api/profile[/]$', SocialView.as_view()),
     url(r'^api/friend/find[/]$', 'social.views.find_friends'),
-
 )
+
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
