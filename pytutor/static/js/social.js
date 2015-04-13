@@ -3,6 +3,8 @@ $("body").ready(function()
 
 
 
+
+
 var SocialProfile = Backbone.Model.extend({ 
     url:"/api/profile/", 
 });
@@ -27,6 +29,8 @@ var SearchResultView = Backbone.View.extend({
     },
 });
 
+
+
 var FriendSearchView = Backbone.View.extend({
     
     template: _.template($('#friend-search-tmpl').html()),
@@ -44,7 +48,7 @@ var FriendSearchView = Backbone.View.extend({
     search: function()
     {
         var q = $("#search-field").val();
-        if(q && q.length > 2)
+        if(q)
         {
             this.collection.fetch({ 
                 reset: true, 
@@ -55,8 +59,8 @@ var FriendSearchView = Backbone.View.extend({
 
     renderResult: function(friend) 
     {
-      var view = new SearchResultView({model: friend});
-      this.$("#search-results").append(view.render().el);
+        var view = new SearchResultView({model: friend});
+        this.$("#search-results").append(view.render().el);
     },
 
     renderResults: function() 
@@ -99,6 +103,7 @@ var ProfileFormView = Backbone.View.extend({
     {
       "keyup #bio":  "updateBioChars",
       "keyup #profile-form .form-control":  "dirty",
+      "change #profilePic":  "saveProfilePic",
 
     },
 
@@ -113,13 +118,12 @@ var ProfileFormView = Backbone.View.extend({
 
     updateModel: function()
     {
-        var form = this.$el.children("form")[0];
+        var form = this.$el.find("form")[0];
         var fields = $(form).find("input, select, textarea");
         var data = {};
         _.each(fields, function(f) {
             data[$(f).attr('name')] = $(f).val(); 
         });
-        // console.log(data);
         this.model.set(data);
     },
 
@@ -156,9 +160,16 @@ var ProfileFormView = Backbone.View.extend({
 
     saveProfilePic: function() 
     {
-        var picture = $('input[name="fileInput"]')[0].files[0]; 
+        console.log("saving profile...");
+
+        var picture = $('input[name="profile_pic"]')[0].files[0];
         var data = new FormData();
         data.append('file', picture);
+        var self = this;
+        var updateProfile = function(data) {
+            console.log("profile pic uploaded");
+            self.model.set("profile_pic_url", data["profile_pic_url"])
+        };
         $.ajax( {
             url: '/api/profile/pic/',
             data: data,
@@ -166,11 +177,9 @@ var ProfileFormView = Backbone.View.extend({
             contentType: false,
             processData: false,
             type: 'POST',
-            success: function(data) {
-                $('#loadingModal').modal('hide');
-            },
+            success: updateProfile,
             error: function(data) {
-                alert('no upload');
+                console.log(data);
             }
         });
     },

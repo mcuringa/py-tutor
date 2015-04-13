@@ -44,112 +44,105 @@
 <script id="profile-form-tmpl" type="text/template">
 {% var inputTmpl = _.template($("#input-group-tmpl").html()); %}
         
-<form id="profile-form" class="form-horizontal" method="post" role="form">
 
 <div class="row">
     <div class="col-md-4">
-        <img src="/media/profile_pics/{{username}}.jpg" class="img-responsive">
+        <img src="{{profile_pic_url}}" class="img-responsive">
         <div class="file-input btn btn-block btn-default btn-file">
-            <input id="fileInput" type="file" name="fileInput">
+            <input id="profilePic" type="file" name="profile_pic">
         </div>
     </div>
     <div class="col-md-8">
-        <fieldset>
-            <div class="form-group">
-                <label for="username" class="col-sm-3 control-label">username</label>
-                <div class="col-sm-9">
-                    <p class="form-control-static">{{username}}</p>
-                </div>
+        <form id="profile-form" class="form-horizontal" method="post" role="form">
+        <div class="form-group">
+            <label for="username" class="col-sm-3 control-label">username</label>
+            <div class="col-sm-9">
+                <p class="form-control-static">{{username}}</p>
             </div>
+        </div>
 
-            {% print(inputTmpl({field: 'first_name', type: 'text', label:'first name', data: first_name, hint: ''})); %}
-            {% print(inputTmpl({field: 'last_name', type: 'text', label:'last name', data: last_name, hint: ''})); %}
-            {% print(inputTmpl({field: 'email', type: 'text', label:'email', data: email, hint: ''})); %}
+        {% print(inputTmpl({field: 'first_name', type: 'text', label:'first name', data: first_name, hint: ''})); %}
+        {% print(inputTmpl({field: 'last_name', type: 'text', label:'last name', data: last_name, hint: ''})); %}
+        {% print(inputTmpl({field: 'email', type: 'text', label:'email', data: email, hint: ''})); %}
 
-            <div class="form-group">
-                <label for="bio" class="col-sm-3 control-label">bio</label>
-                <div class="col-sm-9">
-                    <textarea id="bio" name="bio" class="form-control" rows="3" maxlength="200">{{bio}}</textarea>
-                    <p class="help-block"><span id="bio_chars_left">200</span> chars left</p>
-                </div>
+        <div class="form-group">
+            <label for="bio" class="col-sm-3 control-label">bio</label>
+            <div class="col-sm-9">
+                <textarea id="bio" name="bio" class="form-control" rows="3" maxlength="200">{{bio}}</textarea>
+                <p class="help-block"><span id="bio_chars_left">200</span> chars left</p>
             </div>
+        </div>
 
-            <div class="form-group">
-                <label for="city" class="col-sm-3 control-label">home</label>
-                <div class="col-sm-6">
-                    <input name="city" type="text" class="form-control" value="{{city}}" placeholder="city">
-                </div>
-                <div class="col-sm-3">
-                    <input name="state" type="text" class="form-control" value="{{state}}" placeholder="state">
-                </div>
+        <div class="form-group">
+            <label for="city" class="col-sm-3 control-label">home</label>
+            <div class="col-sm-6">
+                <input name="city" type="text" class="form-control" value="{{city}}" placeholder="city">
             </div>
-            <div class="form-group">
-                <label for="institution" class="col-sm-3 control-label">institution</label>
-                <div class="col-sm-9">
-                    <input name="institution" type="text" class="form-control" value="{{institution}}" placeholder="college, employer, etc.">
-                </div>
+            <div class="col-sm-3">
+                <input name="state" type="text" class="form-control" value="{{state}}" placeholder="state">
             </div>
-            <p class="help-block">These fields are optional, but they are used to let others find you, and show up on your public profile. (Except for <em>email</em>, which is searchable, but only displayed to friends.)</p>
-
-
-        </fieldset>
-
-        <fieldset>
-            <legend>how to contact you</legend>
-            <p class="help-block">This info is only shown to your friends.</p>
-
-            <div class="form-group">
-                <label for="mobile" class="col-sm-3 control-label">mobile</label>
-                <div class="col-sm-9 input-group">
-                    <div class="input-group-addon"><img src="/static/img/social/mobile.png"></div>
-                    <input name="mobile" type="tel" class="form-control" value="{{mobile}}" placeholder="your cell number for calls or texts">
-                </div>
+        </div>
+        <div class="form-group">
+            <label for="institution" class="col-sm-3 control-label">institution</label>
+            <div class="col-sm-9">
+                <input name="institution" type="text" class="form-control" value="{{institution}}" placeholder="college, employer, etc.">
             </div>
+        </div>
+        <p class="help-block">These fields are optional, but they are used to let others find you, and show up on your public profile. (Except for <em>email</em>, which is searchable, but only displayed to friends.)</p>
 
-            <div class="form-group">
-                <label for="twitter" class="col-sm-3 control-label">twitter</label>
-                <div class="col-sm-9 input-group">
-                    <div class="input-group-addon"><img src="/static/img/social/twitter.png"></div>
-                    <input name="twitter" type="text" class="form-control" value="{{twitter}}">
-                </div>
-            </div>        
+        <h3>contact info</h3>
+        <p class="help-block">This info is only shown to your friends.</p>
 
-            <div class="form-group">
-                <label for="skype" class="col-sm-3 control-label">skype</label>
-                <div class="col-sm-9 input-group">
-                    <div class="input-group-addon"><img src="/static/img/social/skype.png"></div>
-                    <input name="skype" type="text" class="form-control" value="{{skype}}">
-                </div>
+        <div class="form-group">
+            <label for="mobile" class="col-sm-3 control-label">mobile</label>
+            <div class="col-sm-9 input-group">
+                <div class="input-group-addon"><img src="/static/img/social/mobile.png"></div>
+                <input name="mobile" type="tel" class="form-control" value="{{mobile}}" placeholder="your cell number for calls or texts">
             </div>
+        </div>
 
-            <div class="form-group">
-                <label for="google" class="col-sm-3 control-label">google</label>
-                <div class="col-sm-9 input-group">
-                    <div class="input-group-addon"><img src="/static/img/social/google.png"></div>
-                    <input name="google" placeholder="your google id for gtalk and hangouts" type="text" class="form-control" value="{{google}}">
-                </div>
+        <div class="form-group">
+            <label for="twitter" class="col-sm-3 control-label">twitter</label>
+            <div class="col-sm-9 input-group">
+                <div class="input-group-addon"><img src="/static/img/social/twitter.png"></div>
+                <input name="twitter" type="text" class="form-control" value="{{twitter}}">
             </div>
+        </div>        
 
-            <div class="form-group">
-                <label for="whatsapp" class="col-sm-3 control-label">whatsapp</label>
-                <div class="col-sm-9 input-group">
-                    <div class="input-group-addon"><img src="/static/img/social/whatsapp.png"></div>
-                    <input name="whatsapp" type="text" class="form-control" value="{{whatsapp}}">
-                </div>
+        <div class="form-group">
+            <label for="skype" class="col-sm-3 control-label">skype</label>
+            <div class="col-sm-9 input-group">
+                <div class="input-group-addon"><img src="/static/img/social/skype.png"></div>
+                <input name="skype" type="text" class="form-control" value="{{skype}}">
             </div>
+        </div>
 
-            <div class="form-group">
-                <label for="facebook" class="col-sm-3 control-label">facebook</label>
-                <div class="col-sm-9 input-group">
-                    <div class="input-group-addon"><img src="/static/img/social/facebook.png"></div>
-                    <input name="facebook" type="text" class="form-control" value="{{facebook}}" placeholder="facebook/fb messenger">
-                </div>
+        <div class="form-group">
+            <label for="google" class="col-sm-3 control-label">google</label>
+            <div class="col-sm-9 input-group">
+                <div class="input-group-addon"><img src="/static/img/social/google.png"></div>
+                <input name="google" placeholder="your google id for gtalk and hangouts" type="text" class="form-control" value="{{google}}">
             </div>
+        </div>
 
+        <div class="form-group">
+            <label for="whatsapp" class="col-sm-3 control-label">whatsapp</label>
+            <div class="col-sm-9 input-group">
+                <div class="input-group-addon"><img src="/static/img/social/whatsapp.png"></div>
+                <input name="whatsapp" type="text" class="form-control" value="{{whatsapp}}">
+            </div>
+        </div>
 
-        </fieldset>
+        <div class="form-group">
+            <label for="facebook" class="col-sm-3 control-label">facebook</label>
+            <div class="col-sm-9 input-group">
+                <div class="input-group-addon"><img src="/static/img/social/facebook.png"></div>
+                <input name="facebook" type="text" class="form-control" value="{{facebook}}" placeholder="facebook/fb messenger">
+            </div>
+        </div>
+        </form>
+    </div>
 
-</form>
 </script>
 
 

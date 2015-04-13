@@ -55,6 +55,7 @@ urlpatterns = patterns('',
     url(r'^profile[/]$', 'social.views.profile'),
     url(r'^api/profile[/]$', SocialView.as_view()),
     url(r'^api/friend/find[/]$', 'social.views.find_friends'),
+    url(r'^api/profile/pic[/]$', 'social.views.post_profile_pic'),
 )
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

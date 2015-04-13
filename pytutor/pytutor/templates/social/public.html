@@ -6,48 +6,85 @@
 
 
 {% block body %}
-<header><h2 class="page-header">@{{username}}</h2></header>
 <section id="pub-profile" class="row">
+</section>
+
+{% verbatim %}
+
+<script id="public-profile-template" type="text/template">
+<header><h2 class="page-header">@{{username}}</h2></header>
+
     <div class="col-sm-2 col-md-2">
-        <img src="" class="img-rounded img-responsive" alt="profile pic for {{username}}">
+        <img src="{{profile_pic_url}}" class="img-rounded img-responsive" alt="profile pic for {{username}}">
     </div>
     <div class="col-sm-10 col-md-8 col-lg-6">
-        <p><strong>{{profile.full_name}}</strong></p>
-        <p>{{profile.institution}}</p>
-        <p>{{profile.city}}</p>
-        <p>{{profile.bio}}</p>
+        <p><strong>{{name}}</strong></p>
+        <p>{{institution}}</p>
+        <p>{{city}}</p>
+        <p>{{bio}}</p>
 
-        {% if is_friend or True %}<!-- if they are friends -->
+        {% if(friend_status == "friend") { %}
         
-            {% if profile.user.email|length > 0 %}        
-                <p><a href="mailto://{{profile.user.email}}">{{profile.user.email}}</a></p>
-            {% endif %}
+            {% if(email.length > 0) { %}        
+                <p><a href="mailto://{{email}}">{{email}}</a></p>
+            {% } %}
 
-            {% if profile.mobile|length > 0 %}        
-                <p>{{profile.mobile}}</p>
-            {% endif %}
+            {% if(mobile.length > 0) { %}        
+                <p>{{mobile}}</p>
+            {% } %}
 
-            {% if profile.twitter|length > 0 %}        
-                <a href="https://twitter.com/@{{profile.twitter}}"><img src="/static/img/social/twitter.png"></a>
-            {% endif %}
+            {% if(twitter.length > 0) { %}        
+                <a href="https://twitter.com/@{{twitter}}"><img src="/static/img/social/twitter.png"></a>
+            {% } %}
 
-            {% if profile.facebook|length > 0 %}        
-                <a href="https://www.facebook.com/{{profile.facebook}}"><img src="/static/img/social/facebook.png"></a>
-            {% endif %}
+            {% if(facebook.length > 0) { %}        
+                <a href="https://www.facebook.com/{{facebook}}"><img src="/static/img/social/facebook.png"></a>
+            {% } %}
 
-            {% if profile.google|length > 0 %}        
-                <a href="http://plus.google.com/{{profile.google}}"><img src="/static/img/social/google.png"></a>
-            {% endif %}
+            {% if(google.length > 0) { %}        
+                <a href="http://plus.google.com/{{google}}"><img src="/static/img/social/google.png"></a>
+            {% } %}
 
-            {% if profile.skype|length > 0 %}        
-                <a href="http://skype.com/{{profile.skype}}"><img src="/static/img/social/skype.png"></a>
-            {% endif %}
+            {% if(skype.length > 0) { %}        
+                <a href="http://skype.com/{{skype}}"><img src="/static/img/social/skype.png"></a>
+            {% } %}
 
-            {% if profile.whatsapp|length > 0 %}        
-                <a href="http://whatsapp.com/{{profile.skype}}"><img src="/static/img/social/whatsapp.png"></a>
-            {% endif %}
+            {% if(whatsapp.length > 0) { %}
+                <a href="http://whatsapp.com/{{whatsapp}}"><img src="/static/img/social/whatsapp.png"></a>
+            {% } %}
 
-        {% endif %}
+        {% } else if(friend_status == "pending")  { %}
+            <button class="btn btn-info disabled">pending response</button>
+        {% } else if(friend_status == "invited")  { %}
+            <button id="accept" class="btn btn-primary">accept friend request</button>
+        {% } else if(friend_status == "join")  { %}
+            <a href="/register" class="btn btn-primary">join PyTutor to get started</button>
+        {% }else { %}
+            <button id="send" class="btn btn-success">add friend</button>
+        {% } %}
+
     </div>
-</section>
+
+</script>
+{% endverbatim %}
+
+<script>
+
+var PublicProfileView = Backbone.View.extend({
+    template: _.template($('#public-profile-template').html()),
+    
+    render: function() 
+    {
+        this.$el.html(this.template(this.model));
+        return this;
+    },
+});
+
+var profile = {{profile|safe}};
+
+var ppv = new PublicProfileView({el: "#pub-profile", model: profile });
+ppv.render();
+
+</script>
+
 {% endblock %}

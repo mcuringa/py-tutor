@@ -47,10 +47,13 @@ class SocialProfile(models.Model):
 
 class RestProfile(SocialProfile):
 
-    def as_json(self, msg=""):
+    def as_json(self, extra={}, msg=""):
 
         json_fields = ("bio", "public", "institution", "city", "state", "country", "mobile", "facebook", "twitter", "whatsapp", "skype", "google", "pyanywhere", "created", "modified")
         data = {}
+
+        for k,v in extra.items():
+            data[str(k)] = str(v)
 
         for field in json_fields:
             val = self.__dict__[field]
@@ -58,6 +61,11 @@ class RestProfile(SocialProfile):
                 data[field] = ""
             else:
                 data[field] = str(val)
+        
+        try:
+            data["profile_pic_url"] = self.profile_pic.url
+        except ValueError:
+            data["profile_pic_url"] = "/static/img/social/mystery.png"
 
         data["username"] = self.user.username
         data["first_name"] = self.user.first_name
@@ -70,7 +78,43 @@ class RestProfile(SocialProfile):
 
     class Meta:
         proxy = True
+     
+
+class PublicRestProfile(RestProfile):
+
+
+    def as_json(self, extra={}, msg=""):
+
+        json_fields = ("bio", "public", "institution", "city", "state", "country")
+        data = {}
+
+        for k,v in extra.items():
+            data[str(k)] = str(v)
+
+        for field in json_fields:
+            val = self.__dict__[field]
+            if val is None:
+                data[field] = ""
+            else:
+                data[field] = str(val)
         
+        try:
+            data["profile_pic_url"] = self.profile_pic.url
+        except ValueError:
+            data["profile_pic_url"] = "/static/img/social/mystery.png"
+
+        data["username"] = self.user.username
+        data["first_name"] = self.user.first_name
+        data["last_name"] = self.user.last_name
+        data["email"] = self.user.email
+        data["name"] = self.full_name
+
+        return json.dumps(data)
+
+
+
+    class Meta:
+        proxy = True
 
 class SocialProfileForm(ModelForm):
     class Meta:
@@ -83,19 +127,22 @@ class CustomUserChangeForm(forms.Form):
     last_name = forms.CharField(max_length=100, required=False)
     email = forms.EmailField(required=False)
 
-class FriendConnection(models.Model):
-    """Messages are sent between users"""
+class FriendRequest(models.Model):
 
-    status_choices = ["pending", "accepted" "ignored"]
+    status_choices = ["pending", "accepted", "ignored"]
 
     status = models.CharField(max_length=20, blank=True)
-    friend_a = models.ForeignKey(User, related_name="frienda")
-    friend_b = models.ForeignKey(User, related_name="friendb")
+    friend_a = models.ForeignKey(User, related_name="sender")
+    friend_b = models.ForeignKey(User, related_name="invited")
     sent = models.DateTimeField(auto_now=True)
-    muted = models.BooleanField(default=False)
 
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
+
+class FriendConnection(models.Model):
+
+    friend_a = models.ForeignKey(User, related_name="frienda")
+    friend_b = models.ForeignKey(User, related_name="friendb")
 
 
 
