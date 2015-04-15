@@ -64,14 +64,6 @@
             <li><a href="/question/list/{{user.username}}">list questions</a></li>
             <li><a href="/tutor/tags">study tags</a></li>
           </ul>
-        {% else %}
-          <ul class="nav navbar-nav nav-pills"
-          data-toggle="tooltip" data-placement="bottom" data-content="Please register with a username and password to continue."title="Regiser or Log In">
-            <li><a class="btn btn-default disabled" href="/tutor">study</a></li>
-            <li><a class="btn btn-default disabled" href="/question/new">new question</a></li>
-            <li><a class="btn btn-default disabled" href="/question/list/{{user.username}}">list questions</a></li>
-            <li><a class="btn btn-default disabled" href="/tutor/tags">study tags</a></li>
-          </ul>
 
        {% endif %}
 
@@ -79,11 +71,7 @@
        {% if user.is_authenticated %}
             <!--We'll want this to link to the user's profile, when it exists -->
             <li><a class="btn" href="/profile" title="see my profile">{{ user.username }}</a></li>
-            <li>
-              <button id="friends" class="btn navbar-btn btn-default btn-xs">
-                <span class="glyphicon glyphicon-user"></span>
-                <span id="pending-friends" class="badge">3</span>
-              </button>
+            <li id="socialStatus">
             </li>
             <li><a class="btn" href="/logout" title="click to logout">logout</a></li>
         {% else %}
@@ -94,12 +82,6 @@
                   <input type="password" placeholder="Password" class="form-control" name="password">
 
                   <button title="log in with your username and password" type="submit" class="btn btn-info">Log in</button>
-                  <button type="submit" name="register" value="True"
-                          data-toggle="tooltip" data-placement="bottom"
-                          data-viewport="body"
-                          data-delay="0"
-                          data-content="Enter a new username and password word above and click 'signup'!"
-                          title="Sign-Up" class="btn btn-warning">Sign up</button>
               </form>
             </li>
           {% endif %}
@@ -132,7 +114,7 @@
         </div>
         <strong>PyTutor is Free Software</strong> released under the
         <a href="http://www.gnu.org/licenses/agpl.html" title="see the license online">GNU AGPL v3</a>.
-        <a href="https://github.com/mcuringa/py-tutor" title="get the source">Source code is available on github</a>.<br>
+        <a href="https://github.com/mcuringa/py-tutor" title="get the source"><img src="/static/img/github.png"> Source code is available on github</a>.<br>
 
         <strong>User contributions to PyTutor</strong>, (question prompts, solution/test code, etc) are licensed under the
         <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/" title="read the license">Creative Commons BY-SA License</a>.<br>
@@ -141,6 +123,47 @@
     </footer>
 
     {% include "js_templates.html" %}
+
+{% verbatim %}
+
+<script id="social-status-template" type="text/template">
+    <button id="friends" class="btn navbar-btn btn-default btn-xs btn-primary">
+      <span class="glyphicon glyphicon-user"></span>
+      <span id="pending-friends" class="badge">{{num_pending_friends}}</span>
+    </button>
+    <button id="helpRequests" class="btn navbar-btn btn-default btn-xs">
+        <span class="glyphicon glyphicon-bell"></span>
+        <span id="pending-friends" class="badge">{{num_help_requests}}</span>
+    </button>
+</script>
+{% endverbatim %}
+
+<script>
+
+var FriendRequest = Backbone.Model.extend();
+var FriendRequests = Backbone.Collection.extend({
+    model: FriendRequest,
+});
+
+
+var HelpRequest = Backbone.Model.extend();
+var HelpRequests = Backbone.Collection.extend({
+    model: HelpRequest,
+});
+
+
+var SocialStatus = Backbone.Model.extend({ 
+  url: '/api/social/status',
+  parse: function(response) {
+      response.summaryList = new JobSummaryList(response.summaryList);
+      return response;
+  }
+
+});
+
+
+
+</script>
 
 </body>
 

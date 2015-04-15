@@ -23,7 +23,7 @@
         <p>{{city}}</p>
         <p>{{bio}}</p>
 
-        {% if(friend_status == "friend") { %}
+        {% if(friend_status == "friend" || friend_status == "you") { %}
         
             {% if(email.length > 0) { %}        
                 <p><a href="mailto://{{email}}">{{email}}</a></p>
@@ -58,11 +58,12 @@
         {% } else if(friend_status == "invited")  { %}
             <button id="accept" class="btn btn-primary">accept friend request</button>
         {% } else if(friend_status == "join")  { %}
-            <a href="/register" class="btn btn-primary">join PyTutor to get started</button>
+            <a href="/register" class="btn btn-primary">join PyTutor to get started</button>        
+        {% } else if(friend_status == "friend")  { %}
+            <button class="btn btn-info disabled">You are friends</button>
         {% }else { %}
-            <button id="send" class="btn btn-success">add friend</button>
+            <button id="addFriend" class="btn btn-success">add friend</button>
         {% } %}
-
     </div>
 
 </script>
@@ -71,16 +72,73 @@
 <script>
 
 var PublicProfileView = Backbone.View.extend({
+
     template: _.template($('#public-profile-template').html()),
-    
+
     render: function() 
     {
-        this.$el.html(this.template(this.model));
+        this.$el.html(this.template(this.model.attributes));
         return this;
     },
-});
 
-var profile = {{profile|safe}};
+    events: 
+    {
+        "click #addFriend":  "addFriend",
+        "click #accept":  "accept",
+
+    },
+    accept: function() 
+    {
+        var data = { "username": this.model.get("username") };
+        var self = this;
+        var prof = this.model;
+        var updateFriend = function(data) 
+        {
+
+            // console.log(self.model);
+            // console.log(self.model.set);
+            console.log(data);
+            prof.set(data);
+            self.render();
+        };
+
+        $.ajax( {
+            url: '/api/friendship/accept/',
+            data: data,
+            type: 'POST',
+            success: updateFriend,
+            error: function(data) {
+                console.log('friendship acceptance failed');
+                console.log(data);
+            }
+        });
+    },
+    addFriend: function() 
+    {
+        var data = { "username": this.model.get("username") };
+        var self = this;
+        var updateFriendStatus = function(data) {
+            self.model.set("friend_status", "pending");
+            self.render();
+        };
+        console.log(data);
+        $.ajax( {
+            url: '/api/friendship/add/',
+            data: data,
+            type: 'POST',
+            success: updateFriendStatus,
+            error: function(data) {
+                console.log('friendship status update failed');
+                console.log(data);
+            }
+        });
+    },
+
+
+});
+var SocialProfile = Backbone.Model.extend();
+var profile = new SocialProfile();
+profile.set({{profile|safe}});
 
 var ppv = new PublicProfileView({el: "#pub-profile", model: profile });
 ppv.render();

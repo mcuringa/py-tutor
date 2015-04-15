@@ -42,8 +42,6 @@ urlpatterns = patterns('',
     url(r'^question/test/save', 'tutor.editor_views.add_test'),
     url(r'^question/test/(?P<pk>[0-9]+?)/del', 'tutor.editor_views.del_test'),
 
-
-
     # --------------------------------- USERS
     url(r'^login$', 'tutor.user_views.user_login'),
     url(r'^logout$', 'tutor.user_views.user_logout'),
@@ -56,6 +54,10 @@ urlpatterns = patterns('',
     url(r'^api/profile[/]$', SocialView.as_view()),
     url(r'^api/friend/find[/]$', 'social.views.find_friends'),
     url(r'^api/profile/pic[/]$', 'social.views.post_profile_pic'),
+    url(r'^api/friendship/add[/]$', 'social.views.add_friend_request'),
+    url(r'^api/friendship/accept[/]$', 'social.views.accept_friendship'),
 )
 
+# serve the user uploaded content as static media
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+

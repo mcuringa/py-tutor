@@ -5,9 +5,16 @@ from django import forms
 from django.db import models
 from django import forms
 from django.forms import ModelForm
-from django.contrib.humanize.templatetags import humanize
 from django.contrib.auth.models import User
+from tutor.models import *
 
+
+
+class HelpRequest(models.Model):
+
+    created = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User)
+    question = models.ForeignKey(Question)
 
 
 class SocialProfile(models.Model):
@@ -132,8 +139,8 @@ class FriendRequest(models.Model):
     status_choices = ["pending", "accepted", "ignored"]
 
     status = models.CharField(max_length=20, blank=True)
-    friend_a = models.ForeignKey(User, related_name="sender")
-    friend_b = models.ForeignKey(User, related_name="invited")
+    sender = models.ForeignKey(User, related_name="sender")
+    invited = models.ForeignKey(User, related_name="invited")
     sent = models.DateTimeField(auto_now=True)
 
     created = models.DateTimeField(auto_now_add=True)

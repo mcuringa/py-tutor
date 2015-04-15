@@ -268,3 +268,17 @@ td.diff_header
   height: 150px;
   overflow-y: scroll;
 }
+
+
+/************* home page carousel */
+
+
+.carousel-caption 
+{
+  position: static;
+  background-color: darkgray;
+  text-align: justify;
+  font-size: 130%;
+  padding: 2em;
+}
+

@@ -55,7 +55,7 @@ def find_friends(request):
 def post_profile_pic(request):
     
     if request.method != 'POST':
-        return "This method only supports POST requests."
+        raise Exception("This method only supports POST requests.")
 
     profile = RestProfile.objects.get(user__username=request.user.username)
     form = SocialProfileForm(request.POST, request.FILES, instance=profile)
@@ -67,28 +67,60 @@ def post_profile_pic(request):
     return HttpResponse(profile.as_json(), content_type="application/json")
 
 
+def add_friend_request(request):
+    if request.method != 'POST':
+        raise Exception("This method only supports POST requests.")
+
+    sender = request.user
+
+    friend = request.POST["username"]
+    invited = User.objects.get(username=friend)
+    
+    if FriendRequest.objects.filter(sender=sender, invited=invited).count() > 0:
+        return HttpResponse(json.dumps({"msg":"friend relationship already exists."}), content_type="application/json")
+
+    FriendRequest.objects.create(status="pending", sender=request.user, invited=invited)
+    return HttpResponse(json.dumps({"msg":"friend request sent."}), content_type="application/json")
+
+
+def accept_friendship(request):
+    if request.method != 'POST':
+        raise Exception("This method only supports POST requests.")
+
+    sender = User.objects.get(username=request.POST["username"])
+    invited = request.user
+
+    try:
+        fr = FriendRequest.objects.get(sender=sender, invited=invited, status="pending")
+    except Exception as ex:
+        print(ex)
+        return HttpResponse(json.dumps({"msg":"friend request could not be accepted."}), content_type="application/json")    
+
+    fr.status = "accepted"
+    fr.save()
+    FriendConnection.objects.create(friend_a=sender, friend_b=invited)
+    FriendConnection.objects.create(friend_a=invited, friend_b=sender)
+    profile = RestProfile.objects.get(user__username=sender.username)
+
+    return HttpResponse(profile.as_json(extra={"friend_status":"friend"}), content_type="application/json")
+
 
 def get_friend_status(user, friend):
     if not user.is_authenticated():
         return "join"
     
-    try:
-        friend = FriendConnection.objects.get(friend_a=user, friend_b=friend)
+    if FriendConnection.objects.filter(friend_a=user, friend_b=friend).count() > 0:
         return "friend"
-    except:
-        pass
 
-    try:
-        friend = FriendRequest.objects.get(sender=user, invited=friend)
+    if FriendRequest.objects.filter(sender=user, invited=friend).count() > 0:
         return "pending"
-    except:
-        pass
 
-    try:
-        friend = FriendRequest.objects.get(sender=friend, invited=user)
+    if FriendRequest.objects.filter(sender=friend, invited=user).count() > 0:
         return "invited"
-    except:
-        pass
+
+    if user.username == friend.username:
+        return "friend"
+
 
     return ""
 
@@ -121,8 +153,9 @@ class SocialView(View):
     def get(self, request):
         user = request.user
         profile = RestProfile.objects.get(user__username=user.username)
+        status = get_friend_status(user, profile.user)
 
-        return HttpResponse(profile.as_json(), content_type="application/json")
+        return HttpResponse(profile.as_json(extra={"friend_satus": status}), content_type="application/json")
     
     @method_decorator(csrf_exempt)
     def put(self, request):
