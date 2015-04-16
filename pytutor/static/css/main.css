@@ -272,13 +272,23 @@ td.diff_header
 
 /************* home page carousel */
 
-
+.carousel
+{
+  /*background-color: white;*/
+}
 .carousel-caption 
 {
   position: static;
-  background-color: darkgray;
+  /*background-color: darkgray;*/
   text-align: justify;
   font-size: 130%;
   padding: 2em;
+  color: black;
 }
+
+/*.carousel-inner img
+{
+    max-width: 50%;
+    float: left;
+}*/
 
