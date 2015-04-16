@@ -285,7 +285,12 @@ td.diff_header
   padding: 2em;
   color: black;
 }
-
+.carousel-indicators .active {
+    background-color: #428bca;
+}
+.carousel-indicators li {
+    background-color: #e1e1e8;
+}
 /*.carousel-inner img
 {
     max-width: 50%;
