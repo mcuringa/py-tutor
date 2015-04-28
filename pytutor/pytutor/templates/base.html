@@ -27,6 +27,7 @@
 
     <script src="/static/js/tablesorter.js"></script>
     <script src="/static/js/tutor.js"></script>
+    <script src="/static/js/status.js"></script>
     {% block headerscripts %}{% endblock %}
 </head>
 
@@ -129,37 +130,18 @@
 <script id="social-status-template" type="text/template">
     <button id="friends" class="btn navbar-btn btn-default btn-xs btn-primary">
       <span class="glyphicon glyphicon-user"></span>
-      <span id="pending-friends" class="badge">{{num_pending_friends}}</span>
-    </button>
-    <button id="helpRequests" class="btn navbar-btn btn-default btn-xs">
-        <span class="glyphicon glyphicon-bell"></span>
-        <span id="pending-friends" class="badge">{{num_help_requests}}</span>
+      <span id="pending-friends" class="badge">{{}}</span>
     </button>
 </script>
 {% endverbatim %}
 
 <script>
-
-var FriendRequest = Backbone.Model.extend();
-var FriendRequests = Backbone.Collection.extend({
-    model: FriendRequest,
-});
-
-
-var HelpRequest = Backbone.Model.extend();
-var HelpRequests = Backbone.Collection.extend({
-    model: HelpRequest,
-});
-
-
-var SocialStatus = Backbone.Model.extend({ 
-  url: '/api/social/status',
-  parse: function(response) {
-      response.summaryList = new JobSummaryList(response.summaryList);
-      return response;
-  }
-
-});
+// some thoughts
+// - don't make "requests" modeles/collections, just plain JS arrays of objects
+// - poll/fetch the SocialStatus URL every 30s or so
+// - both link to user profile ("accept friend" will be there) 
+// - add a column "open requests" to the public profile page
+// - add a list of friends to the user page
 
 
 

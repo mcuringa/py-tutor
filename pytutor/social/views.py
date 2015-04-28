@@ -35,7 +35,6 @@ def public(request, username):
     return render(request, 'social/public.html', cx)
 
 
-
 def find_friends(request):
     q = request.GET["q"]
     results = RestProfile.objects.filter(user__username__startswith=q).exclude(user=request.user)
@@ -124,28 +123,27 @@ def get_friend_status(user, friend):
 
     return ""
 
-class ConnectionView(View):
+def social_status(request):
+    
+    user = request.user
+    if not user.is_authenticated():
+        return HttpResponse({}, content_type="application/json")
 
-    def get(self, request):
-        
-        user = request.user
-        try:
-            friends = FriendConnection.objects.get(Q(friend_a=user) | Q(friend_b=user), status="accepted")
-        except:
-            friends = []
+    try:
+        pending = FriendRequest.objects.filter(invited=user, status="pending")
+    except:
+        pending = []
 
-        try:
-            sent = FriendConnection.objects.get(Q(friend_a=user), status="pending")
-        except:
-            sent = []
+    data = {}
+    pending = [f.as_json() for f in pending]
+    pending = ",".join(pending)
+    pending = "[" + pending + "]"
+    data["friend_requests"] = pending
 
-        try:
-            pending = FriendConnection.objects.get(Q(friend_b=user), status="pending")
-        except:
-            pending = []
+    return HttpResponse(json.dumps(data), content_type="application/json")
 
 
-        return HttpResponse(profile.as_json(), content_type="application/json")
+
 
 
 class SocialView(View):

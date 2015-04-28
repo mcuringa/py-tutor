@@ -4,7 +4,7 @@ from django.conf import settings
 from django.contrib.staticfiles import views
 
 
-from social.views import SocialView, ConnectionView
+from social.views import SocialView
 
 
 urlpatterns = patterns('',
@@ -56,6 +56,7 @@ urlpatterns = patterns('',
     url(r'^api/profile/pic[/]$', 'social.views.post_profile_pic'),
     url(r'^api/friendship/add[/]$', 'social.views.add_friend_request'),
     url(r'^api/friendship/accept[/]$', 'social.views.accept_friendship'),
+    url(r'^api/social/status[/]$', 'social.views.social_status'),
 )
 
 # serve the user uploaded content as static media

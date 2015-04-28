@@ -39,8 +39,6 @@ class SocialProfile(models.Model):
     google = models.CharField(max_length=120, null=True, blank=True)
     pyanywhere = models.CharField(max_length=120, null=True, blank=True)
 
-    #todo: add the user profile image
-
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 
@@ -145,6 +143,9 @@ class FriendRequest(models.Model):
 
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
+
+    def as_json(self):
+        pass
 
 class FriendConnection(models.Model):
 
