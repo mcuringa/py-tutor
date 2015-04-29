@@ -47,4 +47,8 @@ Thumbs.db
 ################
 _archive*
 
+# User Uploaded Media #
+#######################
 
+
+pytutor/media/*
