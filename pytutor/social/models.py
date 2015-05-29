@@ -144,8 +144,18 @@ class FriendRequest(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 
-    def as_json(self):
-        pass
+    def as_json(self, extra={}):
+
+        data = {}
+
+        for k,v in extra.items():
+            data[str(k)] = str(v)
+
+        data["status"] = self.status
+        data["sender"] = self.sender.username
+        data["invited"] = self.invited.username
+
+
 
 class FriendConnection(models.Model):
 
