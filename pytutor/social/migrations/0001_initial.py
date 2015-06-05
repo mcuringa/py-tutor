@@ -8,74 +8,118 @@ from django.conf import settings
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('auth', '0001_initial'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
+        ('tutor', '0004_auto_20150314_0420'),
+        ('auth', '0006_require_contenttypes_0002'),
     ]
 
     operations = [
         migrations.CreateModel(
             name='FriendConnection',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True, serialize=False)),
-                ('status', models.CharField(blank=True, max_length=20)),
-                ('sent', models.DateTimeField(auto_now=True)),
-                ('accepted', models.DateTimeField(auto_now=True)),
+                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
             ],
-            options={
-            },
-            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='FriendRequest',
+            fields=[
+                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
+                ('status', models.CharField(max_length=20, blank=True)),
+                ('sent', models.DateTimeField(auto_now=True)),
+                ('created', models.DateTimeField(auto_now_add=True)),
+                ('modified', models.DateTimeField(auto_now=True)),
+            ],
+        ),
+        migrations.CreateModel(
+            name='HelpRequest',
+            fields=[
+                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
+                ('created', models.DateTimeField(auto_now_add=True)),
+                ('question', models.ForeignKey(to='tutor.Question')),
+            ],
         ),
         migrations.CreateModel(
             name='Message',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True, serialize=False)),
+                ('id', models.AutoField(auto_created=True, verbose_name='ID', primary_key=True, serialize=False)),
                 ('msg', models.TextField()),
                 ('sent', models.DateTimeField(auto_now=True)),
                 ('unread', models.BooleanField(default=True)),
             ],
-            options={
-            },
-            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='SocialProfile',
             fields=[
-                ('first_name', models.CharField(blank=True, max_length=120)),
-                ('last_name', models.CharField(blank=True, max_length=120)),
-                ('bio', models.CharField(blank=True, max_length=400)),
+                ('bio', models.CharField(null=True, max_length=200, blank=True)),
                 ('public', models.BooleanField(default=False)),
-                ('institution', models.CharField(blank=True, max_length=120)),
-                ('city', models.CharField(blank=True, max_length=120)),
-                ('state', models.CharField(blank=True, max_length=120)),
-                ('country', models.CharField(blank=True, max_length=120)),
-                ('user', models.OneToOneField(serialize=False, to=settings.AUTH_USER_MODEL, primary_key=True)),
+                ('profile_pic', models.ImageField(null=True, upload_to='profile_pics', blank=True)),
+                ('institution', models.CharField(null=True, max_length=120, blank=True)),
+                ('city', models.CharField(null=True, max_length=120, blank=True)),
+                ('state', models.CharField(null=True, max_length=120, blank=True)),
+                ('country', models.CharField(null=True, max_length=120, blank=True)),
+                ('mobile', models.CharField(null=True, max_length=120, blank=True)),
+                ('facebook', models.CharField(null=True, max_length=120, blank=True)),
+                ('twitter', models.CharField(null=True, max_length=120, blank=True)),
+                ('whatsapp', models.CharField(null=True, max_length=120, blank=True)),
+                ('skype', models.CharField(null=True, max_length=120, blank=True)),
+                ('google', models.CharField(null=True, max_length=120, blank=True)),
+                ('pyanywhere', models.CharField(null=True, max_length=120, blank=True)),
+                ('created', models.DateTimeField(auto_now_add=True)),
+                ('modified', models.DateTimeField(auto_now=True)),
+                ('user', models.OneToOneField(primary_key=True, to=settings.AUTH_USER_MODEL, serialize=False)),
             ],
-            options={
-            },
-            bases=(models.Model,),
         ),
         migrations.AddField(
             model_name='message',
             name='msg_from',
-            field=models.ForeignKey(to=settings.AUTH_USER_MODEL, related_name='from_user'),
-            preserve_default=True,
+            field=models.ForeignKey(related_name='from_user', to=settings.AUTH_USER_MODEL),
         ),
         migrations.AddField(
             model_name='message',
             name='msg_to',
-            field=models.ForeignKey(to=settings.AUTH_USER_MODEL, related_name='to_user'),
-            preserve_default=True,
+            field=models.ForeignKey(related_name='to_user', to=settings.AUTH_USER_MODEL),
+        ),
+        migrations.AddField(
+            model_name='helprequest',
+            name='user',
+            field=models.ForeignKey(to=settings.AUTH_USER_MODEL),
+        ),
+        migrations.AddField(
+            model_name='friendrequest',
+            name='invited',
+            field=models.ForeignKey(related_name='invited', to=settings.AUTH_USER_MODEL),
+        ),
+        migrations.AddField(
+            model_name='friendrequest',
+            name='sender',
+            field=models.ForeignKey(related_name='sender', to=settings.AUTH_USER_MODEL),
         ),
         migrations.AddField(
             model_name='friendconnection',
             name='friend_a',
-            field=models.ForeignKey(to=settings.AUTH_USER_MODEL, related_name='frienda'),
-            preserve_default=True,
+            field=models.ForeignKey(related_name='frienda', to=settings.AUTH_USER_MODEL),
         ),
         migrations.AddField(
             model_name='friendconnection',
             name='friend_b',
-            field=models.ForeignKey(to=settings.AUTH_USER_MODEL, related_name='friendb'),
-            preserve_default=True,
+            field=models.ForeignKey(related_name='friendb', to=settings.AUTH_USER_MODEL),
+        ),
+        migrations.CreateModel(
+            name='RestProfile',
+            fields=[
+            ],
+            options={
+                'proxy': True,
+            },
+            bases=('social.socialprofile',),
+        ),
+        migrations.CreateModel(
+            name='PublicRestProfile',
+            fields=[
+            ],
+            options={
+                'proxy': True,
+            },
+            bases=('social.restprofile',),
         ),
     ]

@@ -16,7 +16,6 @@ class Migration(migrations.Migration):
         for user in users: 
             SocialProfile.objects.create(user=user)
 
-
     operations = [
         migrations.RunPython(create_profiles)
     ]
