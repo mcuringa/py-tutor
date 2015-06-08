@@ -17,10 +17,12 @@
     <div class="col-sm-2 col-md-2">
         <img src="{{profile_pic_url}}" class="img-rounded img-responsive" alt="profile pic for {{username}}">
     </div>
-    <div class="col-sm-10 col-md-8 col-lg-6">
-        <p><strong>{{name}}</strong></p>
-        <p>{{institution}}</p>
-        <p>{{city}}</p>
+    <div class="col-sm-10 col-md-8 col-lg-3">
+        <p>
+            <strong>{{name}}</strong><br>
+            <em>{{institution}}</em><br>
+            <em>{{city}}</em>
+        </p>
         <p>{{bio}}</p>
 
         {% if(friend_status == "friend" || friend_status == "you") { %}
