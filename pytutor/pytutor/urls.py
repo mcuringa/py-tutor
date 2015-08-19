@@ -4,12 +4,19 @@ from django.conf import settings
 from django.contrib.staticfiles import views
 
 
+from django.contrib import admin
+admin.autodiscover()
+
+from django.contrib.auth import views as auth_views
+
 from social.views import SocialView
 
 
 urlpatterns = patterns('',
+
     #BASE URL MAPPINGS
     url(r'^$', 'pytutor.views.home'),
+    url(r'^admin/', include(admin.site.urls)),
 
     # User URL MAPPINGS
     url(r'^study/report$', 'tutor.student_views.report'),
@@ -43,10 +50,21 @@ urlpatterns = patterns('',
     url(r'^question/test/(?P<pk>[0-9]+?)/del', 'tutor.editor_views.del_test'),
 
     # --------------------------------- USERS
+    url('^', include('django.contrib.auth.urls')),
+
+    # url('^password_change/done/$', auth_views.password_change_done),
+    url(
+        r'^change_pass[/]',
+        auth_views.password_change,
+        {'template_name': 'chng_pass.html'}
+    ),
+
+
     url(r'^login$', 'tutor.user_views.user_login'),
     url(r'^logout$', 'tutor.user_views.user_logout'),
     url(r'^login-sorry$', 'tutor.user_views.login_error'),
     url(r'^register$', 'tutor.user_views.register'),
+
 
     # --------------------------------- USER PROFILE
     url(r'^~(.*)[/]$', 'social.views.public'),
