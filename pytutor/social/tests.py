@@ -3,7 +3,7 @@ from django.test import TestCase
 from social.models import *
 
 
-
+# just a comment, for social branch
 class TestSocialProfile(TestCase):
 
 
