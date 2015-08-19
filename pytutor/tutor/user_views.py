@@ -2,13 +2,13 @@ from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
 
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 
 from django.contrib import messages
 from social.models import SocialProfile
-
-
 
 def register(request):
     
@@ -58,6 +58,12 @@ def user_login(request):
         return HttpResponseRedirect('/login-sorry')
 
     return render(request, 'login.html')
+
+
+@login_required
+def change_pass(request):
+    pass
+    
 
 def user_logout(request):
     logout(request)
