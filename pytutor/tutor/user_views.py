@@ -62,8 +62,18 @@ def user_login(request):
 
 @login_required
 def change_pass(request):
-    pass
-    
+    if(request.method=="GET"):
+            return render(request, 'chng_pass.html')
+
+
+    user = request.user
+    password = request.POST['password']
+    if not user.check_password(password):
+        messages.add_message(request, messages.ERROR, 'Incorrect password.')
+        return HttpResponseRedirect('/change_pass')
+
+
+
 
 def user_logout(request):
     logout(request)

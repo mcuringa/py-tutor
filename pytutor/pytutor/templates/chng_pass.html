@@ -3,22 +3,21 @@
 {% block body %}
 <section id="change-pass-form">
 
-<form action="" method="post">
+<form action="" class="form-horizontal" method="post">
 {% csrf_token %}
-<p>
-    <label>old password</label>
-    <input type="text" name="old_password">
-</p>
-<p>
-    <label>new passowrd</label>
-    <input id="id_new_password1" name="new_password1" type="password">
-</p>
-<p>
-    <label>confirm new passowrd</label>
-    <input id="id_new_password2" name="new_password2" type="password">
-</p>
 
-<input type="submit" name="change_pass" value="change my password">
+<header><h2 class="page-header">Change password for {{user.username}}</h2></header>
+<div class="row">
+    <label class="col-sm-3 control-label">old password</label>
+    <div class="col-sm-4"><input id="old_pass" class="form-control" type="password" name="old_password"></div>
+</div>
+<div class="row">
+    <label class="col-sm-3 control-label">new password</label>
+    <div class="col-sm-4"><input  class="form-control" id="new_pass" name="new_password" type="password"></div>
+</div>
+<div class="row">
+    <div class="col-sm-4 col-sm-offset-3 margin-top"><input type="submit" name="change_pass" value="change my password"></div>
+</div>
 
 </form>
 
