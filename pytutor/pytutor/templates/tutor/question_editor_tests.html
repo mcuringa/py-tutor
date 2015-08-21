@@ -15,7 +15,7 @@
         <div class="panel-body">
             <form id="test-form" class="" action="/question/test/save" method="post">
                 {% csrf_token %}
-                <input type="hidden" name="question_id" value="{{pk}}">
+                <input id="test_question_id" type="hidden" name="question_id" value="{{pk}}">
                 <div class="form-group">
                     {{ test_form.args.label_tag }} 
                     {{ test_form.args }}

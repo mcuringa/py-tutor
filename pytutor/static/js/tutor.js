@@ -92,9 +92,15 @@ function submitQuestion(e)
 
     $.post( url, data ).success(function( response ) 
     {
-        console.log("posting question");
+        var oldId = question.id;
         question.set(JSON.parse(response.question));
-        $("#question-form #question_id").val(question.id);
+        if(!oldId)
+        {
+            $("#question_id").val(question.id);
+            $("#test_question_id").val(question.id);
+            history.pushState("edit","","/question/" + question.id + "/edit");
+        }
+        
         message.set(response.msg);
         editors["solution-editor"].focus();
         TestResults.set(JSON.parse(response.tests_json));
@@ -117,7 +123,7 @@ msg = function(msg, level)
 function submitTestForm(e)
 {
     
-
+    console.log('submitting test');
     e.preventDefault();
     if (question.id == 0)
     {
@@ -129,6 +135,8 @@ function submitTestForm(e)
         var $form = $( this );
         var data = $form.serialize();   
         var url = $form.attr( "action" );
+        console.log(data);
+        console.log(url);
 
         $.post( url, data ).success(function( response ) 
         {
