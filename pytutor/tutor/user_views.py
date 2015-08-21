@@ -37,7 +37,7 @@ def register(request):
                 messages.warning(request, 'There was a problem creating your account.')
             messages.warning(request, 'No account created: {} is already in use.'.format(username))
     
-    return HttpResponseRedirect('/')
+    return render(request, '/')
 
 def user_login(request):
     
@@ -63,15 +63,20 @@ def user_login(request):
 @login_required
 def change_pass(request):
     if(request.method=="GET"):
-            return render(request, 'chng_pass.html')
+        return render(request, 'chng_pass.html')
 
 
     user = request.user
-    password = request.POST['password']
+    password = request.POST['old_password']
+    new_pass = request.POST['new_password']
     if not user.check_password(password):
         messages.add_message(request, messages.ERROR, 'Incorrect password.')
         return HttpResponseRedirect('/change_pass')
 
+    user.set_password(new_pass)
+    user.save()
+    messages.add_message(request, messages.SUCCESS, 'Your password has been updated.')
+    return HttpResponseRedirect('/profile/')
 
 
 

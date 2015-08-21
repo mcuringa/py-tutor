@@ -71,7 +71,7 @@
           <ul class="nav navbar-nav navbar-right vc">
        {% if user.is_authenticated %}
             <!--We'll want this to link to the user's profile, when it exists -->
-            <li><a class="btn" href="/profile" title="see my profile">{{ user.username }}</a></li>
+            <li><a class="btn" href="/profile" title="edit my profile or change password">{{ user.username }}</a></li>
             <li id="socialStatus">
             </li>
             <li><a class="btn" href="/logout" title="click to logout">logout</a></li>

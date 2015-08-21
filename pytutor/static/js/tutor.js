@@ -94,6 +94,7 @@ function submitQuestion(e)
     {
         console.log("posting question");
         question.set(JSON.parse(response.question));
+        $("#question-form #question_id").val(question.id);
         message.set(response.msg);
         editors["solution-editor"].focus();
         TestResults.set(JSON.parse(response.tests_json));
@@ -115,6 +116,7 @@ msg = function(msg, level)
 
 function submitTestForm(e)
 {
+    
 
     e.preventDefault();
     if (question.id == 0)

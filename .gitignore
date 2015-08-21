@@ -50,5 +50,9 @@ _archive*
 # User Uploaded Media #
 #######################
 
-
 pytutor/media/*
+
+# Local Files
+#############
+pytutor/pytutor/mail_config.py
+

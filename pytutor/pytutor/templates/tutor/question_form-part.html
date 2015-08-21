@@ -1,6 +1,6 @@
 <form id="question-form" class="" action="/question/save" method="post" role="form">
     {% csrf_token %}
-    <input type="hidden" name="pk" value="{{pk}}">
+    <input id="question_id" type="hidden" name="pk" value="{{pk}}">
     <input type="hidden" id="prompt" name="prompt">
     <input type="hidden" id="solution" name="solution">
 

@@ -205,7 +205,7 @@ var friends = new Friends();
 var searchResults = new Friends();
 
 var fsv = new FriendSearchView( {el: "#friend-search", collection: searchResults } );
-fsv.render();
+// fsv.render();
 
     
 });
