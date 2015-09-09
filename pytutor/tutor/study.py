@@ -53,6 +53,7 @@ def current_level(student):
 
 def next_tag_question(level, pool, tag):
     pool = pool.filter(tags__icontains=tag)
+
     level_choice = random_level(level)
     
     if pool.filter(level=level_choice).count() > 0:
@@ -69,8 +70,13 @@ def next_tag_question(level, pool, tag):
     if pool.filter(level=level+1).count() > 0:
         return random.choice(pool.filter(level=min(level+1,len(Question.levels)+1)))
 
+    # reload the pool, with the excluded IDs, this is only the case if a pool has 2 or fewer questions
     if pool.count() == 0:
-        raise ValueError("No questions in tagged pool");
+        pool = Question.objects.filter(status=Question.ACTIVE)
+        pool = pool.filter(tags__icontains=tag)
+        
+        if pool.count() == 0:
+            raise ValueError("No questions in tagged pool: " + tag); # this shouldn't happen except in very odd cases
     
     return random.choice(pool)
 
