@@ -67,14 +67,18 @@ def study(request, study_tag=None, sticky_id=0):
     return render(request, 'tutor/study.html', context)
 
 def solutions(question):
+    print("===========================\ngetting solutions to problem")
     
     tests = Test.objects.filter(question=question)
-    user_solutions = Response.objects.filter(question=question, is_correct=True).values_list("code").distinct()
+    user_solutions = Response.objects.filter(question=question, is_correct=True)
     expert_solutions = sorted(list(set(Solution.objects.filter(parent=question))), key=attrgetter('version'), reverse=True)
     for sol in expert_solutions:
         sol.test(tests)
 
-    user_solutions = [syn(c[0]) for c in user_solutions]
+    for us in user_solutions:
+        print(us.is_correct)
+
+    user_solutions = [c.code_pp() for c in user_solutions]
 
     return expert_solutions, user_solutions
 
