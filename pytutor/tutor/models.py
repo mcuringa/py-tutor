@@ -181,8 +181,6 @@ which allows them to be hashed and ordered based on the code and version"""
     class Meta:
         proxy = True
 
-#######################################################################################################    
-
     def test(self, tests):
         code = self.solution
         self.passed = True
@@ -199,9 +197,6 @@ which allows them to be hashed and ordered based on the code and version"""
     def __hash__(self):
         return self.solution.__hash__()
   
-#######################################################################################################  
-# def __ne__ not equal ---> set parameters for what you're looking for.
-# custom sorting
 
 
 class Test(models.Model):

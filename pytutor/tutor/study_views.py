@@ -67,7 +67,6 @@ def study(request, study_tag=None, sticky_id=0):
     return render(request, 'tutor/study.html', context)
 
 def solutions(question):
-    print("===========================\ngetting solutions to problem")
     
     tests = Test.objects.filter(question=question)
     user_solutions = Response.objects.filter(question=question, is_correct=True)
@@ -75,17 +74,9 @@ def solutions(question):
     for sol in expert_solutions:
         sol.test(tests)
 
-    for us in user_solutions:
-        print(us.is_correct)
-
-    user_solutions = [c.code_pp() for c in user_solutions]
+    # user_solutions = [c.code_pp() for c in user_solutions]
 
     return expert_solutions, user_solutions
-
-#######################################################################################################
- # key=attrgetter('version')
- # sort them based on an attribute of the object model.
- #######################################################################################################
 
 @login_required
 def respond(request):

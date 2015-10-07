@@ -266,8 +266,8 @@ function initForms()
 
 $( document ).ready(function() {
 
-    var tips = $("*[data-toggle='tooltip']");
-    $(tips).popover({ container: 'body', trigger: 'hover', delay: { "show": 500, "hide": 100 } });
+    // var tips = $("*[data-toggle='tooltip']");
+    //$(tips).popover({ container: 'body', trigger: 'hover', delay: { "show": 500, "hide": 100 } });
 
 
     fixDiff();

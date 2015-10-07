@@ -21,14 +21,30 @@
     {% endfor %}
 </ul>
 
-<h3><div class="label label-primary">
+<h3>
+<div class="label label-primary">
     user submitted solutions (passing only)
-</div></h3>
-<ul class="list-unstyled">
-    {% for code in user_solutions %}
-        <li class="margin-top">{{code}}</li>
-    {% endfor %}
-</ul>
-{% endautoescape %}
+</div>
+</h3>
 
+{% for solution in user_solutions %}
+    <div class="row margin-top">
+        <div class="col-md-9">
+            {{solution.code_pp}}
+        </div>
+        <div class="col-md-3">
+            <a href="/~solution.user.username" 
+                data-toggle="tooltip" data-placement="left"
+                title="Submitted by @{{solution.user.username}} on {{solution.submitted}} Click to view profile.">
+                <img src="{{solution.user.socialprofile.profile_pic.url}}" alt="profile pic of submitter" class="img-thumbnail img-responsive"></a>
+        </div>
+    </div>
+{% endfor %}
+
+{% endautoescape %}
+<script lang="javascript">
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
+</script>
 
