@@ -1,3 +1,5 @@
+# social.models.py
+# author: mxc
 
 import json
 
@@ -44,8 +46,17 @@ class SocialProfile(models.Model):
 
     user = models.OneToOneField(User, primary_key=True)
     
+    def _get_profile_pic_url(self):
+        if not self.profile_pic or len(self.profile_pic.url) == 0:
+            return "/static/img/mystery.png"
+        else:
+            return self.profile_pic.url
+
+    profile_pic_url = property(_get_profile_pic_url)
+
     def _get_full_name(self):
         return "{} {}".format(self.user.first_name, self.user.last_name).strip()
+    
     full_name = property(_get_full_name)
 
 
