@@ -14,13 +14,13 @@ from django.forms import ModelForm
 from django.contrib.auth.models import User
 from tutor.templatetags.tutor_extras import syn
 from django.contrib.humanize.templatetags import humanize
-
+from django.db import connection
 
 class AbstractQuestion(models.Model):
     """A Question is a coding challenge for the studier.
     It provides them with a prompt and the name of the
     function they must write to solve the problem. Questions
-    have a difficulty level and an arbitrary set of Tags 
+    have a difficulty level and an arbitrary set of Tags
     that categorize them. Questions are meant to be edited
     wiki-style -- wtih many editors boldly making changes, but
     with a clear revision history and easy system for rolling them
@@ -66,7 +66,7 @@ class AbstractQuestion(models.Model):
         for test, fail, result in [t.evaluate(code) for t in tests]:
             passed = passed and fail is None
             results.append((test, fail, result))
-        
+
         return (passed, results)
 
     def level_label(self):
@@ -116,14 +116,14 @@ class Question(AbstractQuestion):
     def test_and_update(self, t=None):
         if self.status == Question.DELETED:
             return False
-        
+
         if t is not None:
             test, ex, result = test.evaluate(user_function)
             passed = ex == None
 
         else:
             passed, results = self.run_tests()
-        
+
         if self.status == Question.ACTIVE and not passed:
             self.status = Question.FAILED
             self.save()
@@ -149,7 +149,7 @@ class ArchiveQuestion(AbstractQuestion):
     Question is updated. ArchiveQuestions can
     be reviewed and reverted to. For every Question
     there may be serveral ArchiveQuestions. Users
-    Responses are linked to ArchiveQuestions, as 
+    Responses are linked to ArchiveQuestions, as
     are Flags. Comments are linked to the current
     Question, because, generally, comments will endure
     across vesions of a Question."""
@@ -169,7 +169,7 @@ class ArchiveQuestion(AbstractQuestion):
         self.created = q.created
         self.creator = q.creator
         self.parent = q
-    
+
     class Meta:
         unique_together = (('parent', 'version'),)
 
@@ -196,7 +196,7 @@ which allows them to be hashed and ordered based on the code and version"""
 
     def __hash__(self):
         return self.solution.__hash__()
-  
+
 
 
 class Test(models.Model):
@@ -211,15 +211,15 @@ class Test(models.Model):
     args = models.CharField(blank=True, max_length=500)
     result = models.TextField()
     question = models.ForeignKey(Question)
-    
+
     def evaluate(self, code=""):
         """Compile and execute the code in its own
-           namespace, checking to see if the 
+           namespace, checking to see if the
            function returns the expected result
            when called with the given args.
            Returns a tuple of the return value
            and Exeception (or None)"""
-        
+
         if code == "":
             code = Question.objects.get(pk=self.question.pk).solution
 
@@ -232,7 +232,7 @@ class Test(models.Model):
             f = compile(code, '<string>', 'exec')
             # create the function in scope ns
             exec(f, ns)
-            
+
             # create the string we're going to evaluate
             # might get a runtime error
             call = "result = {}({})".format(self.question.function_name, self.args)
@@ -266,6 +266,41 @@ class TestForm(ModelForm):
         model = Test
         fields = ["args", "result"]
 
+
+def get_tag_info():
+    cursor = connection.cursor()
+    cursor.execute("SELECT distinct tags FROM tutor_question")
+    tags = set()
+    for row in cursor:
+        q_tags = row[0].split(",")
+
+        tags.update([t.lower().strip() for t in q_tags if len(t.strip()) > 0])
+
+    tag_list = []
+
+    sql = """
+        select '{0}' as tag, avg(level) as avg_level, count(1) as question_count
+            from tutor_question
+                where
+                    lower(tutor_question.tags) like '%{0}%'
+            group by 1;
+    """
+
+    print(tags)
+
+    for t in tags:
+        try:
+            s = sql.format(t,)
+            cursor.execute(s)
+            tag, level, count = cursor.fetchall()[0]
+            tag_list.append({"tag": tag, "level": round(level, 1), "question_count": count})
+        except Exception as e:
+            print(s)
+            raise e
+
+    print(tag_list)
+
+    return tag_list
 
 
 class Response(models.Model):
@@ -311,7 +346,3 @@ class QuestionFlag(models.Model):
 #     """
 #     student_response= Response.objects.all().filter(question=self, user=user).order_by("-submitted").first()
 #     attempts = Response.attempt
-
-
-
-
